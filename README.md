@@ -52,6 +52,7 @@ Either way, I believe it's important to understand the PHP MVC skeleton, and kno
 
 ### Installation <a name="installation"></a>
 Steps:
+
 1. Edit configuration file in _app/config/config.php_ with your credentials
 
 2. Execute SQL queries in __installation_ directory

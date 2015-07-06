@@ -370,6 +370,7 @@ You will see each newsfeed comes with and encrypted id like: ```feed-51b2cfa```.
 ### Files<a name="files"></a>
 Nothing wired to explain, You can upload and download.
 #### Upload
++ All uploaded files are out of root public, so, they aren't accessible by anyone
 + POST request, MIME, Size, Image dimension Validations
 + Setting file permission to avoid executable files
 + Sanitizing file names

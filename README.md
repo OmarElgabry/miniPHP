@@ -16,7 +16,6 @@ Either way, I believe it's important to understand the PHP MVC skeleton, and kno
 
 ## Index
 + [Installation](#installation)
-+ [Routing, Controller, & View](#life-cycle)
 + [Components](#components)
 + [Authentication](#authentication)
     - [Session](#session)
@@ -61,62 +60,6 @@ Steps:
 3. Install [Composer](https://getcomposer.org/doc/00-intro.md) for dependencies
 ```
 	composer install
-```
-
-### Routing, Controller, & View <a name="life-cycle"></a>
-
-####Routing
-
-Whenever you make a request to the application, it wil be directed to index.php inside public root folder. 
-So, if you make a request: ```http://localhost/miniPHP/User/update/412 ```. This will be splitted and translated into 
-
-+ Controller: User
-+ Action Method: update
-+ Arguemtns to action method: 412
-
-**NOTE** 
-
-In fact, htaccess splits everything comes after ```http://localhost/miniPHP ``` and adds it to the URL as querystring argument. So, this request will be converted to: ```http://localhost/miniPHP?url='User/update/412' ```.
-
-Then ```App``` Class, Inside ```splitUrl()```, will split the query string ```$_GET['url']``` intro controller, action method, and any passed arguments to action method.
-
-In ```App``` Class, Inside ```__construct()```, will instantiate an object from controller class, and make a call to action method.
-
-####Controller
-After the ```App``` Class intantiates controller object, The constructor of ```Controller```Class will trigger 3 consective events/methods:
-
-1. ```initialize()```: Use it to load components, 
-2. ```beforeAction()```: Any logic before calling controller's action method
-3. ```triggerComponents()```: Trigger startup() method of loaded components
-
-The constructor of ```Controller``` Class **shouldn't** be overridden, instead you can override the 3 methods above in extending classes, and constructor of ```Controller``` Class will call them one after another. 
-
-After the constructor finishes it's job, Then, the requested action method will be called, and arguments will be passed(if any)
-
-####Views
-Inside the action method you can make a call to model to get some data, and/or render pages inside views directory
-
-```php
-  //Inside UserController
-  
-  public function index(){
-  
-  	//render full page with layout(header and footer)
-  	echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'index.php');
-  	
-  	//render page
-  	echo $this->view->render(VIEWS_PATH . 'index.php');
-  }
-  
-  public function updateProfileInfo(){
-  	
-  		$fileData = $this->request->data("file");
-        $image = $this->user->updateProfilePicture(Session::getUserId(), $fileData);
-
-        //json_encode() for ajax calls
-        echo $this->view->JSONEncode(array("data" => ["src" => PUBLIC_ROOT . "img/profile_pictures/" . 		$image["basename"]]));
-    }
-
 ```
 
 ### Components <a name="components"></a>

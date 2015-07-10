@@ -468,7 +468,7 @@ If you learnt something, or I saved your time, please support the project by spr
 
 ### Contribute <a name="contribute"></a>
 
-Contribute by creating new issues, sending pull requests on Github or you can send an email at: omar_elgabry_93@gmail.com
+Contribute by creating new issues, sending pull requests on Github or you can send an email at: omar.elgabry.93@gmail.com
 
 ### Dependencies <a name="dependencies"></a>
 + [PHPMailer](https://github.com/PHPMailer/PHPMailer)

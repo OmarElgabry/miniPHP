@@ -51,7 +51,7 @@ function ajax(url, postData, callback, spinnerBlock){
             }
         })
         .always(function() {
-           stopSpinner(spinnerBlock, spinnerEle);
+            stopSpinner(spinnerBlock, spinnerEle);
         });
 
     function runSpinner(spinnerBlock, spinnerEle){
@@ -313,7 +313,7 @@ function validatePHPData(PHPData, targetBlock, errorFunc, errorType, returnVal){
  *
  */
 function serialize(ele, str){
-	if(empty(str)){
+    if(empty(str)){
         return $(ele).serialize();
     } else {
         return $(ele).serialize()  + "&" + str;
@@ -347,7 +347,7 @@ function encodeHTML(str){
  * @var integer  max file size
  * @see $vars in controller
  */
-    var maxFileSize;
+var maxFileSize;
 
 /**
  * validate form file size
@@ -396,722 +396,722 @@ function displayError(targetBlock, message){
  * LogIn Page
  */
 
-    //Register
-    $("#form-register").submit(function(e){
-        e.preventDefault();
-        ajax("Login/register", serialize(this), registerCallBack, "#form-register");
-    });
+//Register
+$("#form-register").submit(function(e){
+    e.preventDefault();
+    ajax("Login/register", serialize(this), registerCallBack, "#form-register");
+});
 
-    function registerCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-register", "after", "default", "success")){
-            $("#form-register").after(PHPData.success);
-            $("#form-register").remove();
-        }
+function registerCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-register", "after", "default", "success")){
+        $("#form-register").after(PHPData.success);
+        $("#form-register").remove();
     }
+}
 
-    //Login
-    $("#form-login").submit(function(e){
-        e.preventDefault();
-        ajax("Login/login", serialize(this), function (PHPData){
-            if(validatePHPData(PHPData, "#form-login", "after", "default")){
-                redirectTo(root);
-            }
-        }, "#form-login");
-    });
-
-    $("#form-login #link-forgot-password, #form-forgot-password #link-login").click(function() {
-
-        $( "#form-login, #form-forgot-password" ).toggleClass("display-none");
-        $(".error").remove();
-        $(".success").remove();
-    });
-
-    $("#link-register").click(function() {
-
-        $( "#form-login, #form-forgot-password").addClass("display-none");
-        $("#form-register").removeClass("display-none");
-        $(".panel-title").text("Register");
-        $(".error").remove();
-        $(".success").remove();
-    });
-
-    $("#form-register #link-login").click(function() {
-
-        $(".panel-title").text("Login");
-        $( "#form-register").addClass("display-none");
-        $( "#form-login").removeClass("display-none");
-        $(".error").remove();
-        $(".success").remove();
-    });
-
-    //Forgot Password
-    $("#form-forgot-password").submit(function(e){
-        e.preventDefault();
-        ajax("Login/forgotPassword", serialize(this), forgotPasswordCallBack, "#form-forgot-password");
-    });
-
-    function forgotPasswordCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-forgot-password", "after", "default", "success")){
-            $("#form-forgot-password").after(PHPData.success);
-            /*$("#form-reminder").remove();*/
+//Login
+$("#form-login").submit(function(e){
+    e.preventDefault();
+    ajax("Login/login", serialize(this), function (PHPData){
+        if(validatePHPData(PHPData, "#form-login", "after", "default")){
+            redirectTo(root);
         }
+    }, "#form-login");
+});
+
+$("#form-login #link-forgot-password, #form-forgot-password #link-login").click(function() {
+
+    $( "#form-login, #form-forgot-password" ).toggleClass("display-none");
+    $(".error").remove();
+    $(".success").remove();
+});
+
+$("#link-register").click(function() {
+
+    $( "#form-login, #form-forgot-password").addClass("display-none");
+    $("#form-register").removeClass("display-none");
+    $(".panel-title").text("Register");
+    $(".error").remove();
+    $(".success").remove();
+});
+
+$("#form-register #link-login").click(function() {
+
+    $(".panel-title").text("Login");
+    $( "#form-register").addClass("display-none");
+    $( "#form-login").removeClass("display-none");
+    $(".error").remove();
+    $(".success").remove();
+});
+
+//Forgot Password
+$("#form-forgot-password").submit(function(e){
+    e.preventDefault();
+    ajax("Login/forgotPassword", serialize(this), forgotPasswordCallBack, "#form-forgot-password");
+});
+
+function forgotPasswordCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-forgot-password", "after", "default", "success")){
+        $("#form-forgot-password").after(PHPData.success);
+        /*$("#form-reminder").remove();*/
     }
+}
 
 /*
  * Password update Page
  *
  */
-    $("#form-update-password").submit(function(e){
-        e.preventDefault();
-        ajax("Login/updatePassword", serialize(this), updatePasswordCallBack, "#form-update-password");
-    });
+$("#form-update-password").submit(function(e){
+    e.preventDefault();
+    ajax("Login/updatePassword", serialize(this), updatePasswordCallBack, "#form-update-password");
+});
 
-    function updatePasswordCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-update-password", "after", "default", "success")){
-            $("#form-update-password").after(PHPData.success);
-            $("#form-update-password").remove();
-        }
+function updatePasswordCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-update-password", "after", "default", "success")){
+        $("#form-update-password").after(PHPData.success);
+        $("#form-update-password").remove();
     }
+}
 
 /*
  * Profile Page
  */
-    //update profile info
-    $("#form-profile-info").submit(function(e){
-        e.preventDefault();
-        ajax("User/updateProfileInfo", serialize(this), updateProfileInfoCallBack, "#form-profile-info");
-    });
+//update profile info
+$("#form-profile-info").submit(function(e){
+    e.preventDefault();
+    ajax("User/updateProfileInfo", serialize(this), updateProfileInfoCallBack, "#form-profile-info");
+});
 
-    function updateProfileInfoCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-profile-info", "after", "default", "success")){
-            $("#form-profile-info").after(PHPData.success);
-            //$("#form-profile-info").remove();
-        }
+function updateProfileInfoCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-profile-info", "after", "default", "success")){
+        $("#form-profile-info").after(PHPData.success);
+        //$("#form-profile-info").remove();
     }
+}
 
-    //upload profile picture
-    $("#form-profile-picture").submit(function(e){
-        e.preventDefault();
-        ajaxFiles("User/updateProfilePicture", new FormData(this), uploadProfilePictureCallBack);
-    });
+//upload profile picture
+$("#form-profile-picture").submit(function(e){
+    e.preventDefault();
+    ajaxFiles("User/updateProfilePicture", new FormData(this), uploadProfilePictureCallBack);
+});
 
-    function uploadProfilePictureCallBack(PHPData){
+function uploadProfilePictureCallBack(PHPData){
 
-        if(validatePHPData(PHPData, "#form-profile-picture", "after", "default", "data")){
-            
-			//refresh image(profile and navigation) after uploading
-			//@see http://stackoverflow.com/questions/1985268/possible-to-clear-cache-of-browser-with-php-code
-			
-			var src = PHPData.data.src;
-			$("img[class*='profile-pic']").attr( 'src', src + '?last_update=' + (+new Date()) );
+    if(validatePHPData(PHPData, "#form-profile-picture", "after", "default", "data")){
 
-            //$("#form-profile-picture").after(PHPData.success);
-            //$("#form-profile-picture").remove();
-        }
+        //refresh image(profile and navigation) after uploading
+        //@see http://stackoverflow.com/questions/1985268/possible-to-clear-cache-of-browser-with-php-code
+
+        var src = PHPData.data.src;
+        $("img[class*='profile-pic']").attr( 'src', src + '?last_update=' + (+new Date()) );
+
+        //$("#form-profile-picture").after(PHPData.success);
+        //$("#form-profile-picture").remove();
     }
+}
 
 
 /*
  * Courses & Labels Search Form & Pagination
  */
 
-    /**
-     * @var string  determines the current page: newsfeed, posts, files, ...etc.
-     * @see layout/footer.php
-     * @see $vars in controller
-     */
-    var globalPage;
+/**
+ * @var string  determines the current page: newsfeed, posts, files, ...etc.
+ * @see layout/footer.php
+ * @see $vars in controller
+ */
+var globalPage;
 
-    /**
-     * @var string  the id of the current page, usually encrypted
-     * @see layout/footer.php
-     * @see $vars in controller
-     */
-    var globalPageId;
+/**
+ * @var string  the id of the current page, usually encrypted
+ * @see layout/footer.php
+ * @see $vars in controller
+ */
+var globalPageId;
 
-    //initialize
-    function initializePageEvents(){
+//initialize
+function initializePageEvents(){
 
-        initializePaginationEvents();
+    initializePaginationEvents();
 
-        if(globalPage === "newsfeed"){ initializeNewsFeedEvents(); }
-        if(globalPage === "posts" || globalPage.indexOf("posts") > -1){ initializePostEvents(); }
-        if(globalPage === "comments" || globalPage.indexOf("comments") > -1){ initializeCommentsEvents(); }
-        if(globalPage === "files"){ initializeFilesEvents(); }
-        if(globalPage === "users"){ initializeUsersEvents(); }
-    }
+    if(globalPage === "newsfeed"){ initializeNewsFeedEvents(); }
+    if(globalPage === "posts" || globalPage.indexOf("posts") > -1){ initializePostEvents(); }
+    if(globalPage === "comments" || globalPage.indexOf("comments") > -1){ initializeCommentsEvents(); }
+    if(globalPage === "files"){ initializeFilesEvents(); }
+    if(globalPage === "users"){ initializeUsersEvents(); }
+}
 
 /*
  * Pagination
  */
 
-    /**
-     * @var integer Acts like the page number for comments
-     *
-     */
-    var viewMoreCounter = 1;
+/**
+ * @var integer Acts like the page number for comments
+ *
+ */
+var viewMoreCounter = 1;
 
-    /**
-     * @var integer Whenever there is a new comment created in-place, this will be incremented.
-     */
-    var commentsCreated = 0;
+/**
+ * @var integer Whenever there is a new comment created in-place, this will be incremented.
+ */
+var commentsCreated = 0;
 
-    function initializePaginationEvents(){
+function initializePaginationEvents(){
 
-        $("ul.pagination a").click(function(e){
-            e.preventDefault();
+    $("ul.pagination a").click(function(e){
+        e.preventDefault();
 
-            var pageNumber;
+        var pageNumber;
 
-            if(globalPage === "comments" || globalPage.indexOf("comments") > -1){
-                pageNumber = ++viewMoreCounter;
-            }
-            else if($(this).hasClass("prev")){
-                pageNumber = getSelectedPaginationLink() - 1;
-            }
-            else if($(this).hasClass("next")){
-                pageNumber = getSelectedPaginationLink() + 1;
-            }
-            else{
+        if(globalPage === "comments" || globalPage.indexOf("comments") > -1){
+            pageNumber = ++viewMoreCounter;
+        }
+        else if($(this).hasClass("prev")){
+            pageNumber = getSelectedPaginationLink() - 1;
+        }
+        else if($(this).hasClass("next")){
+            pageNumber = getSelectedPaginationLink() + 1;
+        }
+        else{
 
-                //index() returns 0-indexed
-                pageNumber = $(this).index("ul.pagination a:not(.prev):not(.next)") + 1;
-            }
+            //index() returns 0-indexed
+            pageNumber = $(this).index("ul.pagination a:not(.prev):not(.next)") + 1;
+        }
 
-            if(globalPage === "newsfeed"){ getNewsFeed(pageNumber); }
-            else if(globalPage === "posts"){ getPosts(pageNumber); }
-            else if(globalPage === "comments" || globalPage.indexOf("comments") > -1){ getComments(pageNumber, commentsCreated); }
-            else if(globalPage === "files"){ getFiles(pageNumber); }
-            else if(globalPage === "users"){ getUsers(pageNumber); }
+        if(globalPage === "newsfeed"){ getNewsFeed(pageNumber); }
+        else if(globalPage === "posts"){ getPosts(pageNumber); }
+        else if(globalPage === "comments" || globalPage.indexOf("comments") > -1){ getComments(pageNumber, commentsCreated); }
+        else if(globalPage === "files"){ getFiles(pageNumber); }
+        else if(globalPage === "users"){ getUsers(pageNumber); }
 
-        });
-    }
+    });
+}
 
-    function getSelectedPaginationLink(){
-        var link = 1;
+function getSelectedPaginationLink(){
+    var link = 1;
 
-        //using index Vs the page number(text) inside the pagination
-        $("ul.pagination a:not(.prev):not(.next)").each(function(index){
-            if($(this).parent().hasClass("active")){
-                link = index + 1;
-                return false;
-            }
-        });
-        return parseInt(link);
-    }
+    //using index Vs the page number(text) inside the pagination
+    $("ul.pagination a:not(.prev):not(.next)").each(function(index){
+        if($(this).parent().hasClass("active")){
+            link = index + 1;
+            return false;
+        }
+    });
+    return parseInt(link);
+}
 
 
 /*
  * News Feed Page
  */
 
-    //get newsfeed
+//get newsfeed
 
-    function getNewsFeed(pageNumber){
-        if(empty(pageNumber)) pageNumber = 1;
-        ajax("NewsFeed/getAll", {page_number: pageNumber}, getNewsFeedCallBack, "#list-newsfeed");
+function getNewsFeed(pageNumber){
+    if(empty(pageNumber)) pageNumber = 1;
+    ajax("NewsFeed/getAll", {page_number: pageNumber}, getNewsFeedCallBack, "#list-newsfeed");
+}
+
+function getNewsFeedCallBack(PHPData){
+    if(validatePHPData(PHPData, "#list-newsfeed", "html", "default", "data")){
+        $("#list-newsfeed").html(PHPData.data.newsfeed);
+        initializeNewsFeedEvents();
+        $("ul.pagination").html(PHPData.data.pagination);
+        initializePaginationEvents();
+    }else{
+        $("ul.pagination").html("");
     }
+}
 
-    function getNewsFeedCallBack(PHPData){
-        if(validatePHPData(PHPData, "#list-newsfeed", "html", "default", "data")){
-            $("#list-newsfeed").html(PHPData.data.newsfeed);
-            initializeNewsFeedEvents();
-            $("ul.pagination").html(PHPData.data.pagination);
-            initializePaginationEvents();
-        }else{
-            $("ul.pagination").html("");
+//create newfeed
+$("#form-create-newsfeed").submit(function(e){
+    e.preventDefault();
+    ajax("NewsFeed/create", serialize(this), createNewsFeedCallBack, "#form-create-newsfeed");
+});
+function createNewsFeedCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-create-newsfeed", "after", "default", "data")){
+        $("#list-newsfeed .no-data").remove();
+        $(PHPData.data).hide().prependTo("#list-newsfeed").fadeIn();
+        $("#form-create-newsfeed textarea").val('');
+        initializeNewsFeedEvents();
+    }
+}
+
+//It's important to have the events encapsulated inside a function,
+//so you can call the function after ajax calls to re-initialize them
+function initializeNewsFeedEvents(){
+    updateNewsFeedEvents();
+    deleteNewsFeed();
+}
+
+//update newsfeed
+function updateNewsFeedEvents(){
+
+    $("#list-newsfeed .header .edit").off('click').on('click', function() {
+
+        var newsfeedBody = $(this).parent().parent().parent().parent();
+        var newsfeedId   = newsfeedBody.attr("id");
+        getNewsFeedUpdateForm();
+
+
+        //1. get the update form merged with the current newsfeed data
+        function getNewsFeedUpdateForm(){
+            ajax("NewsFeed/getUpdateForm", {newsfeed_id: newsfeedId}, getNewsFeedUpdateFormCallBack);
+
+            function getNewsFeedUpdateFormCallBack(PHPData){
+                if(validatePHPData(PHPData, newsfeedBody, "html", "default", "data")){
+                    newsfeedBody.html(PHPData.data);
+                    activateCancelNewsFeedEvent();
+                    activateUpdateNewsFeedEvent();
+                }
+            }
         }
-    }
 
-    //create newfeed
-    $("#form-create-newsfeed").submit(function(e){
-        e.preventDefault();
-        ajax("NewsFeed/create", serialize(this), createNewsFeedCallBack, "#form-create-newsfeed");
-    });
-    function createNewsFeedCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-create-newsfeed", "after", "default", "data")){
-            $("#list-newsfeed .no-data").remove();
-            $(PHPData.data).hide().prependTo("#list-newsfeed").fadeIn();
-            $("#form-create-newsfeed textarea").val('');
-            initializeNewsFeedEvents();
-        }
-    }
+        //2. if cancel, then go and get the current newsfeed(regardless of any changes)
+        function activateCancelNewsFeedEvent(){
 
-    //It's important to have the events encapsulated inside a function,
-    //so you can call the function after ajax calls to re-initialize them
-    function initializeNewsFeedEvents(){
-        updateNewsFeedEvents();
-        deleteNewsFeed();
-    }
+            $("#form-update-"+newsfeedId+" button[name='cancel']").click(function(e){
+                e.preventDefault();
+                ajax("NewsFeed/getById", {newsfeed_id: newsfeedId}, getNewsFeedByIdCallBack);
 
-    //update newsfeed
-    function updateNewsFeedEvents(){
-
-        $("#list-newsfeed .header .edit").click(function(){
-
-            var newsfeedBody = $(this).parent().parent().parent().parent();
-            var newsfeedId   = newsfeedBody.attr("id");
-            getNewsFeedUpdateForm();
-
-
-            //1. get the update form merged with the current newsfeed data
-            function getNewsFeedUpdateForm(){
-                ajax("NewsFeed/getUpdateForm", {newsfeed_id: newsfeedId}, getNewsFeedUpdateFormCallBack);
-
-                function getNewsFeedUpdateFormCallBack(PHPData){
+                function getNewsFeedByIdCallBack(PHPData){
                     if(validatePHPData(PHPData, newsfeedBody, "html", "default", "data")){
-                        newsfeedBody.html(PHPData.data);
-                        activateCancelNewsFeedEvent();
-                        activateUpdateNewsFeedEvent();
+                        $(newsfeedBody).after(PHPData.data);
+                        $(newsfeedBody).remove();
+                        initializeNewsFeedEvents();
                     }
                 }
-            }
+            });
+        }
 
-            //2. if cancel, then go and get the current newsfeed(regardless of any changes)
-            function activateCancelNewsFeedEvent(){
+        //3. if update, then update the current newsfeed and get back the updated one
+        function activateUpdateNewsFeedEvent(){
 
-                $("#form-update-"+newsfeedId+" button[name='cancel']").click(function(e){
-                    e.preventDefault();
-                    ajax("NewsFeed/getById", {newsfeed_id: newsfeedId}, getNewsFeedByIdCallBack);
+            $("#form-update-"+newsfeedId).submit(function(e){
+                e.preventDefault();
+                ajax("NewsFeed/update", serialize("#form-update-"+newsfeedId, "newsfeed_id="+newsfeedId), updateNewsFeedCallBack);
 
-                    function getNewsFeedByIdCallBack(PHPData){
-                        if(validatePHPData(PHPData, newsfeedBody, "html", "default", "data")){
-                            $(newsfeedBody).after(PHPData.data);
-                            $(newsfeedBody).remove();
-                            initializeNewsFeedEvents();
-                        }
+                function updateNewsFeedCallBack(PHPData){
+                    if(validatePHPData(PHPData, newsfeedBody, "after", "default", "data")){
+                        $(newsfeedBody).after(PHPData.data);
+                        $(newsfeedBody).remove();
+                        initializeNewsFeedEvents();
                     }
-                });
-            }
-
-            //3. if update, then update the current newsfeed and get back the updated one
-            function activateUpdateNewsFeedEvent(){
-
-                $("#form-update-"+newsfeedId).submit(function(e){
-                    e.preventDefault();
-                    ajax("NewsFeed/update", serialize("#form-update-"+newsfeedId, "newsfeed_id="+newsfeedId), updateNewsFeedCallBack);
-
-                    function updateNewsFeedCallBack(PHPData){
-                        if(validatePHPData(PHPData, newsfeedBody, "after", "default", "data")){
-                            $(newsfeedBody).after(PHPData.data);
-                            $(newsfeedBody).remove();
-                            initializeNewsFeedEvents();
-                        }
-                    }
-                });
-            }
-
-        });
-    }
-
-    //delete newsfeed
-    function deleteNewsFeed(){
-        $("#list-newsfeed .header .delete").click(function(e){
-            e.preventDefault();
-            if (!confirm("Are you sure?")) { return; }
-
-            var newsfeedBody = $(this).parent().parent().parent().parent();
-            var newsfeedId   = newsfeedBody.attr("id");
-
-            ajax("NewsFeed/delete", {newsfeed_id: newsfeedId}, deleteNewsFeedCallBack);
-            function deleteNewsFeedCallBack(PHPData){
-                if(validatePHPData(PHPData, newsfeedBody, "html", "default", "success")){
-                    $(newsfeedBody).remove();
                 }
+            });
+        }
+
+    });
+}
+
+//delete newsfeed
+function deleteNewsFeed(){
+    $("#list-newsfeed .header .delete").off('click').on('click', function(e) {
+        e.preventDefault();
+        if (!confirm("Are you sure?")) { return; }
+
+        var newsfeedBody = $(this).parent().parent().parent().parent();
+        var newsfeedId   = newsfeedBody.attr("id");
+
+        ajax("NewsFeed/delete", {newsfeed_id: newsfeedId}, deleteNewsFeedCallBack);
+        function deleteNewsFeedCallBack(PHPData){
+            if(validatePHPData(PHPData, newsfeedBody, "html", "default", "success")){
+                $(newsfeedBody).remove();
             }
-        });
-    }
+        }
+    });
+}
 
 /*
  * Posts page
  */
-    //get posts
+//get posts
 
-    function getPosts(pageNumber){
-        if(typeof(pageNumber) === "undefined") pageNumber = 1;
-        ajax("Posts/getAll", {page_number: pageNumber}, getPostsCallBack, "#list-posts");
+function getPosts(pageNumber){
+    if(typeof(pageNumber) === "undefined") pageNumber = 1;
+    ajax("Posts/getAll", {page_number: pageNumber}, getPostsCallBack, "#list-posts");
+}
+function getPostsCallBack(PHPData){
+    if(validatePHPData(PHPData, "#list-posts", "html", "default", "data")){
+        $("#list-posts tbody").html(PHPData.data.posts);
+        $("ul.pagination").html(PHPData.data.pagination);
+        initializePaginationEvents();
+    }else{
+        $("ul.pagination").html("");
     }
-    function getPostsCallBack(PHPData){
-        if(validatePHPData(PHPData, "#list-posts", "html", "default", "data")){
-            $("#list-posts tbody").html(PHPData.data.posts);
-            $("ul.pagination").html(PHPData.data.pagination);
-            initializePaginationEvents();
-        }else{
-            $("ul.pagination").html("");
+}
+
+//create post
+$("#form-create-post").submit(function(e){
+    e.preventDefault();
+    ajax("Posts/create", serialize(this), createPostCallBack, "#form-create-post");
+});
+function createPostCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-create-post", "after", "default", "success")){
+        $("#form-create-post").after(PHPData.success);
+        $("#form-create-post").remove();
+    }
+}
+
+function initializePostEvents(){
+    updatePostEvents();
+    deletePost();
+}
+
+//update post
+function updatePostEvents(){
+    $("#view-post .panel-heading .edit").click(function(){
+
+        var postBody = $(this).parent().parent().parent();
+        getPostUpdateForm();
+
+        //1. get the update form
+        function getPostUpdateForm(){
+            ajax("Posts/getUpdateForm", {post_id: globalPageId}, getPostUpdateFormCallBack);
+            function getPostUpdateFormCallBack(PHPData){
+                if(validatePHPData(PHPData, postBody, "html", "default", "data")){
+                    postBody.html(PHPData.data);
+                    activateCancelPostEvent();
+                    activateUpdatePostEvent();
+                }
+            }
         }
-    }
 
-    //create post
-    $("#form-create-post").submit(function(e){
-        e.preventDefault();
-        ajax("Posts/create", serialize(this), createPostCallBack, "#form-create-post");
-    });
-    function createPostCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-create-post", "after", "default", "success")){
-            $("#form-create-post").after(PHPData.success);
-            $("#form-create-post").remove();
-        }
-    }
-
-    function initializePostEvents(){
-        updatePostEvents();
-        deletePost();
-    }
-
-    //update post
-    function updatePostEvents(){
-        $("#view-post .panel-heading .edit").click(function(){
-
-            var postBody = $(this).parent().parent().parent();
-            getPostUpdateForm();
-
-            //1. get the update form
-            function getPostUpdateForm(){
-                ajax("Posts/getUpdateForm", {post_id: globalPageId}, getPostUpdateFormCallBack);
-                function getPostUpdateFormCallBack(PHPData){
+        //2.
+        function activateCancelPostEvent(){
+            $("#form-update-post button[name='cancel']").click(function(e){
+                e.preventDefault();
+                ajax("Posts/getById", {post_id: globalPageId}, getPostByIdCallBack);
+                function getPostByIdCallBack(PHPData){
                     if(validatePHPData(PHPData, postBody, "html", "default", "data")){
-                        postBody.html(PHPData.data);
-                        activateCancelPostEvent();
-                        activateUpdatePostEvent();
+                        $(postBody).html(PHPData.data);
+                        initializePostEvents();
                     }
                 }
-            }
+            });
+        }
 
-            //2.
-            function activateCancelPostEvent(){
-                $("#form-update-post button[name='cancel']").click(function(e){
-                    e.preventDefault();
-                    ajax("Posts/getById", {post_id: globalPageId}, getPostByIdCallBack);
-                    function getPostByIdCallBack(PHPData){
-                        if(validatePHPData(PHPData, postBody, "html", "default", "data")){
-                            $(postBody).html(PHPData.data);
-                            initializePostEvents();
-                        }
+        //3.
+        function activateUpdatePostEvent(){
+            $("#form-update-post").submit(function(e){
+                e.preventDefault();
+                ajax("Posts/update", serialize("#form-update-post", "post_id="+globalPageId), updatePostCallBack, "#view-post-"+globalPageId);
+                function updatePostCallBack(PHPData){
+                    if(validatePHPData(PHPData, "#form-update-post", "after", "default", "data")){
+                        $(postBody).html(PHPData.data);
+                        initializePostEvents();
                     }
-                });
-            }
-
-            //3.
-            function activateUpdatePostEvent(){
-                $("#form-update-post").submit(function(e){
-                    e.preventDefault();
-                    ajax("Posts/update", serialize("#form-update-post", "post_id="+globalPageId), updatePostCallBack, "#view-post-"+globalPageId);
-                    function updatePostCallBack(PHPData){
-                        if(validatePHPData(PHPData, "#form-update-post", "after", "default", "data")){
-                            $(postBody).html(PHPData.data);
-                            initializePostEvents();
-                        }
-                    }
-                });
-            }
-
-        });
-    }
-
-    //delete post
-    function deletePost(){
-
-        $("#view-post .panel-heading .delete").click(function(e){
-            e.preventDefault();
-            //optional confirmation
-            if (!confirm("Are you sure?")) { return; }
-
-            var postBody = $(this).parent().parent().parent();
-
-            ajax("Posts/delete", {post_id: globalPageId}, deletePostCallBack);
-            function deletePostCallBack(PHPData){
-                if(validatePHPData(PHPData, postBody, "html", "default", "success")){
-                    //here we remove all the two columns of post and that of comments as well!.
-                    $(".row:eq(1)").children().eq(1).html(PHPData.success);
                 }
+            });
+        }
+
+    });
+}
+
+//delete post
+function deletePost(){
+
+    $("#view-post .panel-heading .delete").click(function(e){
+        e.preventDefault();
+        //optional confirmation
+        if (!confirm("Are you sure?")) { return; }
+
+        var postBody = $(this).parent().parent().parent();
+
+        ajax("Posts/delete", {post_id: globalPageId}, deletePostCallBack);
+        function deletePostCallBack(PHPData){
+            if(validatePHPData(PHPData, postBody, "html", "default", "success")){
+                //here we remove all the two columns of post and that of comments as well!.
+                $(".row:eq(1)").children().eq(1).html(PHPData.success);
             }
-        });
-    }
+        }
+    });
+}
 
 
 /*
  * Comments
  */
-    //get comments
-    function getComments(pageNumber, commentsCreated){
+//get comments
+function getComments(pageNumber, commentsCreated){
 
-        if(empty(pageNumber)) pageNumber = 1;
-        if(empty(commentsCreated)) commentsCreated = 0;
+    if(empty(pageNumber)) pageNumber = 1;
+    if(empty(commentsCreated)) commentsCreated = 0;
 
-        ajax("Comments/getAll", {post_id: globalPageId, page_number: pageNumber, comments_created: commentsCreated}, getCommentsCallBack, "#list-comments");
+    ajax("Comments/getAll", {post_id: globalPageId, page_number: pageNumber, comments_created: commentsCreated}, getCommentsCallBack, "#list-comments");
+}
+function getCommentsCallBack(PHPData){
+    if(validatePHPData(PHPData, "#list-comments", "html", "default", "data")){
+        $("#list-comments").append(PHPData.data.comments);
+        initializeCommentsEvents();
+        $("ul.pagination").html(PHPData.data.pagination);
+        initializePaginationEvents();
+    }else{
+        $("ul.pagination").html("");
     }
-    function getCommentsCallBack(PHPData){
-        if(validatePHPData(PHPData, "#list-comments", "html", "default", "data")){
-            $("#list-comments").append(PHPData.data.comments);
-            initializeCommentsEvents();
-            $("ul.pagination").html(PHPData.data.pagination);
-            initializePaginationEvents();
-        }else{
-            $("ul.pagination").html("");
+}
+
+//create comment
+$("#form-create-comment").submit(function(e){
+    e.preventDefault();
+    ajax("Comments/create", serialize(this, "post_id="+globalPageId), createCommentCallBack, "#form-create-comment");
+});
+function createCommentCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-create-comment", "after", "default", "data")){
+        $("#list-comments .no-data").remove();
+        $("#list-comments").append(PHPData.data);
+
+        $("#form-create-comment textarea").val('');
+
+        //increment number of comments created in-place
+        commentsCreated++;
+        initializeCommentsEvents();
+    }
+}
+
+function initializeCommentsEvents(){
+    updateCommentEvents();
+    deleteComment();
+}
+
+//update comment
+function updateCommentEvents(){
+    $("#list-comments .header .edit").off('click').on('click', function() {
+
+        var commentBody = $(this).parent().parent().parent().parent();
+        var commentId = commentBody.attr("id");
+        getCommentUpdateForm();
+
+        //1. get the update form
+        function getCommentUpdateForm(){
+            ajax("Comments/getUpdateForm", {comment_id: commentId}, getCommentUpdateFormCallBack);
+            function getCommentUpdateFormCallBack(PHPData){
+                if(validatePHPData(PHPData, commentBody, "html", "default", "data")){
+                    commentBody.html(PHPData.data);
+                    activateCancelCommentEvent();
+                    activateUpdateCommentEvent();
+                }
+            }
         }
-    }
 
-    //create comment
-    $("#form-create-comment").submit(function(e){
-        e.preventDefault();
-        ajax("Comments/create", serialize(this, "post_id="+globalPageId), createCommentCallBack, "#form-create-comment");
-    });
-    function createCommentCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-create-comment", "after", "default", "data")){
-            $("#list-comments .no-data").remove();
-            $("#list-comments").append(PHPData.data);
-
-            $("#form-create-comment textarea").val('');
-
-            //increment number of comments created in-place
-            commentsCreated++;
-            initializeCommentsEvents();
-        }
-    }
-
-    function initializeCommentsEvents(){
-        updateCommentEvents();
-        deleteComment();
-    }
-
-    //update comment
-    function updateCommentEvents(){
-        $("#list-comments .header .edit").click(function(){
-
-            var commentBody = $(this).parent().parent().parent().parent();
-            var commentId = commentBody.attr("id");
-            getCommentUpdateForm();
-
-            //1. get the update form
-            function getCommentUpdateForm(){
-                ajax("Comments/getUpdateForm", {comment_id: commentId}, getCommentUpdateFormCallBack);
-                function getCommentUpdateFormCallBack(PHPData){
+        //2.
+        function activateCancelCommentEvent(){
+            $("#form-update-"+commentId+" button[name='cancel']").click(function(e){
+                e.preventDefault();
+                ajax("Comments/getById", {comment_id: commentId}, getCommentByIdCallBack);
+                function getCommentByIdCallBack(PHPData){
                     if(validatePHPData(PHPData, commentBody, "html", "default", "data")){
-                        commentBody.html(PHPData.data);
-                        activateCancelCommentEvent();
-                        activateUpdateCommentEvent();
+                        $(commentBody).after(PHPData.data);
+                        $(commentBody).remove();
+                        initializeCommentsEvents();
                     }
                 }
-            }
+            });
+        }
 
-            //2.
-            function activateCancelCommentEvent(){
-                $("#form-update-"+commentId+" button[name='cancel']").click(function(e){
-                    e.preventDefault();
-                    ajax("Comments/getById", {comment_id: commentId}, getCommentByIdCallBack);
-                    function getCommentByIdCallBack(PHPData){
-                        if(validatePHPData(PHPData, commentBody, "html", "default", "data")){
-                            $(commentBody).after(PHPData.data);
-                            $(commentBody).remove();
-                            initializeCommentsEvents();
-                        }
+        //3.
+        function activateUpdateCommentEvent(){
+            $("#form-update-"+commentId).submit(function(e){
+                e.preventDefault();
+                ajax("Comments/update", serialize("#form-update-"+commentId, "comment_id="+commentId), updateCommentCallBack);
+                function updateCommentCallBack(PHPData){
+                    if(validatePHPData(PHPData, commentBody, "after", "default", "data")){
+                        $(commentBody).after(PHPData.data);
+                        $(commentBody).remove();
+                        initializeCommentsEvents();
                     }
-                });
-            }
-
-            //3.
-            function activateUpdateCommentEvent(){
-                $("#form-update-"+commentId).submit(function(e){
-                    e.preventDefault();
-                    ajax("Comments/update", serialize("#form-update-"+commentId, "comment_id="+commentId), updateCommentCallBack);
-                    function updateCommentCallBack(PHPData){
-                        if(validatePHPData(PHPData, commentBody, "after", "default", "data")){
-                            $(commentBody).after(PHPData.data);
-                            $(commentBody).remove();
-                            initializeCommentsEvents();
-                        }
-                    }
-                });
-            }
-
-        });
-    }
-
-    //delete comment
-    function deleteComment(){
-        $("#list-comments .header .delete").click(function(e){
-            e.preventDefault();
-            if (!confirm("Are you sure?")) { return; }
-
-            var commentBody = $(this).parent().parent().parent().parent();
-            var commentId = commentBody.attr("id");
-
-            ajax("Comments/delete", {comment_id: commentId}, deleteCommentCallBack);
-            function deleteCommentCallBack(PHPData){
-                if(validatePHPData(PHPData, commentBody, "html", "default", "success")){
-                    $(commentBody).remove();
                 }
+            });
+        }
+
+    });
+}
+
+//delete comment
+function deleteComment(){
+    $("#list-comments .header .delete").off('click').on('click', function(e) {
+        e.preventDefault();
+        if (!confirm("Are you sure?")) { return; }
+
+        var commentBody = $(this).parent().parent().parent().parent();
+        var commentId = commentBody.attr("id");
+
+        ajax("Comments/delete", {comment_id: commentId}, deleteCommentCallBack);
+        function deleteCommentCallBack(PHPData){
+            if(validatePHPData(PHPData, commentBody, "html", "default", "success")){
+                $(commentBody).remove();
             }
-        });
-    }
+        }
+    });
+}
 
 
 /*
  * Files
  */
 
-    //get files
-    function getFiles(pageNumber){
-        if(typeof(pageNumber) === "undefined") pageNumber = 1;
-        ajax("Files/getAll", {page_number: pageNumber}, getFilesCallBack, "#list-files");
-    }
+//get files
+function getFiles(pageNumber){
+    if(typeof(pageNumber) === "undefined") pageNumber = 1;
+    ajax("Files/getAll", {page_number: pageNumber}, getFilesCallBack, "#list-files");
+}
 
-    function getFilesCallBack(PHPData){
-        if(validatePHPData(PHPData, "#list-files", "html", "default", "data")){
-            $("#list-files tbody").html(PHPData.data.files);
-            initializeFilesEvents();
-            $("ul.pagination").html(PHPData.data.pagination);
-            initializePaginationEvents();
-        }else{
-            $("ul.pagination").html("");
-        }
+function getFilesCallBack(PHPData){
+    if(validatePHPData(PHPData, "#list-files", "html", "default", "data")){
+        $("#list-files tbody").html(PHPData.data.files);
+        initializeFilesEvents();
+        $("ul.pagination").html(PHPData.data.pagination);
+        initializePaginationEvents();
+    }else{
+        $("ul.pagination").html("");
     }
+}
 
-    //create file
-    $("#form-upload-file").submit(function(e){
+//create file
+$("#form-upload-file").submit(function(e){
+    e.preventDefault();
+    if(validateFileSize("#form-upload-file", 'file')){
+        ajaxFiles("Files/create", new FormData(this), createFileCallBack);
+    }
+});
+function createFileCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-upload-file", "after", "default", "data")){
+
+        $("#list-files .no-data").remove();
+
+        //How to insert/append an element by fadeIn()?
+        //@see http://stackoverflow.com/questions/4687579/append-an-element-with-fade-in-effect-jquery
+        $(PHPData.data).hide().prependTo("#list-files tbody").fadeIn();
+
+        initializeFilesEvents();
+    }
+}
+
+//initialize
+function initializeFilesEvents(){
+    deleteFile();
+}
+
+//delete file
+function deleteFile(){
+    $("#list-files tr td .delete").off('click').on('click', function(e) {
         e.preventDefault();
-        if(validateFileSize("#form-upload-file", 'file')){
-            ajaxFiles("Files/create", new FormData(this), createFileCallBack);
+        if (!confirm("Are you sure?")) { return; }
+
+        var row = $(this).parent().parent();
+        var fileId = row.attr("id");
+
+        ajax("Files/delete", {file_id: fileId}, deleteFileCallBack);
+        function deleteFileCallBack(PHPData){
+            if(validatePHPData(PHPData, row, "after", "row", "success")){
+                $(row).remove();
+            }
         }
     });
-    function createFileCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-upload-file", "after", "default", "data")){
-
-            $("#list-files .no-data").remove();
-
-            //How to insert/append an element by fadeIn()?
-            //@see http://stackoverflow.com/questions/4687579/append-an-element-with-fade-in-effect-jquery
-            $(PHPData.data).hide().prependTo("#list-files tbody").fadeIn();
-
-            initializeFilesEvents();
-        }
-    }
-
-    //initialize
-    function initializeFilesEvents(){
-        deleteFile();
-    }
-
-    //delete file
-    function deleteFile(){
-        $("#list-files tr td .delete").click(function(e){
-            e.preventDefault();
-            if (!confirm("Are you sure?")) { return; }
-
-            var row = $(this).parent().parent();
-            var fileId = row.attr("id");
-
-            ajax("Files/delete", {file_id: fileId}, deleteFileCallBack);
-            function deleteFileCallBack(PHPData){
-                if(validatePHPData(PHPData, row, "after", "row", "success")){
-                    $(row).remove();
-                }
-            }
-        });
-    }
+}
 
 
 /*
  * Users
  */
 
-    //get users
-    function getUsers(pageNumber){
-        if(empty(pageNumber)) pageNumber = 1;
+//get users
+function getUsers(pageNumber){
+    if(empty(pageNumber)) pageNumber = 1;
 
-        var name    = $("#form-search-users input[name='name']").val();
-        var email   = $("#form-search-users input[name='email']").val();
-        var role    = $("#form-search-users select[name='role']").val();
+    var name    = $("#form-search-users input[name='name']").val();
+    var email   = $("#form-search-users input[name='email']").val();
+    var role    = $("#form-search-users select[name='role']").val();
 
-        ajax("Admin/getUsers", {name: name, email: email, role: role, page_number: pageNumber}, getUsersCallBack, "#list-users");
+    ajax("Admin/getUsers", {name: name, email: email, role: role, page_number: pageNumber}, getUsersCallBack, "#list-users");
+}
+
+//get users
+$("#form-search-users").submit(function(e){
+    e.preventDefault();
+    ajax("Admin/getUsers", serialize(this, "page_number=1"), getUsersCallBack, "#list-users");
+});
+
+function getUsersCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-search-users", "after", "default", "data")){
+        $("#list-users tbody").html(PHPData.data.users);
+        initializeUsersEvents();
+        $("ul.pagination").html(PHPData.data.pagination);
+        initializePaginationEvents();
+    }else{
+        $("ul.pagination").html("");
     }
+}
 
-    //get users
-    $("#form-search-users").submit(function(e){
+//update user info
+$("#form-update-user-info").submit(function(e){
+    e.preventDefault();
+    ajax("Admin/updateUserInfo", serialize(this, "user_id="+globalPageId), updateUserInfoCallBack, "#form-update-user-info");
+});
+
+function updateUserInfoCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-update-user-info", "after", "default", "success")){
+        $("#form-update-user-info").after(PHPData.success);
+    }
+}
+
+//initialize
+function initializeUsersEvents(){
+    deleteUser();
+}
+
+//delete
+function deleteUser(){
+    $("#list-users tr td .delete").click(function(e){
         e.preventDefault();
-        ajax("Admin/getUsers", serialize(this, "page_number=1"), getUsersCallBack, "#list-users");
-    });
+        if (!confirm("Are you sure?")) { return; }
 
-    function getUsersCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-search-users", "after", "default", "data")){
-            $("#list-users tbody").html(PHPData.data.users);
-            initializeUsersEvents();
-            $("ul.pagination").html(PHPData.data.pagination);
-            initializePaginationEvents();
-        }else{
-            $("ul.pagination").html("");
-        }
-    }
+        var row     = $(this).parent().parent().parent();
+        var userId  = row.attr("id");
 
-    //update user info
-    $("#form-update-user-info").submit(function(e){
-        e.preventDefault();
-        ajax("Admin/updateUserInfo", serialize(this, "user_id="+globalPageId), updateUserInfoCallBack, "#form-update-user-info");
-    });
-
-    function updateUserInfoCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-update-user-info", "after", "default", "success")){
-            $("#form-update-user-info").after(PHPData.success);
-        }
-    }
-
-    //initialize
-    function initializeUsersEvents(){
-        deleteUser();
-    }
-
-    //delete
-    function deleteUser(){
-        $("#list-users tr td .delete").click(function(e){
-            e.preventDefault();
-            if (!confirm("Are you sure?")) { return; }
-
-            var row     = $(this).parent().parent().parent();
-            var userId  = row.attr("id");
-
-            ajax("Admin/deleteUser", {user_id: userId}, deleteUserCallBack);
-            function deleteUserCallBack(PHPData){
-                if(validatePHPData(PHPData, row, "after", "row", "success")){
-                    $(row).remove();
-                }
+        ajax("Admin/deleteUser", {user_id: userId}, deleteUserCallBack);
+        function deleteUserCallBack(PHPData){
+            if(validatePHPData(PHPData, row, "after", "row", "success")){
+                $(row).remove();
             }
-        });
-    }
+        }
+    });
+}
 
 /*
  * Bug, Feature or Enhancement
  */
 
-    $("#form-bug").submit(function(e){
-        e.preventDefault();
-        ajax("User/reportBug", serialize(this), reportBugCallBack, "#form-bug");
-    });
-    function reportBugCallBack(PHPData){
-        if(validatePHPData(PHPData, "#form-bug", "after", "default", "success")){
-            $("#form-bug").after(PHPData.success);
-            $("#form-bug").remove();
-        }
+$("#form-bug").submit(function(e){
+    e.preventDefault();
+    ajax("User/reportBug", serialize(this), reportBugCallBack, "#form-bug");
+});
+function reportBugCallBack(PHPData){
+    if(validatePHPData(PHPData, "#form-bug", "after", "default", "success")){
+        $("#form-bug").after(PHPData.success);
+        $("#form-bug").remove();
     }
+}
 
 /*
  * Backups
  */
 
-    $("table#backups .update-backup").click(function(e){
-        e.preventDefault();
-        ajax("Admin/updateBackup", {}, updateBackupCallBack, "table#backups");
-        function updateBackupCallBack(PHPData){
-            if(validatePHPData(PHPData, "table#backups", "after", "default", "success")){
-                $("table#backups").after(PHPData.success);
-            }
+$("table#backups .update-backup").click(function(e){
+    e.preventDefault();
+    ajax("Admin/updateBackup", {}, updateBackupCallBack, "table#backups");
+    function updateBackupCallBack(PHPData){
+        if(validatePHPData(PHPData, "table#backups", "after", "default", "success")){
+            $("table#backups").after(PHPData.success);
         }
-    });
-    $("table#backups .restore-backup").click(function(e){
-        e.preventDefault();
-        ajax("Admin/restoreBackup", {}, restoreBackupCallBack, "table#backups");
-        function restoreBackupCallBack(PHPData){
-            if(validatePHPData(PHPData, "table#backups", "after", "default", "success")){
-                $("table#backups").after(PHPData.success);
-            }
+    }
+});
+$("table#backups .restore-backup").click(function(e){
+    e.preventDefault();
+    ajax("Admin/restoreBackup", {}, restoreBackupCallBack, "table#backups");
+    function restoreBackupCallBack(PHPData){
+        if(validatePHPData(PHPData, "table#backups", "after", "default", "success")){
+            $("table#backups").after(PHPData.success);
         }
-    });
+    }
+});

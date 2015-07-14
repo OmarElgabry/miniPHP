@@ -647,7 +647,7 @@ function displayError(targetBlock, message){
     //update newsfeed
     function updateNewsFeedEvents(){
 
-        $("#list-newsfeed .header .edit").click(function(){
+        $("#list-newsfeed .header .edit").off('click').on('click', function() {
 
             var newsfeedBody = $(this).parent().parent().parent().parent();
             var newsfeedId   = newsfeedBody.attr("id");
@@ -706,7 +706,7 @@ function displayError(targetBlock, message){
 
     //delete newsfeed
     function deleteNewsFeed(){
-        $("#list-newsfeed .header .delete").click(function(e){
+        $("#list-newsfeed .header .delete").off('click').on('click', function(e) {
             e.preventDefault();
             if (!confirm("Are you sure?")) { return; }
 
@@ -876,7 +876,7 @@ function displayError(targetBlock, message){
 
     //update comment
     function updateCommentEvents(){
-        $("#list-comments .header .edit").click(function(){
+        $("#list-comments .header .edit").off('click').on('click', function() {
 
             var commentBody = $(this).parent().parent().parent().parent();
             var commentId = commentBody.attr("id");
@@ -929,7 +929,7 @@ function displayError(targetBlock, message){
 
     //delete comment
     function deleteComment(){
-        $("#list-comments .header .delete").click(function(e){
+        $("#list-comments .header .delete").off('click').on('click', function(e) {
             e.preventDefault();
             if (!confirm("Are you sure?")) { return; }
 
@@ -994,7 +994,7 @@ function displayError(targetBlock, message){
 
     //delete file
     function deleteFile(){
-        $("#list-files tr td .delete").click(function(e){
+        $("#list-files tr td .delete").off('click').on('click', function(e) {
             e.preventDefault();
             if (!confirm("Are you sure?")) { return; }
 

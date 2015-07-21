@@ -160,7 +160,10 @@ class CommentsController extends Controller{
         Permission::allow('user', $resource, ['getAll', 'getById', 'create']);
         Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
 
-        $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
+        $commentId = $this->request->data("comment_id");
+        if(!empty($commentId)){
+            Encryption::decryptIdWithDash($commentId);
+        }
 
         $config = [
             "user_id" => Session::getUserId(),

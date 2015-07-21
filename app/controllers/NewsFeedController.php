@@ -141,7 +141,10 @@ class NewsFeedController extends Controller{
         Permission::allow('user', $resource, ['index', 'getAll', 'getById', 'create']);
         Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
 
-        $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
+        $newsfeedId = $this->request->data("newsfeed_id");
+        if(!empty($newsfeedId)){
+            Encryption::decryptIdWithDash($newsfeedId);
+        }
 
         $config = [
             "user_id" => Session::getUserId(),

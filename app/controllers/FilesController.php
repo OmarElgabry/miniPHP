@@ -93,7 +93,11 @@ class FilesController extends Controller {
         Permission::allow('user', $resource, ['index', 'getAll', 'create']);
         Permission::allow('user', $resource, ['delete'], 'owner');
 
-        $fileId = Encryption::decryptIdWithDash($this->request->data("file_id"));
+        $fileId = $this->request->data("file_id");
+        if(!empty($fileId)){
+            Encryption::decryptIdWithDash($fileId);
+        }
+
         $config = [
             "user_id" => Session::getUserId(),
             "table" => "files",

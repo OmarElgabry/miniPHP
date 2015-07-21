@@ -63,7 +63,8 @@
   *
   */
  define("ENCRYPTION_KEY", "3¥‹a0cd@!$251Êìcef08%&");
-
+ define("HMAC_SALT", "a8C7n7^Ed0%8Qfd9K4m6d$86Dab");
+ define("HASH_KEY", "z4D8Mp7Jm5cH");
 
 /**
  * Configuration for: Email server credentials

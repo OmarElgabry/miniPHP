@@ -1,6 +1,13 @@
 ![miniPHP](https://raw.githubusercontent.com/OmarElGabry/miniPHP/master/public/img/backgrounds/background.png)
 
 # miniPHP
+[![Build Status](https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/badges/build.png?b=master)](https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/?branch=master)
+[![Code Climate](https://codeclimate.com/github/OmarElGabry/miniPHP/badges/gpa.svg)](https://codeclimate.com/github/OmarElGabry/miniPHP)
+[![Dependency Status](https://www.versioneye.com/user/projects/55ae85dd3865620018000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/55ae85dd3865620018000001)
+
+[![Latest Stable Version](https://poser.pugx.org/omarelgabry/miniphp/v/stable)](https://packagist.org/packages/omarelgabry/miniphp)
+[![License](https://poser.pugx.org/omarelgabry/miniphp/license)](https://packagist.org/packages/omarelgabry/miniphp)
 
 A small, simple PHP MVC framework skeleton that encapsulates a lot of features surrounded with powerful security layers.
 

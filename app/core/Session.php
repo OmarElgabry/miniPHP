@@ -337,7 +337,7 @@ class Session{
 
             //regenerate it's id in browser, and file
             //also clear any data stored in session
-            @session_regenerate_id(true);
+            session_regenerate_id(true);
             $_SESSION = array();
 
         } else {

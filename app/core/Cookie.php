@@ -70,7 +70,7 @@ class Cookie{
         //Remember? $hashedCookie was generated from the original user Id, NOT from the encrypted one.
         self::$userId = Encryption::decrypt($encryptedUserId);
 
-        if (self::$hashedCookie === hash('sha256', self::$userId . ':' . self::$token . COOKIE_SECRET_KEY) && !empty(self::$token)) {
+        if (self::$hashedCookie === hash('sha256', self::$userId . ':' . self::$token . COOKIE_SECRET_KEY) && !empty(self::$token) && !empty(self::$userId)) {
 
             $database = Database::openConnection();
             $query    = "SELECT id, cookie_token FROM users WHERE id = :id AND cookie_token = :cookie_token LIMIT 1";

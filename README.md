@@ -375,9 +375,9 @@ PHP Data Objects (PDO) is used for preparing and executing database queries. Ins
 		- Don't forget to change **charset** in _app/config/config.php_ to ```utf8mb4 ```
 
 ### Encryption<a name="encryption"></a>
-``` Encryption ``` Class is responsible for encrypting and decryption of data. Encryption is applied to thinks like in cookies, Post Id, User Id, ..etc.
+``` Encryption ``` Class is responsible for encrypting and decryption of data. Encryption is applied to things like cookies, User Id, Post Id, ..etc.
 
-What you encrpyt will be different each time. Meaning if you encrypred string "ABC", suppose you will get "xD3msr4", next time you encrypt "ABC" you will get totally different output. Definitely, either way you will always get the original string when you decrypt.
+Encrypted strings are authenticated and different every time you encrypt. 
 
 ### Validation<a name="validation"></a>
 Validation is a small library for validating user inputs. All validation rules are inside ``` Validation ``` Class.

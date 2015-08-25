@@ -66,9 +66,16 @@ Steps:
 2. Execute SQL queries in __installation_ directory
 
 3. Install [Composer](https://getcomposer.org/doc/00-intro.md) for dependencies
-```
-	composer install
-```
+	```
+		composer install
+	```
+4. Login
+	+ Admin:
+		+ Email: admin@demo.com
+		+ Password: 12345
+	+ Normal User:
+		+ Email: user@demo.com
+		+ Password: 12345
 
 ### Routing, Controller, & View <a name="life-cycle"></a>
 

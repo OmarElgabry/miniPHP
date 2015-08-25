@@ -7,7 +7,7 @@ CREATE TABLE `users` (
  `session_id` varchar(48) DEFAULT NULL,
  `cookie_token` varchar(128) DEFAULT NULL,
  `name` varchar(48) NOT NULL,
- `role` varchar(16) NOT NULL,
+ `role` varchar(16) NOT NULL DEFAULT 'user',
  `hashed_password` varchar(128) NOT NULL,
  `email` varchar(64) DEFAULT NULL,
  `is_email_activated` tinyint(1) NOT NULL DEFAULT '0',

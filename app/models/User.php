@@ -50,71 +50,81 @@ class User extends Model{
      * @param  string  $name
      * @param  string  $password
      * @param  string  $email
+     * @param  string  $confirmEmail
      * @return bool|array
      * @throws Exception If profile couldn't be updated
      *
      */
-    public function updateProfileInfo($userId, $name, $password, $email){
+    public function updateProfileInfo($userId, $name, $password, $email, $confirmEmail){
 
-          $database = Database::openConnection();
-          $curUser = $this->getProfileInfo($userId);
+        $database = Database::openConnection();
+        $curUser = $this->getProfileInfo($userId);
 
-          $name   = (!empty($name) && $name !== $curUser["name"])? $name: null;
-          $email  = (!empty($email) && $email !== $curUser["email"])? $email: null;
+        $name   = (!empty($name) && $name !== $curUser["name"])? $name: null;
+        $email  = (!empty($confirmEmail) || (!empty($email) && $email !== $curUser["email"]))? $email: null;
 
-          //if new email === old email, this shouldn't return any errors for email, same for name.
-          $validation = new Validation();
-          if(!$validation->validate([
-              "Name" => [$name, "alphaNumWithSpaces|minLen(4)|maxLen(30)"],
-              "Password" => [$password, "minLen(6)|password"],
-              "Email" => [$email, "email|emailUnique|maxLen(50)"]])){
-              $this->errors = $validation->errors();
-              return false;
-          }
+        //if new email === old email, this shouldn't return any errors for email,
+        //because they are not 'required', same for name.
+        $validation = new Validation();
+        if(!$validation->validate([
+            "Name" => [$name, "alphaNumWithSpaces|minLen(4)|maxLen(30)"],
+            "Password" => [$password, "minLen(6)|password"],
+            "Email" => [$email, "email|emailUnique|maxLen(50)|equals(".$confirmEmail.")"]])){
+            $this->errors = $validation->errors();
+            return false;
+        }
 
-          if($password || $name || $email) {
+        $profileUpdated = ($password || $name || $email)? true: false;
+        if($profileUpdated) {
 
-              $options = [
-                  $name     => "name = :name ",
-                  $password => "hashed_password = :hashed_password ",
-                  $email    => "email = :email, email_token = :email_token, email_last_verification = :email_last_verification "
-              ];
+            $options = [
+                $name     => "name = :name ",
+                $password => "hashed_password = :hashed_password ",
+                $email    => "pending_email = :pending_email, pending_email_token = :pending_email_token, email_token = :email_token "
+            ];
 
-              $query   = "UPDATE users SET ";
-              $query  .= $this->applyOptions($options, ", ");
-              $query  .= "WHERE id = :id LIMIT 1 ";
-              $database->prepare($query);
+            $database->beginTransaction();
+            $query   = "UPDATE users SET ";
+            $query  .= $this->applyOptions($options, ", ");
+            $query  .= "WHERE id = :id LIMIT 1 ";
+            $database->prepare($query);
 
-              if($name) {
-                  $database->bindValue(':name', $name);
-              }
-              if($password) {
-                  $database->bindValue(':hashed_password', password_hash($password, PASSWORD_DEFAULT, array('cost' => HASH_COST_FACTOR)));
-              }
-              if($email) {
-                  $database->bindValue(':email', $email);
-                  $token = sha1(uniqid(mt_rand(), true));
-                  $database->bindValue(':email_token', $token);
-                  $database->bindValue(':email_last_verification', time());
-              }
+            if($name) {
+                $database->bindValue(':name', $name);
+            }
+            if($password) {
+                $database->bindValue(':hashed_password', password_hash($password, PASSWORD_DEFAULT, array('cost' => HASH_COST_FACTOR)));
+            }
+            if($email) {
+                $emailToken = sha1(uniqid(mt_rand(), true));
+                $pendingEmailToken = sha1(uniqid(mt_rand(), true));
+                $database->bindValue(':pending_email', $email);
+                $database->bindValue(':pending_email_token', $pendingEmailToken);
+                $database->bindValue(':email_token', $emailToken);
+            }
 
-              $database->bindValue(':id', $userId);
-              $result = $database->execute();
+            $database->bindValue(':id', $userId);
+            $result = $database->execute();
 
-              if(!$result){
-                  throw new Exception("Couldn't update profile");
-              }
-          }
+            if(!$result){
+                $database->rollBack();
+                throw new Exception("Couldn't update profile");
+            }
 
-          //If email was updated, then send verification email token
-          if($email){
-              $name = ($name)? $name: $curUser["name"];
-              Email::sendEmail(EMAIL_EMAIL_VERIFICATION, $email, ["name" => $name, "id" => $curUser["id"]], ["email_token" => $token]);
-              return ["emailUpdated" => true];
-          }
+            //If email was updated, then send two emails,
+            //one for the current one asking user optionally to revoke,
+            //and another one for the new email asking user to confirm changes.
+            if($email){
+                $name = ($name)? $name: $curUser["name"];
+                Email::sendEmail(EMAIL_REVOKE_EMAIL, $curUser["email"], ["name" => $name, "id" => $curUser["id"]], ["email_token" => $emailToken]);
+                Email::sendEmail(EMAIL_UPDATE_EMAIL, $email, ["name" => $name, "id" => $curUser["id"]], ["pending_email_token" => $pendingEmailToken]);
+            }
 
-          return ["emailUpdated" => false];
-      }
+            $database->commit();
+        }
+
+        return ["emailUpdated" => (($email)? true: false)];
+    }
 
     /**
      * Update Profile Picture.
@@ -150,6 +160,110 @@ class User extends Model{
 
         return $image;
       }
+
+    /**
+     * revoke Email updates
+     *
+     * @access public
+     * @param  integer  $userId
+     * @param  string   $emailToken
+     * @return mixed
+     * @throws Exception If failed to revoke email updates.
+     */
+    public function revokeEmail($userId, $emailToken){
+
+        if (empty($userId) || empty($emailToken)) {
+            return false;
+        }
+
+        $database = Database::openConnection();
+        $database->prepare("SELECT * FROM users WHERE id = :id AND email_token = :email_token AND is_email_activated = 1 LIMIT 1");
+        $database->bindValue(':id', $userId);
+        $database->bindValue(':email_token', $emailToken);
+        $database->execute();
+        $users = $database->countRows();
+
+        $query = "UPDATE users SET email_token = NULL, pending_email = NULL, pending_email_token = NULL WHERE id = :id LIMIT 1";
+        $database->prepare($query);
+        $database->bindValue(':id', $userId);
+        $result = $database->execute();
+
+        if(!$result){
+            throw new Exception("Couldn't revoke email updates");
+        }
+
+        if ($users === 1){
+            return true;
+        }else{
+            Logger::log("REVOKE EMAIL", "User ID ". $userId . " is trying to revoke email using wrong token " . $emailToken, __FILE__, __LINE__);
+            return false;
+        }
+    }
+
+    /**
+     * update Email
+     *
+     * @access public
+     * @param  integer  $userId
+     * @param  string   $emailToken
+     * @return mixed
+     * @throws Exception If failed to update current email.
+     */
+    public function updateEmail($userId, $emailToken){
+
+        if (empty($userId) || empty($emailToken)) {
+            return false;
+        }
+
+        $database = Database::openConnection();
+        $database->prepare("SELECT * FROM users WHERE id = :id AND pending_email_token = :pending_email_token AND is_email_activated = 1 LIMIT 1");
+        $database->bindValue(':id', $userId);
+        $database->bindValue(':pending_email_token', $emailToken);
+        $database->execute();
+
+        if($database->countRows() === 1){
+
+            $user = $database->fetchAssociative();
+            $validation = new Validation();
+            $validation->addRuleMessage("emailUnique", "We can't change your email because it has been already taken!");
+
+            if(!$validation->validate(["Email" => [$user["pending_email"], "emailUnique"]])){
+
+                $query = "UPDATE users SET email_token = NULL, pending_email = NULL, pending_email_token = NULL WHERE id = :id LIMIT 1";
+                $database->prepare($query);
+                $database->bindValue(':id', $userId);
+                $database->execute();
+
+                $this->errors = $validation->errors();
+
+                return false;
+
+            }else{
+
+                $query = "UPDATE users SET email = :email, email_token = NULL, pending_email = NULL, pending_email_token = NULL WHERE id = :id LIMIT 1";
+                $database->prepare($query);
+                $database->bindValue(':id', $userId);
+                $database->bindValue(':email', $user["pending_email"]);
+                $result = $database->execute();
+
+                if(!$result){
+                    throw new Exception("Couldn't update current email");
+                }
+
+                return true;
+            }
+        }else {
+
+            $query = "UPDATE users SET email_token = NULL, pending_email = NULL, pending_email_token = NULL WHERE id = :id LIMIT 1";
+            $database->prepare($query);
+            $database->bindValue(':id', $userId);
+            $database->execute();
+
+            Logger::log("UPDATE EMAIL", "User ID ". $userId . " is trying to update email using wrong token " . $emailToken, __FILE__, __LINE__);
+            return false;
+        }
+
+    }
 
     /**
      * Get Notifications for newsfeed, posts & files.

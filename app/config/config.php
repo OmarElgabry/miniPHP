@@ -94,21 +94,44 @@
  define("EMAIL_EMAIL_VERIFICATION_URL", PUBLIC_ROOT . "Login/verifyUser");
  define("EMAIL_EMAIL_VERIFICATION_SUBJECT", "[IMP] Please verify your account");
 
- 
+
+/**
+ * Configuration for: Revoke email change
+ *
+ * EMAIL_REVOKE_EMAIL_URL: Full URL must be provided
+ *
+ */
+define("EMAIL_REVOKE_EMAIL", "2");
+define("EMAIL_REVOKE_EMAIL_URL", PUBLIC_ROOT . "User/revokeEmail");
+define("EMAIL_REVOKE_EMAIL_SUBJECT", "[IMP] Your email has been changed");
+
+
+/**
+ * Configuration for: Confirm pending(updated) email
+ *
+ * EMAIL_UPDATE_EMAIL_URL: Full URL must be provided
+ *
+ */
+define("EMAIL_UPDATE_EMAIL", "3");
+define("EMAIL_UPDATE_EMAIL_URL", PUBLIC_ROOT . "User/updateEmail");
+define("EMAIL_UPDATE_EMAIL_SUBJECT", "[IMP] Please confirm your new email");
+
+
 /**
  * Configuration for: Reset Password
  *
  * EMAIL_PASSWORD_RESET_URL: Full URL must be provided
  *
  */
- define("EMAIL_PASSWORD_RESET", "2");
+ define("EMAIL_PASSWORD_RESET", "4");
  define("EMAIL_PASSWORD_RESET_URL", PUBLIC_ROOT . "Login/resetPassword");
  define("EMAIL_PASSWORD_RESET_SUBJECT", "[IMP] Reset your password");
+
 
  /**
   * Configuration for: Report Bug, Feature, or Enhancement
   */
- define("EMAIL_REPORT_BUG", "3");
+ define("EMAIL_REPORT_BUG", "5");
  define("EMAIL_REPORT_BUG_SUBJECT", "Request");
 
 

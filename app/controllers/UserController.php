@@ -20,7 +20,7 @@ class UserController extends Controller{
 
         switch($action){
             case "updateProfileInfo":
-                $this->Security->config("form", [ 'fields' => ['name', 'password', 'email']]);
+                $this->Security->config("form", [ 'fields' => ['name', 'password', 'email', 'confirm_email']]);
                 break;
             case "updateProfilePicture":
                 $this->Security->config("form", [ 'fields' => ['file']]);
@@ -38,26 +38,27 @@ class UserController extends Controller{
     public function index(){
 
         $this->vars['globalPage'] = "dashboard";
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'index.php');
+        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'dashboard/index.php');
     }
 
     public function profile(){
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'profile.php');
+        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php');
     }
 
     public function updateProfileInfo(){
 
-        $name     = $this->request->data("name");
-        $password = $this->request->data("password");
-        $email    = $this->request->data("email");
+        $name           = $this->request->data("name");
+        $password       = $this->request->data("password");
+        $email          = $this->request->data("email");
+        $confirmEmail   = $this->request->data("confirm_email");
 
-        $result = $this->user->updateProfileInfo(Session::getUserId(), $name, $password, $email);
+        $result = $this->user->updateProfileInfo(Session::getUserId(), $name, $password, $email, $confirmEmail);
 
         if(!$result){
             echo $this->view->renderErrors($this->user->errors());
         }else{
             $message  = "Your Profile has been updated. ";
-            $message .= $result["emailUpdated"]? "Please check your email to validate your email address within 24 hour": "";
+            $message .= $result["emailUpdated"]? "Please check your new email to confirm the changes, or your current email to revoke the changes": "";
             echo $this->view->renderSuccess($message);
         }
     }
@@ -71,6 +72,50 @@ class UserController extends Controller{
             echo $this->view->renderErrors($this->user->errors());
         }else{
             echo $this->view->JSONEncode(array("data" => ["src" => PUBLIC_ROOT . "img/profile_pictures/" . $image["basename"]]));
+        }
+    }
+
+    /**
+     * revoke email updates
+     *
+     * You must be logged in with your current email
+     */
+    public function revokeEmail(){
+
+        $userId = Encryption::decryptId($this->request->query("id"));
+        $token  = $this->request->query("token");
+
+        $result = $this->user->revokeEmail($userId, $token);
+
+        if(!$result){
+            $this->error("notfound");
+        }else{
+            echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php',
+                array("emailUpdates" => ["success" => "Your email updates has been revokes successfully."]));
+        }
+    }
+
+    /**
+     * confirm on email updates
+     *
+     * You must be logged in with your current email
+     */
+    public function updateEmail(){
+
+        $userId = Encryption::decryptId($this->request->query("id"));
+        $token  = $this->request->query("token");
+
+        $result = $this->user->updateEmail($userId, $token);
+        $errors = $this->user->errors();
+
+        if(!$result && empty($errors)){
+            $this->error("notfound");
+        }else if(!$result && !empty($errors)){
+            echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php',
+                array("emailUpdates" => ["errors" => $this->user->errors()]));
+        }else{
+            echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php',
+                array("emailUpdates" => ["success" => "Your email updates has been updated successfully."]));
         }
     }
 

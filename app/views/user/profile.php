@@ -41,12 +41,30 @@
                                             <label>Email</label>
                                              <input type="email" name="email" value="<?= $this->encodeHTML($info["email"]); ?>" class="form-control" maxlength="50" placeholder="Your Email..">
                                         </div>
+										<div class="form-group">
+                                             <input type="email" name="confirm_email" value="" class="form-control" maxlength="50" placeholder="Confirm Email">
+											 <p class="help-block"><em>Please enter your email again.</em></p>
+                                        </div>
 										<div class="form-group form-actions text-right">
 											<button type="submit" name="submit" value="submit" class="btn btn-md btn-primary">
 												<i class="fa fa-check"></i> Update
 											</button>
 										</div>
                                     </form>
+									<?php if(!empty($emailUpdates["success"])):?>
+										<div class="success">
+											<div class="alert alert-success">
+												<i class="fa fa-check-circle"></i> <?= $emailUpdates["success"]; ?>
+											</div>
+										</div>
+									<?php elseif(!empty($emailUpdates["errors"])):?>
+										<div class="error">
+											<div class="alert alert-danger">
+												<i class="fa fa-times-circle"></i> <strong>Heads Up!</strong>
+													<br><i class="fa fa-angle-right"></i> <?= $emailUpdates["errors"][0]; ?>
+											</div>
+										</div>
+									<?php endif; ?>
 									<!-- END Update Profile -->
 									
 									<hr>

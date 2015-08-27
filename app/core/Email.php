@@ -53,6 +53,16 @@
                  $mail->Subject    = EMAIL_EMAIL_VERIFICATION_SUBJECT;
                  $mail->AddAddress($email);
                  break;
+             case (EMAIL_REVOKE_EMAIL):
+                 $mail->Body = self::getRevokeEmailBody($userData, $data);
+                 $mail->Subject    = EMAIL_REVOKE_EMAIL_SUBJECT;
+                 $mail->AddAddress($email);
+                 break;
+             case (EMAIL_UPDATE_EMAIL):
+                 $mail->Body = self::getUpdateEmailBody($userData, $data);
+                 $mail->Subject    = EMAIL_UPDATE_EMAIL_SUBJECT;
+                 $mail->AddAddress($email);
+                 break;
              case (EMAIL_PASSWORD_RESET):
                  $mail->Body = self::getPasswordResetBody($userData, $data);
                  $mail->Subject    = EMAIL_PASSWORD_RESET_SUBJECT;
@@ -65,6 +75,8 @@
                  break;
          }
 
+          // If you don't have an email setup, you can instead save emails in log.txt file using Logger.
+          // Logger::log("EMAIL", $mail->Body);
          if(!$mail->Send()) {
              throw new Exception("Email couldn't be sent to ". $userData["id"] ." for type: ". $type);
          }
@@ -106,6 +118,48 @@
          $body .= "Dear " . $userData["name"] . ", \n\nPlease verify your email from the following link: ";
          $body .= EMAIL_EMAIL_VERIFICATION_URL . "?id=" . urlencode(Encryption::encryptId($userData["id"])) . "&token=" . urlencode($data["email_token"]);
          $body .= "\n\nIf you didn't edit/add your email, Please contact the admin directly.";
+         $body .= "\n\nRegards\nmini PHP Team";
+
+         return $body;
+     }
+
+     /**
+      * Construct the body of Revoke Email Changes email
+      *
+      * @access private
+      * @static static method
+      * @param  array   $userData
+      * @param  array   $data
+      * @return string  The body of the email.
+      *
+      */
+     private static function getRevokeEmailBody($userData, $data){
+
+         $body  = "";
+         $body .= "Dear " . $userData["name"] . ", \n\nYour email has been changed, You can revoke your changes from the following link: ";
+         $body .= EMAIL_REVOKE_EMAIL_URL . "?id=" . urlencode(Encryption::encryptId($userData["id"])) . "&token=" . urlencode($data["email_token"]);
+         $body .= "\n\nIf you didn't update your email, Please contact the admin directly.";
+         $body .= "\n\nRegards\nmini PHP Team";
+
+         return $body;
+     }
+
+     /**
+      * Construct the body of Update Email email
+      *
+      * @access private
+      * @static static method
+      * @param  array   $userData
+      * @param  array   $data
+      * @return string  The body of the email.
+      *
+      */
+     private static function getUpdateEmailBody($userData, $data){
+
+         $body  = "";
+         $body .= "Dear " . $userData["name"] . ", \n\nPlease confirm your new email from the following link: ";
+         $body .= EMAIL_UPDATE_EMAIL_URL . "?id=" . urlencode(Encryption::encryptId($userData["id"])) . "&token=" . urlencode($data["pending_email_token"]);
+         $body .= "\n\nIf you have no idea what is this email for, you can ignore it.";
          $body .= "\n\nRegards\nmini PHP Team";
 
          return $body;

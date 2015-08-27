@@ -522,11 +522,17 @@ class Login extends Model{
         }
 
         $database = Database::openConnection();
-        $database->prepare("SELECT * FROM users WHERE id = :id AND email_token = :email_token LIMIT 1");
+        $database->prepare("SELECT * FROM users WHERE id = :id LIMIT 1");
         $database->bindValue(':id', $userId);
-        $database->bindValue(':email_token', $emailToken);
         $database->execute();
         $user = $database->fetchAssociative();
+        $isTokenValid = ($user["email_token"] === $emailToken)? true: false;
+
+        //check if user is already verified
+        if(!empty($user["is_email_activated"])){
+            $this->resetEmailVerificationToken($userId, true);
+            return false;
+        }
 
         //setting expiry time on email verification is much better,
         //you can't be sure if the email will be secured,
@@ -536,12 +542,12 @@ class Login extends Model{
         $time_elapsed = time() - $user['email_last_verification'];
 
         //token is usable only once.
-        if($database->countRows() === 1 && $time_elapsed < $expiry_time) {
+        if($database->countRows() === 1 && $isTokenValid && $time_elapsed < $expiry_time) {
 
             $this->resetEmailVerificationToken($userId, true);
             return true;
 
-        }else if($database->countRows() === 1 && $time_elapsed > $expiry_time) {
+        }else if($database->countRows() === 1 && $isTokenValid && $time_elapsed > $expiry_time) {
 
             $this->resetEmailVerificationToken($userId, false);
             return false;
@@ -574,9 +580,7 @@ class Login extends Model{
                 "email_last_verification = NULL, is_email_activated = 1 ".
                 "WHERE id = :id LIMIT 1";
         }else{
-            $query = "UPDATE users SET email = NULL, email_token = NULL, " .
-                "email_last_verification = NULL, is_email_activated = 0 ".
-                "WHERE id = :id LIMIT 1";
+            $query = "DELETE FROM users WHERE id = :id";
         }
 
         $database->prepare($query);

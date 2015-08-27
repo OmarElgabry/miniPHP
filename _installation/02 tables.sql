@@ -9,7 +9,7 @@ CREATE TABLE `users` (
  `name` varchar(48) NOT NULL,
  `role` varchar(16) NOT NULL DEFAULT 'user',
  `hashed_password` varchar(128) NOT NULL,
- `email` varchar(64) DEFAULT NULL,
+ `email` varchar(64) NOT NULL,
  `is_email_activated` tinyint(1) NOT NULL DEFAULT '0',
  `email_token` varchar(48) DEFAULT NULL,
  `email_last_verification` int(11) DEFAULT NULL COMMENT 'unix timestamp',

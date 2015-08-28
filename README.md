@@ -428,7 +428,7 @@ Logger::log("COOKIE", self::$userId . " is trying to login using invalid cookie"
 Emails are sent using [PHPMailer](https://github.com/PHPMailer/PHPMailer) via SMTP, another awesome library for sending emails. You shouldn't use ```mail()``` function of PHP.
 
 **NOTE** You need to configure your SMTP account data in _app/config/config.php_.
-
+**But**, If you don't have SMTP account, then you save emails in _app/logs/log.txt_, to do that check this line of [code](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Email.php#L78).
 
 ### News Feed & Posts & Comments<a name="newsfeed-posts-comments"></a>
 

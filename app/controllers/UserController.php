@@ -38,11 +38,11 @@ class UserController extends Controller{
     public function index(){
 
         $this->vars['globalPage'] = "dashboard";
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'dashboard/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'dashboard/index.php');
     }
 
     public function profile(){
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php');
     }
 
     public function updateProfileInfo(){
@@ -90,7 +90,7 @@ class UserController extends Controller{
         if(!$result){
             $this->error("notfound");
         }else{
-            echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php',
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php',
                 array("emailUpdates" => ["success" => "Your email updates has been revokes successfully."]));
         }
     }
@@ -111,10 +111,10 @@ class UserController extends Controller{
         if(!$result && empty($errors)){
             $this->error("notfound");
         }else if(!$result && !empty($errors)){
-            echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php',
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php',
                 array("emailUpdates" => ["errors" => $this->user->errors()]));
         }else{
-            echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'user/profile.php',
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php',
                 array("emailUpdates" => ["success" => "Your email updates has been updated successfully."]));
         }
     }
@@ -128,7 +128,7 @@ class UserController extends Controller{
      */
     public function bugs(){
         $this->vars['globalPage'] = "bugs";
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'bugs/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'bugs/index.php');
     }
 
     /**

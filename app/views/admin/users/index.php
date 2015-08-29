@@ -73,7 +73,7 @@
                                     <tbody>
 										<?php 
 											$usersData = $this->controller->admin->getUsers();
-											echo $this->render(ADMIN_VIEWS_PATH . "users/users.php", array("users" => $usersData["users"]));
+											echo $this->render(Config::get('ADMIN_VIEWS_PATH') . "users/users.php", array("users" => $usersData["users"]));
 										?>
                                     </tbody>
                                 </table>
@@ -82,7 +82,7 @@
 							<div class="text-right">
 								<ul class="pagination">
 									<?php 
-										echo $this->render(VIEWS_PATH . "pagination/default.php", array("pagination" => $usersData["pagination"]));
+										echo $this->render(Config::get('VIEWS_PATH') . "pagination/default.php", array("pagination" => $usersData["pagination"]));
 									?>
 								</ul>
 							</div>

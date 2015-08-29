@@ -38,7 +38,7 @@ class FilesController extends Controller {
         //clear all notifications whenever you hit 'files' in the navigation bar
         $this->user->clearNotifications(Session::getUserId(), $this->file->table);
 
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'files/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'files/index.php');
     }
 
     public function getAll(){
@@ -47,8 +47,8 @@ class FilesController extends Controller {
 
         $filesData  = $this->file->getAll($pageNum);
 
-        $filesHTML  = $this->view->render(VIEWS_PATH . 'files/files.php', array("files" => $filesData["files"]));
-        $paginationHTML = $this->view->render(VIEWS_PATH . 'pagination/default.php', array("pagination" => $filesData["pagination"]));
+        $filesHTML  = $this->view->render(Config::get('VIEWS_PATH') . 'files/files.php', array("files" => $filesData["files"]));
+        $paginationHTML = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $filesData["pagination"]));
         echo $this->view->JSONEncode(array("data" => ["files" => $filesHTML, "pagination" => $paginationHTML]));
     }
 
@@ -62,7 +62,7 @@ class FilesController extends Controller {
             echo $this->view->renderErrors($this->file->errors());
         }else{
 
-            $fileHTML = $this->view->render(VIEWS_PATH . 'files/files.php', array("files" => $file));
+            $fileHTML = $this->view->render(Config::get('VIEWS_PATH') . 'files/files.php', array("files" => $file));
             echo $this->view->JSONEncode(array("data" => $fileHTML));
         }
     }

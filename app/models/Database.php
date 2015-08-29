@@ -45,7 +45,7 @@ class Database {
 
         if ($this->connection === null) {
 
-            $this->connection = new PDO('mysql:dbname='.DB_NAME.';host='.DB_HOST.';charset='.DB_CHARSET, DB_USER, DB_PASS);
+            $this->connection = new PDO('mysql:dbname='.Config::get('DB_NAME').';host='.Config::get('DB_HOST').';charset='.Config::get('DB_CHARSET'), Config::get('DB_USER'), Config::get('DB_PASS'));
 
             $this->connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -47,7 +47,7 @@ class Login extends Model{
         }
 
         $database = Database::openConnection();
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT, array('cost' => HASH_COST_FACTOR));
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT, array('cost' => Config::get('HASH_COST_FACTOR')));
 
         //it's very important to use transaction to ensure both:
         //1. user will be inserted to database
@@ -70,7 +70,7 @@ class Login extends Model{
         $database->execute();
 
         $id = $database->lastInsertedId();
-        Email::sendEmail(EMAIL_EMAIL_VERIFICATION, $email, ["name" => $name, "id" => $id], ["email_token" => $token]);
+        Email::sendEmail(Config::get('EMAIL_EMAIL_VERIFICATION'), $email, ["name" => $name, "id" => $id], ["email_token" => $token]);
 
         $database->commit();
 
@@ -329,7 +329,7 @@ class Login extends Model{
             //You need to get the new password token from the database after updating/inserting it
             $newPasswordToken = $this->generateForgottenPasswordToken($user["id"], $forgottenPassword);
 
-            Email::sendEmail(EMAIL_PASSWORD_RESET, $user["email"], ["id" => $user["id"], "name" => $user["name"]], $newPasswordToken);
+            Email::sendEmail(Config::get('EMAIL_PASSWORD_RESET'), $user["email"], ["id" => $user["id"], "name" => $user["name"]], $newPasswordToken);
         }
 
         //This will return true even if the email doesn't exists,
@@ -465,7 +465,7 @@ class Login extends Model{
             return false;
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT, array('cost' => HASH_COST_FACTOR));
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT, array('cost' => Config::get('HASH_COST_FACTOR')));
         $database = Database::openConnection();
 
         $query = "UPDATE users SET hashed_password = :hashed_password WHERE id = :id LIMIT 1";

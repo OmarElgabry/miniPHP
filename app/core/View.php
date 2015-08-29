@@ -85,7 +85,7 @@ class View {
      */
     public function renderErrors($errors, $jsonEncoded = true){
 
-         $html = $this->render(VIEWS_PATH . 'alerts/errors.php', ["errors" => $errors]);
+         $html = $this->render(Config::get('VIEWS_PATH') . 'alerts/errors.php', ["errors" => $errors]);
          if($jsonEncoded){
              return self::JSONEncode(array("error" => $html));
          }else{
@@ -102,7 +102,7 @@ class View {
      */
     public function renderSuccess($message, $jsonEncoded = true){
 
-         $html = $this->render(VIEWS_PATH . 'alerts/success.php', array("success" => $message));
+         $html = $this->render(Config::get('VIEWS_PATH') . 'alerts/success.php', array("success" => $message));
          if($jsonEncoded){
              return self::JSONEncode(array("success" => $html));
          }else{

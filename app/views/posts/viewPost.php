@@ -13,7 +13,7 @@
 					<div id="view-post" class="panel panel-default">
                        <?php 
 							$post = $this->controller->post->getById($postId);
-							echo $this->render(VIEWS_PATH . "posts/post.php", array("post" => $post));
+							echo $this->render(Config::get('VIEWS_PATH') . "posts/post.php", array("post" => $post));
 						?>
                     </div>
 					
@@ -25,7 +25,7 @@
                             <ul id="list-comments" class="chat">
                                 <?php 
 									$commentsData = $this->controller->comment->getAll($postId);
-									echo $this->render(VIEWS_PATH . "posts/comments.php", array("comments" => $commentsData["comments"]));
+									echo $this->render(Config::get('VIEWS_PATH') . "posts/comments.php", array("comments" => $commentsData["comments"]));
 								?>
                             </ul>
 							
@@ -45,7 +45,7 @@
 								<div class="text-center">
 									<ul class="pagination">
 									<?php 
-										echo $this->render(VIEWS_PATH . "pagination/comments.php", array("pagination" => $commentsData["pagination"]));
+										echo $this->render(Config::get('VIEWS_PATH') . "pagination/comments.php", array("pagination" => $commentsData["pagination"]));
 									?>
 									</ul>
 								</div>

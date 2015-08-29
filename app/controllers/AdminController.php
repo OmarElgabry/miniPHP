@@ -52,7 +52,7 @@ class AdminController extends Controller {
     public function users(){
 
         $this->vars['globalPage'] = "users";
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", ADMIN_VIEWS_PATH . 'users/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
     }
 
     /**
@@ -72,8 +72,8 @@ class AdminController extends Controller {
             echo $this->view->renderErrors($this->admin->errors());
         } else{
 
-            $usersHTML       = $this->view->render(ADMIN_VIEWS_PATH . 'users/users.php', array("users" => $usersData["users"]));
-            $paginationHTML  = $this->view->render(VIEWS_PATH . 'pagination/default.php', array("pagination" => $usersData["pagination"]));
+            $usersHTML       = $this->view->render(Config::get('ADMIN_VIEWS_PATH') . 'users/users.php', array("users" => $usersData["users"]));
+            $paginationHTML  = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $usersData["pagination"]));
             echo $this->view->JSONEncode(array("data" => ["users" => $usersHTML, "pagination" => $paginationHTML]));
         }
     }
@@ -94,7 +94,7 @@ class AdminController extends Controller {
         $this->vars['globalPage']   = "users";
         $this->vars['globalPageId'] = $userId;
 
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", ADMIN_VIEWS_PATH . 'users/viewUser.php', array("userId" => $userId));
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
     }
 
     /**
@@ -144,7 +144,7 @@ class AdminController extends Controller {
     public function backups(){
 
         $this->vars['globalPage'] = "backups";
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", ADMIN_VIEWS_PATH . 'backups.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
     }
 
     /**

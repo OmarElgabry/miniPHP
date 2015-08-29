@@ -130,8 +130,8 @@ class Encryption{
             $i[] = substr($chars, $n, 1);
         }
 
-        $key_hash = hash('sha256', HASH_KEY);
-        $key_hash = (strlen($key_hash) < strlen($chars) ? hash('sha512', HASH_KEY) : $key_hash);
+        $key_hash = hash('sha256', Config::get('HASH_KEY'));
+        $key_hash = (strlen($key_hash) < strlen($chars) ? hash('sha512', Config::get('HASH_KEY')) : $key_hash);
 
         for ($n = 0; $n < strlen($chars); $n++) {
             $p[] =  substr($key_hash, $n, 1);
@@ -167,7 +167,7 @@ class Encryption{
         $iv      = openssl_random_pseudo_bytes($iv_size);
 
         //generate key for authentication using ENCRYPTION_KEY & HMAC_SALT
-        $key = mb_substr(hash(self::HASH_FUNCTION, ENCRYPTION_KEY . HMAC_SALT), 0, 32, '8bit');
+        $key = mb_substr(hash(self::HASH_FUNCTION, Config::get('ENCRYPTION_KEY') . Config::get('HMAC_SALT')), 0, 32, '8bit');
 
         //append initialization vector
         $encrypted_string = openssl_encrypt($plain, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
@@ -200,7 +200,7 @@ class Encryption{
         }
 
         //generate key used for authentication using ENCRYPTION_KEY & HMAC_SALT
-        $key = mb_substr(hash(self::HASH_FUNCTION, ENCRYPTION_KEY . HMAC_SALT), 0, 32, '8bit');
+        $key = mb_substr(hash(self::HASH_FUNCTION, Config::get('ENCRYPTION_KEY') . Config::get('HMAC_SALT')), 0, 32, '8bit');
 
         //split cipher into: hmac, cipher & iv
         $macSize    = 64;

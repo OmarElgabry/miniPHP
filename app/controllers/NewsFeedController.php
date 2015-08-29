@@ -43,7 +43,7 @@ class NewsFeedController extends Controller{
     public function index(){
 
         $this->user->clearNotifications(Session::getUserId(), $this->newsfeed->table);
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'newsfeed/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'newsfeed/index.php');
     }
 
     public function getAll(){
@@ -51,8 +51,8 @@ class NewsFeedController extends Controller{
         $pageNum  = $this->request->data("page_number");
 
         $data   = $this->newsfeed->getAll($pageNum);
-        $html   = $this->view->render(VIEWS_PATH . 'newsfeed/newsfeed.php', array("newsfeed" => $data["newsfeed"]));
-        $pagination = $this->view->render(VIEWS_PATH . 'pagination/default.php', array("pagination" => $data["pagination"]));
+        $html   = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $data["newsfeed"]));
+        $pagination = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $data["pagination"]));
 
         echo $this->view->JSONEncode(array("data" => ["newsfeed" => $html, "pagination" => $pagination]));
     }
@@ -67,7 +67,7 @@ class NewsFeedController extends Controller{
             echo $this->view->renderErrors($this->newsfeed->errors());
         }else{
 
-            $html = $this->view->render(VIEWS_PATH . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
+            $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
             echo $this->view->JSONEncode(array("data" => $html));
         }
     }
@@ -82,7 +82,7 @@ class NewsFeedController extends Controller{
 
         $newsfeed = $this->newsfeed->getById($newsfeedId);
 
-        $html = $this->view->render(VIEWS_PATH . 'newsfeed/updateForm.php', array("newsfeed" => $newsfeed[0]));
+        $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/updateForm.php', array("newsfeed" => $newsfeed[0]));
         echo $this->view->JSONEncode(array("data" => $html));
     }
 
@@ -101,7 +101,7 @@ class NewsFeedController extends Controller{
             echo $this->view->renderErrors($this->newsfeed->errors());
         }else{
 
-            $html = $this->view->render(VIEWS_PATH . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
+            $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
             echo $this->view->JSONEncode(array("data" => $html));
         }
     }
@@ -116,7 +116,7 @@ class NewsFeedController extends Controller{
 
         $newsfeed = $this->newsfeed->getById($newsfeedId);
 
-        $html = $this->view->render(VIEWS_PATH . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
+        $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
         echo $this->view->JSONEncode(array("data" => $html));
     }
 

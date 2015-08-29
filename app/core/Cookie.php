@@ -70,7 +70,7 @@ class Cookie{
         //Remember? $hashedCookie was generated from the original user Id, NOT from the encrypted one.
         self::$userId = Encryption::decrypt($encryptedUserId);
 
-        if (self::$hashedCookie === hash('sha256', self::$userId . ':' . self::$token . COOKIE_SECRET_KEY) && !empty(self::$token) && !empty(self::$userId)) {
+        if (self::$hashedCookie === hash('sha256', self::$userId . ':' . self::$token . Config::get('COOKIE_SECRET_KEY')) && !empty(self::$token) && !empty(self::$userId)) {
 
             $database = Database::openConnection();
             $query    = "SELECT id, cookie_token FROM users WHERE id = :id AND cookie_token = :cookie_token LIMIT 1";
@@ -121,7 +121,7 @@ class Cookie{
         self::$userId = self::$token = self::$hashedCookie = null;
 
         //How to kill/delete a cookie in a browser?
-        setcookie('auth', false, time() - (3600 * 3650), COOKIE_PATH, COOKIE_DOMAIN, COOKIE_SECURE, COOKIE_HTTP);
+        setcookie('auth', false, time() - (3600 * 3650), Config::get('COOKIE_PATH'), Config::get('COOKIE_DOMAIN'), Config::get('COOKIE_SECURE'), Config::get('COOKIE_HTTP'));
     }
 
     /**
@@ -155,10 +155,10 @@ class Cookie{
         $cookieFirstPart = Encryption::encrypt(self::$userId) . ':' . self::$token ;
 
         //$hashedCookie generated from the original user Id, NOT from the encrypted one.
-        self::$hashedCookie = hash('sha256', self::$userId . ':' . self::$token  . COOKIE_SECRET_KEY);
+        self::$hashedCookie = hash('sha256', self::$userId . ':' . self::$token  . Config::get('COOKIE_SECRET_KEY'));
         $authCookie = $cookieFirstPart . ':' . self::$hashedCookie;
 
-        setcookie('auth', $authCookie, time() + COOKIE_EXPIRY, COOKIE_PATH, COOKIE_DOMAIN, COOKIE_SECURE, COOKIE_HTTP);
+        setcookie('auth', $authCookie, time() + Config::get('COOKIE_EXPIRY'), Config::get('COOKIE_PATH'), Config::get('COOKIE_DOMAIN'), Config::get('COOKIE_SECURE'), Config::get('COOKIE_HTTP'));
     }
 
 }

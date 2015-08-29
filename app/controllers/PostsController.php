@@ -50,7 +50,7 @@ class PostsController extends Controller{
         //clear all notifications
         $this->user->clearNotifications(Session::getUserId(), $this->post->table);
 
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'posts/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'posts/index.php');
     }
 
     /**
@@ -69,14 +69,14 @@ class PostsController extends Controller{
         $this->vars['globalPage'] = ["posts", "comments"];
         $this->vars['globalPageId'] = $postId;
 
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'posts/viewPost.php', array("postId" => $postId));
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', array("postId" => $postId));
     }
 
     /**
      * show new post form
      */
     public function newPost(){
-        echo $this->view->renderWithLayouts(VIEWS_PATH . "layout/", VIEWS_PATH . 'posts/newPost.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'posts/newPost.php');
     }
 
     /**
@@ -93,8 +93,8 @@ class PostsController extends Controller{
             echo $this->view->renderErrors($this->post->errors());
         }else{
 
-            $postsHTML      = $this->view->render(VIEWS_PATH . 'posts/posts.php', array("posts" => $postData["posts"]));
-            $paginationHTML = $this->view->render(VIEWS_PATH . 'pagination/default.php', array("pagination" => $postData["pagination"]));
+            $postsHTML      = $this->view->render(Config::get('VIEWS_PATH') . 'posts/posts.php', array("posts" => $postData["posts"]));
+            $paginationHTML = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $postData["pagination"]));
             echo $this->view->JSONEncode(array("data" => ["posts" => $postsHTML, "pagination" => $paginationHTML]));
         }
     }
@@ -131,7 +131,7 @@ class PostsController extends Controller{
 
         $post = $this->post->getById($postId);
 
-        $html = $this->view->render(VIEWS_PATH . 'posts/postUpdateForm.php', array("post" => $post));
+        $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/postUpdateForm.php', array("post" => $post));
         echo $this->view->JSONEncode(array("data" => $html));
     }
 
@@ -154,7 +154,7 @@ class PostsController extends Controller{
             echo $this->view->renderErrors($this->post->errors());
         }else{
 
-            $html = $this->view->render(VIEWS_PATH . 'posts/post.php', array("post" => $post));
+            $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/post.php', array("post" => $post));
             echo $this->view->JSONEncode(array("data" => $html));
         }
     }
@@ -172,7 +172,7 @@ class PostsController extends Controller{
         }
 
         $post = $this->post->getById($postId);
-        $html = $this->view->render(VIEWS_PATH . 'posts/post.php', array("post" => $post));
+        $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/post.php', array("post" => $post));
 
         echo $this->view->JSONEncode(array("data" => $html));
     }

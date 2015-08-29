@@ -49,7 +49,7 @@
                             <ul id="list-newsfeed" class="chat">
                                 <?php 
 									$newsfeedData = $this->controller->newsfeed->getAll();
-									echo $this->render(VIEWS_PATH . "newsfeed/newsfeed.php", array("newsfeed" => $newsfeedData["newsfeed"]));
+									echo $this->render(Config::get('VIEWS_PATH') . "newsfeed/newsfeed.php", array("newsfeed" => $newsfeedData["newsfeed"]));
 								?>
                             </ul>
 
@@ -57,7 +57,7 @@
 							<div class="text-right">
 								<ul class="pagination">
 									<?php 
-										echo $this->render(VIEWS_PATH . "pagination/default.php", array("pagination" => $newsfeedData["pagination"]));
+										echo $this->render(Config::get('VIEWS_PATH') . "pagination/default.php", array("pagination" => $newsfeedData["pagination"]));
 									?>
 								</ul>
 							</div>

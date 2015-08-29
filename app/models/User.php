@@ -93,7 +93,7 @@ class User extends Model{
                 $database->bindValue(':name', $name);
             }
             if($password) {
-                $database->bindValue(':hashed_password', password_hash($password, PASSWORD_DEFAULT, array('cost' => HASH_COST_FACTOR)));
+                $database->bindValue(':hashed_password', password_hash($password, PASSWORD_DEFAULT, array('cost' => Config::get('HASH_COST_FACTOR'))));
             }
             if($email) {
                 $emailToken = sha1(uniqid(mt_rand(), true));
@@ -116,8 +116,8 @@ class User extends Model{
             //and another one for the new email asking user to confirm changes.
             if($email){
                 $name = ($name)? $name: $curUser["name"];
-                Email::sendEmail(EMAIL_REVOKE_EMAIL, $curUser["email"], ["name" => $name, "id" => $curUser["id"]], ["email_token" => $emailToken]);
-                Email::sendEmail(EMAIL_UPDATE_EMAIL, $email, ["name" => $name, "id" => $curUser["id"]], ["pending_email_token" => $pendingEmailToken]);
+                Email::sendEmail(Config::get('EMAIL_REVOKE_EMAIL'), $curUser["email"], ["name" => $name, "id" => $curUser["id"]], ["email_token" => $emailToken]);
+                Email::sendEmail(Config::get('EMAIL_UPDATE_EMAIL'), $email, ["name" => $name, "id" => $curUser["id"]], ["pending_email_token" => $pendingEmailToken]);
             }
 
             $database->commit();
@@ -376,7 +376,7 @@ class User extends Model{
         $data = ["subject" => $subject, "label" => $label, "message" => $message];
 
         //email will be sent to the admin
-        Email::sendEmail(EMAIL_REPORT_BUG, ADMIN_EMAIL, ["id" => $userId, "name" => $curUser["name"]], $data);
+        Email::sendEmail(Config::get('EMAIL_REPORT_BUG'), Config::get('ADMIN_EMAIL'), ["id" => $userId, "name" => $curUser["name"]], $data);
 
         return true;
       }

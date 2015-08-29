@@ -123,7 +123,7 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div id="latest-updates" class="list-group">
-                               <?= $this->render(VIEWS_PATH . "dashboard/updates.php", array("updates" => $updates));?>
+                               <?= $this->render(Config::get('VIEWS_PATH') . "dashboard/updates.php", array("updates" => $updates));?>
                             </div>
                             <!-- /.list-group -->
                         </div>

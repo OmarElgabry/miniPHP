@@ -69,7 +69,7 @@ class LoginController extends Controller {
             //So, keep it commented
             //$this->login->logOut(Session::getUserId(), true);
 
-            echo $this->view->renderWithLayouts(LOGIN_PATH, LOGIN_PATH . "index.php");
+            echo $this->view->renderWithLayouts(Config::get('LOGIN_PATH'), Config::get('LOGIN_PATH') . "index.php");
         }
     }
 
@@ -129,7 +129,7 @@ class LoginController extends Controller {
         if(!$result){
             $this->error("notfound");
         }else{
-            echo $this->view->renderWithLayouts(LOGIN_PATH, LOGIN_PATH . 'userVerified.php');
+            echo $this->view->renderWithLayouts(Config::get('LOGIN_PATH'), Config::get('LOGIN_PATH') . 'userVerified.php');
         }
     }
 
@@ -200,7 +200,7 @@ class LoginController extends Controller {
             //so you will ending up using updatePassword() on an invalid user id.
             Session::set("user_id_reset_password", $userId);
 
-            echo $this->view->renderWithLayouts(LOGIN_PATH, LOGIN_PATH . 'updatePassword.php');
+            echo $this->view->renderWithLayouts(Config::get('LOGIN_PATH'), Config::get('LOGIN_PATH') . 'updatePassword.php');
         }
     }
 

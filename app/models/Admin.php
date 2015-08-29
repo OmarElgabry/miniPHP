@@ -122,7 +122,7 @@ class Admin extends User{
                  $database->bindValue(':name', $name);
              }
              if($password) {
-                 $database->bindValue(':hashed_password', password_hash($password, PASSWORD_DEFAULT, array('cost' => HASH_COST_FACTOR)));
+                 $database->bindValue(':hashed_password', password_hash($password, PASSWORD_DEFAULT, array('cost' => Config::get('HASH_COST_FACTOR'))));
              }
              if($role){
                  $database->bindValue(':role', $role);
@@ -224,9 +224,9 @@ class Admin extends User{
          //Use another username and password only for this function, while the main user has limited privileges
          $windows = true;
          if($windows){
-             exec('C:\wamp\bin\mysql\mysql5.6.17\bin\mysqldump --user=' . escapeshellcmd(DB_USER) . ' --password=' . escapeshellcmd(DB_PASS) . ' ' . escapeshellcmd(DB_NAME) . ' > '. APP.'backups\backup-' . time() . '.sql');
+             exec('C:\wamp\bin\mysql\mysql5.6.17\bin\mysqldump --user=' . escapeshellcmd(Config::get('DB_USER')) . ' --password=' . escapeshellcmd(Config::get('DB_PASS')) . ' ' . escapeshellcmd(Config::get('DB_NAME')) . ' > '. APP.'backups\backup-' . time() . '.sql');
          }else{
-             exec('mysqldump --user=' . escapeshellcmd(DB_USER) . ' --password=' .escapeshellcmd(DB_PASS). ' '. escapeshellcmd(DB_NAME) .' > '. APP . 'backups/backup-' . time() . '.sql');
+             exec('mysqldump --user=' . escapeshellcmd(Config::get('DB_USER')) . ' --password=' .escapeshellcmd(Config::get('DB_PASS')). ' '. escapeshellcmd(Config::get('DB_NAME')) .' > '. APP . 'backups/backup-' . time() . '.sql');
          }
 
          return true;
@@ -254,9 +254,9 @@ class Admin extends User{
 
          $windows = true;
          if($windows){
-             exec('C:\wamp\bin\mysql\mysql5.6.17\bin\mysql --user=' . escapeshellcmd(DB_USER) . ' --password=' . escapeshellcmd(DB_PASS) . ' ' . escapeshellcmd(DB_NAME) . ' < '.APP.'\backups\\' . $basename);
+             exec('C:\wamp\bin\mysql\mysql5.6.17\bin\mysql --user=' . escapeshellcmd(Config::get('DB_USER')) . ' --password=' . escapeshellcmd(Config::get('DB_PASS')) . ' ' . escapeshellcmd(Config::get('DB_NAME')) . ' < '.APP.'\backups\\' . $basename);
          }else{
-             exec('mysql --user='.escapeshellcmd(DB_USER).' --password='.escapeshellcmd(DB_PASS).' '.escapeshellcmd(DB_NAME).' < '. APP . 'backups/' . $basename);
+             exec('mysql --user='.escapeshellcmd(Config::get('DB_USER')).' --password='.escapeshellcmd(Config::get('DB_PASS')).' '.escapeshellcmd(Config::get('DB_NAME')).' < '. APP . 'backups/' . $basename);
          }
 
          return true;

@@ -61,7 +61,7 @@
                                     <tbody>
                                         <?php 
 											$filesData = $this->controller->file->getAll();
-											echo $this->render(VIEWS_PATH . "files/files.php", array("files" => $filesData["files"]));
+											echo $this->render(Config::get('VIEWS_PATH') . "files/files.php", array("files" => $filesData["files"]));
 										?>
                                     </tbody>
                                 </table>
@@ -71,7 +71,7 @@
 							<div class="text-right">
 								<ul class="pagination">
 									<?php 
-										echo $this->render(VIEWS_PATH . "pagination/default.php", array("pagination" => $filesData["pagination"]));
+										echo $this->render(Config::get('VIEWS_PATH') . "pagination/default.php", array("pagination" => $filesData["pagination"]));
 									?>
 								</ul>
 							</div>

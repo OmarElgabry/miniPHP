@@ -50,8 +50,8 @@ class CommentsController extends Controller{
 
         $commentsData = $this->comment->getAll($postId, $pageNum, $commentsCreated);
 
-        $commentsHTML   = $this->view->render(VIEWS_PATH . 'posts/comments.php', array("comments" => $commentsData["comments"]));
-        $paginationHTML = $this->view->render(VIEWS_PATH . 'pagination/comments.php', array("pagination" => $commentsData["pagination"]));
+        $commentsHTML   = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $commentsData["comments"]));
+        $paginationHTML = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/comments.php', array("pagination" => $commentsData["pagination"]));
 
         echo $this->view->JSONEncode(array("data" => ["comments" => $commentsHTML, "pagination" => $paginationHTML]));
     }
@@ -67,7 +67,7 @@ class CommentsController extends Controller{
             echo $this->view->renderErrors($this->comment->errors());
         }else{
 
-            $html = $this->view->render(VIEWS_PATH . 'posts/comments.php', array("comments" => $comment));
+            $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $comment));
             echo $this->view->JSONEncode(array("data" => $html));
         }
     }
@@ -88,7 +88,7 @@ class CommentsController extends Controller{
 
         $comment = $this->comment->getById($commentId);
 
-        $commentsHTML = $this->view->render(VIEWS_PATH . 'posts/commentUpdateForm.php', array("comment" => $comment[0]));
+        $commentsHTML = $this->view->render(Config::get('VIEWS_PATH') . 'posts/commentUpdateForm.php', array("comment" => $comment[0]));
         echo $this->view->JSONEncode(array("data" => $commentsHTML));
     }
 
@@ -111,7 +111,7 @@ class CommentsController extends Controller{
             echo $this->view->renderErrors($this->comment->errors());
         }else{
 
-            $html = $this->view->render(VIEWS_PATH . 'posts/comments.php', array("comments" => $comment));
+            $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $comment));
             echo $this->view->JSONEncode(array("data" => $html));
         }
     }
@@ -130,7 +130,7 @@ class CommentsController extends Controller{
 
         $comment = $this->comment->getById($commentId);
 
-        $commentsHTML = $this->view->render(VIEWS_PATH . 'posts/comments.php', array("comments" => $comment));
+        $commentsHTML = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $comment));
         echo $this->view->JSONEncode(array("data" => $commentsHTML));
     }
 

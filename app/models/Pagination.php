@@ -35,10 +35,10 @@ class Pagination {
      * @param   integer  $totalCount
      * @param   integer  $perPage Number of items per page
      */
-    public function __construct($currentPage = 1, $totalCount = 0, $perPage = PAGINATION_DEFAULT_LIMIT){
+    public function __construct($currentPage = 1, $totalCount = 0, $perPage = 0){
         $this->currentPage = (empty($currentPage))? 1: (int)$currentPage;
         $this->totalCount = (empty($totalCount))? 0: (int)$totalCount;
-        $this->perPage = $perPage;
+        $this->perPage = (empty($perPage))? Config::get('PAGINATION_DEFAULT_LIMIT'): (int)$perPage;
     }
 
     /**

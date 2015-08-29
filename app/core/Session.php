@@ -17,6 +17,20 @@ class Session{
     private function __construct() {}
 
     /**
+     * Starts the session if not started yet.
+     *
+     * @access public
+     *
+     */
+    public static function init(){
+
+        $session_id = session_id();
+        if (empty($session_id)) {
+            session_start();
+        }
+    }
+
+    /**
      * Checks if session data exists and valid or not.
      *
      * @access public

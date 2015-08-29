@@ -20,7 +20,7 @@ define('IMAGES',   str_replace("\\", "/", __DIR__) . "/img/");
 define('APP',  BASE_DIR . "/app/");
 
 //session
-session_start();
+Session::init();
 
 $app = new App();
 

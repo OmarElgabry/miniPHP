@@ -457,6 +457,12 @@ Nothing wired to explain, You can upload and download.
 
 ### Profile<a name="profile"></a>
 Every user can change his name, email, password. Also upload profile picture, initially(default.png).
+##### Update & Revoke User Email<a name="update-revoke-user-email"></a>
+Whenever user asks to change his email, a notification will be sent to user's old email, and the new one.
+
+The notification sent to old email is giving the user the chance to revoke email change, while the notification sent to new email is asking for confirmation.
+
+User can still login with his old email until he confirms the change.
 
 ### Notifications<a name="notifications"></a>
 Did you see the red notifications on facebook, or the blue one on twitter. The same idea is here. But, It's implemented using triggers instead. Triggers are defined in __installation/triggers.sql_.

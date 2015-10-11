@@ -29,7 +29,7 @@
         <link rel="stylesheet" href="<?= PUBLIC_ROOT;?>css/sb-admin-2.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT;?>css/font-awesome.min.css" rel="stylesheet" type="text/css">
 		<style>
-			body{ background: #ffffff url("<?= PUBLIC_ROOT;?>img/backgrounds/background.png") no-repeat fixed left top; }
+			body{ background: #ffffff url("<?= PUBLIC_ROOT;?>img/backgrounds/background.png") no-repeat fixed left top; background-position: center top;}
 		</style>
 
 </head>

@@ -138,3 +138,14 @@ CREATE TABLE `notifications` (
  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Table structure for table `todo`
+--
+
+CREATE TABLE `todo` (
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `user_id` int(11) NOT NULL,
+     `content` varchar(512) NOT NULL,
+     PRIMARY KEY (`id`),
+     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

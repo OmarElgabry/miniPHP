@@ -395,6 +395,9 @@ var helpers = {
 var app = {
     init: function (){
 
+		// initialize todo application event
+		events.todo.init();
+		
         if(!helpers.empty(globalVars.curPage)){
 
             // add 'active' class to current navigation list
@@ -1172,7 +1175,45 @@ var events = {
                 }
             });
         }
-    }
+    },
+	
+	/*
+     * Todo application
+     */
+	todo:{
+	        init: function(){
+	            events.todo.create();
+	            events.todo.delete();
+	        },
+	        create: function(){
+	            $("#form-create-todo").submit(function(e){
+                    e.preventDefault();
+                    ajax.send("Todo/create", helpers.serialize(this), createTodoCallBack, "#form-create-todo");
+                });
+	
+	            function createTodoCallBack(PHPData){
+                    if(helpers.validateData(PHPData, "#form-create-todo", "after", "default", "success")){
+                        alert(PHPData.success + " refresh the page to see the results");
+                    }
+                }
+	        },
+	        delete: function(){
+	            $("#todo-list form").submit(function(e){
+                    e.preventDefault();
+                    if (!confirm("Are you sure?")) { return; }
+					
+					var cur_todo = $(this).parent();
+					ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
+	
+	                function deleteTodoCallBack(PHPData){
+                        if(helpers.validateData(PHPData, cur_todo, "after", "default", "success")){
+                            $(cur_todo).remove();
+                            alert(PHPData.success);
+                        }
+                    }
+                });
+			}
+		}
 };
 
 

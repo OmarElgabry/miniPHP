@@ -36,7 +36,7 @@ class Logger{
         $message = is_array($message)? implode("\n", $message): $message;
         $err .= $message . "\n*******************************************************************\n\n";
 
-        //log/write error to log file
+        // log/write error to log file
         error_log($err, 3, $logfile);
      }
 

@@ -32,7 +32,7 @@ class Uploader{
      *
      * @var array
      */
-    private static $fileSize = [100, 2097152];
+    private static $fileSize = [100, 5242880];
 
     /**
      * The max height and width image allowed for image
@@ -62,6 +62,7 @@ class Uploader{
      *
      */
     public static function uploadPicture($file, $id){
+        self::$fileSize = [100, 2097152];
         return self::upload($file, IMAGES . "profile_pictures/", $id, "image");
     }
 
@@ -115,8 +116,8 @@ class Uploader{
 
         if($type === "csv"){
 
-            //you need to add the extension in case of csv files,
-            //because mime() will return text/plain.
+            // you need to add the extension in case of csv files,
+            // because mime() will return text/plain.
             $basename = "grades" . "." . "csv";
             $path = $dir . $basename;
 
@@ -126,23 +127,23 @@ class Uploader{
 
             if(!empty($id)){
 
-                //get safe filename
+                // get safe filename
                 $filename = self::getFileName($file);
 
                 // mime mapping to extension
                 $ext = self::MimeToExtension(self::mime($file));
 
-                //get hashed version using the given $id
-                //the $id is used to have a unique file name
-                //so, for example you would use it for profile picture,
-                //because every user can have only one picture
+                // get hashed version using the given $id
+                // the $id is used to have a unique file name
+                // so, for example you would use it for profile picture,
+                // because every user can have only one picture
                 $hashedFileName = self::getHashedName($id);
 
                 $basename = $hashedFileName . "." . $ext;
                 $path = $dir . $basename;
 
-                //delete all files with the same name, but with different formats.
-                //not needed, but i like to clear unnecessary files
+                // delete all files with the same name, but with different formats.
+                // not needed, but i like to clear unnecessary files
                 self::deleteFiles($dir . $hashedFileName, $mimeTypes);
 
                 $data = ["filename" => $filename, "basename" => $basename, "hashed_filename" => $hashedFileName, "extension" => $ext];
@@ -152,9 +153,9 @@ class Uploader{
                 $filename = self::getFileName($file);
                 $ext = self::MimeToExtension(self::mime($file));
 
-                //hashed file name is created from the original filename and extension
-                //so uploading test.pdf & test.doc won't conflict,
-                //but, uploading file with test.pdf will return "file already exists"
+                // hashed file name is created from the original filename and extension
+                // so uploading test.pdf & test.doc won't conflict,
+                // but, uploading file with test.pdf will return "file already exists"
                 $hashedFileName = self::getHashedName(strtolower($filename . $ext));
 
                 $basename = $hashedFileName . "." . $ext;
@@ -169,12 +170,12 @@ class Uploader{
             }
         }
 
-        //upload the file.
+        // upload the file.
         if(!move_uploaded_file($file['tmp_name'], $path)){
             throw new Exception("File couldn't be uploaded");
         }
 
-        //set 644 permission to avoid any executable files
+        // set 644 permission to avoid any executable files
         if(!chmod($path, 0644)) {
             throw new Exception("File permissions couldn't be changed");
         }
@@ -241,7 +242,7 @@ class Uploader{
         $hashedDirName = self::getHashedName();
         $newDir = $dir . $hashedDirName;
 
-        //create a directory if not exists
+        // create a directory if not exists
         if(!file_exists($newDir) && !is_dir($newDir)){
             if(mkdir($newDir, 0755) === false){
                 throw new Exception("directory couldn't be created");

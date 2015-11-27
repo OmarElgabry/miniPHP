@@ -45,13 +45,13 @@ class Validation {
             $value = $rules[0];
             $rules = explode('|', $rules[1]);
 
-            //no need to validate the value if the value is empty and not required
+            // no need to validate the value if the value is empty and not required
             if(!$this->isRequired($rules) && $this->isEmpty($value)){
                 continue;
             }
 
-            //it doesn't make sense to continue and validate the rest of rules on an empty & required value.
-            //instead add error, and skip this value.
+            // it doesn't make sense to continue and validate the rest of rules on an empty & required value.
+            // instead add error, and skip this value.
             if($this->isRequired($rules) && $this->isEmpty($value)){
                 $this->addError("required", $placeholder, $value);
                 $passed = false;
@@ -63,15 +63,15 @@ class Validation {
                 $method = $rule;
                 $args = [];
 
-                //if it was empty and required or not required,
-                //it would be detected by the previous ifs
+                // if it was empty and required or not required,
+                // it would be detected by the previous ifs
                 if($rule === "required") {
                     continue;
                 }
 
                 if(self::isruleHasArgs($rule)){
 
-                    //get arguments for rules like in max(), min(), ..etc.
+                    // get arguments for rules like in max(), min(), ..etc.
                     $method = $this->getRuleName($rule);
                     $args   = $this->getRuleArgs($rule);
                 }
@@ -90,8 +90,8 @@ class Validation {
             }
         }
 
-        //possible change is to return the current validation object,
-        //and use passes() instead.
+        // possible change is to return the current validation object,
+        // and use passes() instead.
         return $passed;
     }
 
@@ -164,10 +164,10 @@ class Validation {
         $args = rtrim($argsWithBracketAtTheEnd, ')');
         $args = preg_replace('/\s+/', '', $args);
 
-        //as result of an empty array coming from user input
-        //$args will be empty string,
-        //So, using explode(',', empty string) will return array with size = 1
-        //return empty($args)? []: explode(',', $args);
+        // as result of an empty array coming from user input
+        // $args will be empty string,
+        // So, using explode(',', empty string) will return array with size = 1
+        // return empty($args)? []: explode(',', $args);
         return explode(',', $args);
     }
 
@@ -200,23 +200,23 @@ class Validation {
 
         else{
 
-            //get the default message for the current $rule
+            // get the default message for the current $rule
             $message = self::defaultMessages($rule);
 
             if(isset($message)){
 
-                //if $message is set to empty string,
-                //this means the error will be added inside the validation method itself
-                //check attempts()
+                // if $message is set to empty string,
+                // this means the error will be added inside the validation method itself
+                // check attempts()
                 if(trim($message) !== ""){
 
-                    //replace placeholder, value, arguments with their values
+                    // replace placeholder, value, arguments with their values
                     $replace = ['{placeholder}', '{value}'];
                     $value   = is_string($value)? $value: "";
                     $with    = array_merge([$placeholder, $value], $args);
                     $count   = count($args);
 
-                    //arguments will take the shape of: {0} {1} {2} ...
+                    // arguments will take the shape of: {0} {1} {2} ...
                     for($i = 0; $i < $count; $i++) $replace[] = "{{$i}}";
 
                     $this->errors[] = str_replace($replace, $with, $message);
@@ -224,7 +224,7 @@ class Validation {
 
             } else{
 
-                //if no message defined, then use this one.
+                // if no message defined, then use this one.
                 $this->errors[] = "The value you entered for " . $placeholder . " is invalid";
             }
         }
@@ -440,7 +440,7 @@ class Validation {
 
         $database = Database::openConnection();
 
-        //email is unique in the database, So, we can't have more than 2 same emails
+        // email is unique in the database, So, we can't have more than 2 same emails
         $database->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
         $database->bindValue(':email', $email);
         $database->execute();
@@ -456,8 +456,8 @@ class Validation {
                 $expiry_time = (24 * 60 * 60);
                 $time_elapsed = time() - $user['email_last_verification'];
 
-                //If time elapsed exceeded the expiry time, it worth to reset the token, and the email as well.
-                //This indicates the email of $user hasn't been verified, and token is expired.
+                // If time elapsed exceeded the expiry time, it worth to reset the token, and the email as well.
+                // This indicates the email of $user hasn't been verified, and token is expired.
                 if($time_elapsed >= $expiry_time) {
 
                     $login = new Login();
@@ -466,8 +466,8 @@ class Validation {
 
                 }else {
 
-                    //TODO check if $email is same as current user's email(not-activated),
-                    //then ask the user to verify his email
+                    // TODO check if $email is same as current user's email(not-activated),
+                    // then ask the user to verify his email
                     return false;
                 }
             }
@@ -508,14 +508,14 @@ class Validation {
         $block_time = (10 * 60);
         $time_elapsed = time() - $attempts['last_time'];
 
-        //TODO If user is Blocked, Update failed logins/forgotten passwords
-        //to current time and optionally number of attempts to be incremented,
-        //but, this will reset the last_time every time there is a failed attempt
+        // TODO If user is Blocked, Update failed logins/forgotten passwords
+        // to current time and optionally number of attempts to be incremented,
+        // but, this will reset the last_time every time there is a failed attempt
 
         if ($attempts["count"] >= 5 && $time_elapsed < $block_time) {
 
-            //here i can't define a default error message as in defaultMessages()
-            //because the error message depends on variables like $block_time & $time_elapsed
+            // here i can't define a default error message as in defaultMessages()
+            // because the error message depends on variables like $block_time & $time_elapsed
             $this->errors[] = "You exceeded number of possible attempts, please try again later after " .
                 date("i", $block_time - $time_elapsed) . " minutes";
             return false;
@@ -573,8 +573,8 @@ class Validation {
      */
     private function fileSize($file, $args){
 
-        //size in bytes,
-        //1 KB = 1024 bytes, and 1 MB = 1048,576 bytes.
+        // size in bytes,
+        // 1 KB = 1024 bytes, and 1 MB = 1048,576 bytes.
         $size = array ("min" => (int)$args[0], "max" => (int)$args[1]);
 
         if ($file['size'] > $size['max']) {
@@ -582,7 +582,7 @@ class Validation {
             return false;
         }
 
-        //better not to say the min limits.
+        // better not to say the min limits.
         if($file['size'] < $size['min']){
             $this->errors[] = "File size either is too small or corrupted";
             return false;
@@ -636,7 +636,7 @@ class Validation {
 
         list($mime) = explode(';', $finfo_file);
 
-        //in case of zip file it returns application/octet-stream
+        // in case of zip file it returns application/octet-stream
         return in_array($mime, $mimeTypes, true);
     }
 

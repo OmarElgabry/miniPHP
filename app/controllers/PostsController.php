@@ -14,7 +14,7 @@ class PostsController extends Controller{
 
         parent::beforeAction();
 
-        $this->vars['globalPage'] = "posts";
+        $this->vars['curPage'] = "posts";
 
         $action  = $this->request->param('action');
         $actions = ['getAll', 'create', 'getUpdateForm', 'update', 'getById', 'delete'];
@@ -47,10 +47,10 @@ class PostsController extends Controller{
      */
     public function index(){
 
-        //clear all notifications
+        // clear all notifications
         $this->user->clearNotifications(Session::getUserId(), $this->post->table);
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'posts/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/index.php');
     }
 
     /**
@@ -66,17 +66,17 @@ class PostsController extends Controller{
             $this->error("notfound");
         }
 
-        $this->vars['globalPage'] = ["posts", "comments"];
-        $this->vars['globalPageId'] = $postId;
+        $this->vars['curPage'] = ["posts", "comments"];
+        $this->vars['curPageId'] = $postId;
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', array("postId" => $postId));
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', array("postId" => $postId));
     }
 
     /**
      * show new post form
      */
     public function newPost(){
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'posts/newPost.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/newPost.php');
     }
 
     /**
@@ -195,10 +195,10 @@ class PostsController extends Controller{
         $role = Session::getUserRole();
         $resource = "posts";
 
-        //only for admins
+        // only for admins
         Permission::allow('admin', $resource, ['*']);
 
-        //only for normal users
+        // only for normal users
         Permission::allow('user', $resource, ['index', 'view', 'newPost', 'getAll', 'getById', 'create']);
         Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
 

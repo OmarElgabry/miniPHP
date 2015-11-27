@@ -42,7 +42,7 @@ class Permission {
      */
     public static function check($role, $resource, $action = "*", array $config = []){
 
-        //checks if action was allowed at least once
+        // checks if action was allowed at least once
         $allowed = false;
         $action = strtolower($action);
 

@@ -48,11 +48,11 @@ class App {
      */
     public function __construct(){
 
-        //initialize request and respond objects
+        // initialize request and respond objects
         $this->request  = new Request();
         $this->response = new Response();
 
-        //split the requested URL
+        // split the requested URL
         $this->splitUrl();
 
         if(!self::isControllerValid($this->controller)){
@@ -82,15 +82,15 @@ class App {
                     $this->notFound();
                 }
 
-                //finally instantiate the controller object, and call it's action method.
+                // finally instantiate the controller object, and call it's action method.
                 $this->triggerController($controllerName, $this->method, $this->args);
             }
 
         } else{
 
-            //if no controller defined,
-            //then send to login controller, and it should take care of the request
-            //either redirect to login page, or dashboard.
+            // if no controller defined,
+            // then send to login controller, and it should take care of the request
+            // either redirect to login page, or dashboard.
             $this->method = "index";
             $this->triggerController("LoginController", $this->method, $this->args);
         }

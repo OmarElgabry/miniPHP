@@ -16,9 +16,9 @@ class DownloadsController extends Controller {
         $actions = ['download', 'users'];
         $this->Security->requireGet($actions);
 
-        //if you want to add csrf_token in the URL of file download
-        //So, it will be something like this: http://localhost/miniPHP/downloads/download/f850749b62bf3badfb6c0?csrf_token=21eb0f2c6b4fddce8a7f3
-        //$this->Security->config("validateCsrfToken", true);
+        // if you want to add csrf_token in the URL of file download
+        // So, it will be something like this: http://localhost/miniPHP/downloads/download/f850749b62bf3badfb6c0?csrf_token=21eb0f2c6b4fddce8a7f3
+        // $this->Security->config("validateCsrfToken", true);
     }
 
     /**

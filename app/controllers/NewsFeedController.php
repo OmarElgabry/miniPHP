@@ -13,7 +13,7 @@ class NewsFeedController extends Controller{
 
         parent::beforeAction();
 
-        $this->vars['globalPage'] = "newsfeed";
+        $this->vars['curPage'] = "newsfeed";
 
         $action = $this->request->param('action');
         $actions = ['getAll', 'create', 'getUpdateForm', 'update', 'getById', 'delete'];
@@ -43,7 +43,7 @@ class NewsFeedController extends Controller{
     public function index(){
 
         $this->user->clearNotifications(Session::getUserId(), $this->newsfeed->table);
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'newsfeed/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'newsfeed/index.php');
     }
 
     public function getAll(){
@@ -134,16 +134,16 @@ class NewsFeedController extends Controller{
         $role = Session::getUserRole();
         $resource = "newsfeed";
 
-        //only for admins
+        // only for admins
         Permission::allow('admin', $resource, ['*']);
 
-        //only for normal users
+        // only for normal users
         Permission::allow('user', $resource, ['index', 'getAll', 'getById', 'create']);
         Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
 
         $newsfeedId = $this->request->data("newsfeed_id");
         if(!empty($newsfeedId)){
-            Encryption::decryptIdWithDash($newsfeedId);
+            $newsfeedId = Encryption::decryptIdWithDash($newsfeedId);
         }
 
         $config = [

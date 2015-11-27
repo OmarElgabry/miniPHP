@@ -37,7 +37,7 @@ class User extends Model{
 
         $user["id"]    = (int)$user["id"];
         $user["image"] = PUBLIC_ROOT . "img/profile_pictures/" . $user['profile_picture'];
-        //$user["email"] = empty($user['is_email_activated'])? null: $user['email'];
+        // $user["email"] = empty($user['is_email_activated'])? null: $user['email'];
 
         return $user;
       }
@@ -63,8 +63,8 @@ class User extends Model{
         $name   = (!empty($name) && $name !== $curUser["name"])? $name: null;
         $email  = (!empty($confirmEmail) || (!empty($email) && $email !== $curUser["email"]))? $email: null;
 
-        //if new email === old email, this shouldn't return any errors for email,
-        //because they are not 'required', same for name.
+        // if new email === old email, this shouldn't return any errors for email,
+        // because they are not 'required', same for name.
         $validation = new Validation();
         if(!$validation->validate([
             "Name" => [$name, "alphaNumWithSpaces|minLen(4)|maxLen(30)"],
@@ -111,9 +111,9 @@ class User extends Model{
                 throw new Exception("Couldn't update profile");
             }
 
-            //If email was updated, then send two emails,
-            //one for the current one asking user optionally to revoke,
-            //and another one for the new email asking user to confirm changes.
+            // If email was updated, then send two emails,
+            // one for the current one asking user optionally to revoke,
+            // and another one for the new email asking user to confirm changes.
             if($email){
                 $name = ($name)? $name: $curUser["name"];
                 Email::sendEmail(Config::get('EMAIL_REVOKE_EMAIL'), $curUser["email"], ["name" => $name, "id" => $curUser["id"]], ["email_token" => $emailToken]);
@@ -152,7 +152,7 @@ class User extends Model{
         $database->bindValue(':id', $userId);
         $result = $database->execute();
 
-        //if update failed, then delete the user picture
+        // if update failed, then delete the user picture
         if(!$result){
             Uploader::deleteFile(IMAGES . "profile_pictures/" . $image["basename"]);
             throw new Exception("Profile Picture ". $image["basename"] . " couldn't be updated");
@@ -320,7 +320,7 @@ class User extends Model{
 
         $database = Database::openConnection();
 
-        //1. count
+        // 1. count
         $tables = ["newsfeed", "posts", "files", "users"];
         $stats  = [];
 
@@ -328,13 +328,13 @@ class User extends Model{
             $stats[$table] = $database->countAll($table);
         }
 
-        //2. latest updates
-        //Using UNION to union the data fetched from different tables.
-        //@see http://www.w3schools.com/sql/sql_union.asp
-        //@see (mikeY) http://stackoverflow.com/questions/6849063/selecting-data-from-two-tables-and-ordering-by-date
+        // 2. latest updates
+        // Using UNION to union the data fetched from different tables.
+        // @see http://www.w3schools.com/sql/sql_union.asp
+        // @see (mikeY) http://stackoverflow.com/questions/6849063/selecting-data-from-two-tables-and-ordering-by-date
 
-        //Sub Query: In SELECT, The outer SELECT must have alias, like "updates" here.
-        //@see http://stackoverflow.com/questions/1888779/every-derived-table-must-have-its-own-alias
+        // Sub Query: In SELECT, The outer SELECT must have alias, like "updates" here.
+        // @see http://stackoverflow.com/questions/1888779/every-derived-table-must-have-its-own-alias
 
         $query  = "SELECT * FROM (";
         $query .= "SELECT 'newsfeed' AS target, content AS title, date, users.name FROM newsfeed, users WHERE user_id = users.id UNION ";
@@ -375,7 +375,7 @@ class User extends Model{
         $curUser = $this->getProfileInfo($userId);
         $data = ["subject" => $subject, "label" => $label, "message" => $message];
 
-        //email will be sent to the admin
+        // email will be sent to the admin
         Email::sendEmail(Config::get('EMAIL_REPORT_BUG'), Config::get('ADMIN_EMAIL'), ["id" => $userId, "name" => $curUser["name"]], $data);
 
         return true;

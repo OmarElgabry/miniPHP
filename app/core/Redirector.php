@@ -36,9 +36,16 @@ class Redirector{
 
     /**
      * Redirect to the login page
+     * $redirect_url is to send the user back to where he/she came from after login
+     *
+     * @param string|null $redirect_url
      */
-    public static function login(){
-        self::to(PUBLIC_ROOT);
+    public static function login($redirect_url = null){
+        if(!empty($redirect_url)){
+            self::to(PUBLIC_ROOT . "?redirect=" . urlencode($redirect_url));
+        }else{
+            self::to(PUBLIC_ROOT);
+        }
     }
 
 } 

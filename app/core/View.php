@@ -41,8 +41,8 @@ class View {
             extract($data);
         }
 
-        //Using include Vs require is better,
-        //because we may want to include a file more than once.
+        // Using include Vs require is better,
+        // because we may want to include a file more than once.
         ob_start();
         include $filePath . "" ;
         $renderedFile = ob_get_clean();
@@ -64,9 +64,9 @@ class View {
             extract($data);
         }
 
-        //you can use require_once() immediately without ob_start() & ob_get_clean()
-        //or use ob_start() & ob_get_clean() then return $renderedFile then echo,
-        //but, using ob_start() & ob_get_clean() is a handy way, especially for ajax response.
+        // you can use require_once() immediately without ob_start() & ob_get_clean()
+        // or use ob_start() & ob_get_clean() then return $renderedFile then echo,
+        // but, using ob_start() & ob_get_clean() is a handy way, especially for ajax response.
         ob_start();
         require_once $layoutDir . "header.php";
         require_once $filePath  . "" ;
@@ -158,7 +158,7 @@ class View {
         $unixTime = strtotime($timestamp);
         $date = date("F j, Y", $unixTime);
 
-        //What if date() failed to format? It will return false.
+        // What if date() failed to format? It will return false.
         return (empty($date))? "": $date;
     }
 

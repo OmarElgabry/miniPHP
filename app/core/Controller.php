@@ -19,10 +19,10 @@ class Controller {
      * @see views/layout/footer.php
      */
     public $vars =[
-        'root' => PUBLIC_ROOT,   /* public root used in ajax calls and redirection from client-side */
-        'globalPage' => null,    /* identifies the current page(s), and it will be used to add 'active' css class on navigation */
-        'globalPageId' => null,  /* the current page's id if exists, like in viewPost, and viewUser */
-        'maxFileSize' => 2097152 /* max file size, this is important to avoid overflow in files with big size */
+        'root' => PUBLIC_ROOT,          /* public root used in ajax calls and redirection from client-side */
+        'curPage' => null,              /* identifies the current page(s), and it will be used to add 'active' css class on navigation */
+        'curPageId' => null,            /* the current page's id if exists, like in viewPost, and viewUser */
+        'fileSizeOverflow' => 10485760  /* max file size, this is important to avoid overflow in files with big size */
     ];
 
     /**
@@ -65,15 +65,15 @@ class Controller {
         $this->response =  $response !== null ? $response : new Response();
         $this->view     =  new View($this);
 
-        //events that that will be triggered for each controller:
+        // events that that will be triggered for each controller:
 
-        //1. load components
+        // 1. load components
         $this->initialize();
 
-        //2. any logic before calling controller's action(method)
+        // 2. any logic before calling controller's action(method)
         $this->beforeAction();
 
-        //3. trigger startup method of loaded components
+        // 3. trigger startup method of loaded components
         $this->triggerComponents();
     }
 
@@ -87,13 +87,13 @@ class Controller {
      */
     public function triggerComponents(){
 
-        //You need to Fire the Components and Controller callbacks in the correct orde
-        //For example, Authorization depends on form element, so you need to trigger Security first.
+        // You need to Fire the Components and Controller callbacks in the correct orde
+        // For example, Authorization depends on form element, so you need to trigger Security first.
 
-        //We supposed to execute startup() method of each component,
-        //but since we need to call Auth -> authenticate, then Security, Auth -> authorize separately
+        // We supposed to execute startup() method of each component,
+        // but since we need to call Auth -> authenticate, then Security, Auth -> authorize separately
 
-        //re-construct components in right order
+        // re-construct components in right order
         $components = ['Auth', 'Security'];
         foreach($components as $key => $component){
             if(!in_array($component, $this->components)){
@@ -112,7 +112,7 @@ class Controller {
                     }
                 }
 
-                //delay checking authorize till after the loop
+                // delay checking authorize till after the loop
                 $authorize = $this->Auth->config("authorize");
                 continue;
 
@@ -121,7 +121,7 @@ class Controller {
             $this->{$component}->startup();
         }
 
-        //authorize
+        // authorize
         if(!empty($authorize)){
             if(!$this->Auth->authorize()){
                 $this->Auth->unauthorized();
@@ -195,7 +195,7 @@ class Controller {
         $code = isset($errors[strtolower($error)])? $errors[strtolower($error)]: 500;
         $this->response->setStatusCode($code);
 
-        //clear, get page, then send headers
+        // clear, get page, then send headers
         $this->response->clearBuffer();
         $errorController->{$error}();
         $this->response->send();

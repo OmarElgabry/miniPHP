@@ -26,8 +26,8 @@ class Error{
      */
     public static function register(){
 
-        //turn off all error reporting as well,
-        //because we will take care of it
+        // turn off all error reporting as well,
+        // because we will take care of it
         error_reporting(0);
 
         set_error_handler(__CLASS__ . "::errorHandler");
@@ -53,7 +53,7 @@ class Error{
             return;
         }
 
-        //self::exceptionHandler(new Exception($error['message'], 500));
+        // self::exceptionHandler(new Exception($error['message'], 500));
         self::errorHandler($error['type'], $error['message'], $error['file'], $error['line'], null);
 
     }

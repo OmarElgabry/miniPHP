@@ -54,20 +54,21 @@ class Cookie{
      */
     public static function isCookieValid(){
 
-        //"auth" or "remember me" cookie
+        // "auth" or "remember me" cookie
         if(empty($_COOKIE['auth'])) {
             return false;
         }
 
-        //check the count before using explode
-        if(count (explode(':', $_COOKIE['auth'])) !== 3){
+        // check the count before using explode
+        $cookie_auth = explode(':', $_COOKIE['auth']);
+        if(count ($cookie_auth) !== 3){
             self::remove();
             return false;
         }
 
-        list ($encryptedUserId, self::$token, self::$hashedCookie) = explode(':', $_COOKIE['auth']);
+        list ($encryptedUserId, self::$token, self::$hashedCookie) = $cookie_auth;
 
-        //Remember? $hashedCookie was generated from the original user Id, NOT from the encrypted one.
+        // Remember? $hashedCookie was generated from the original user Id, NOT from the encrypted one.
         self::$userId = Encryption::decrypt($encryptedUserId);
 
         if (self::$hashedCookie === hash('sha256', self::$userId . ':' . self::$token . Config::get('COOKIE_SECRET_KEY')) && !empty(self::$token) && !empty(self::$userId)) {
@@ -120,7 +121,7 @@ class Cookie{
 
         self::$userId = self::$token = self::$hashedCookie = null;
 
-        //How to kill/delete a cookie in a browser?
+        // How to kill/delete a cookie in a browser?
         setcookie('auth', false, time() - (3600 * 3650), Config::get('COOKIE_PATH'), Config::get('COOKIE_DOMAIN'), Config::get('COOKIE_SECURE'), Config::get('COOKIE_HTTP'));
     }
 
@@ -141,7 +142,7 @@ class Cookie{
         $query = "UPDATE users SET cookie_token = :cookie_token WHERE id = :id";
         $database->prepare($query);
 
-        //generate random hash for cookie token (64 char string)
+        // generate random hash for cookie token (64 char string)
         $database->bindValue(":cookie_token", self::$token);
         $database->bindValue(":id", self::$userId);
         $result = $database->execute();
@@ -150,11 +151,11 @@ class Cookie{
             Logger::log("COOKIE", "Couldn't remove cookie from the database for user ID: " . $userId, __FILE__, __LINE__);
         }
 
-        //generate cookie string(remember me)
-        //Don't expose the original user id in the cookie, Encrypt It!
+        // generate cookie string(remember me)
+        // Don't expose the original user id in the cookie, Encrypt It!
         $cookieFirstPart = Encryption::encrypt(self::$userId) . ':' . self::$token ;
 
-        //$hashedCookie generated from the original user Id, NOT from the encrypted one.
+        // $hashedCookie generated from the original user Id, NOT from the encrypted one.
         self::$hashedCookie = hash('sha256', self::$userId . ':' . self::$token  . Config::get('COOKIE_SECRET_KEY'));
         $authCookie = $cookieFirstPart . ':' . self::$hashedCookie;
 

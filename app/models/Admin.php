@@ -23,7 +23,7 @@ class Admin extends User{
      */
     public function getUsers($name = null, $email = null, $role = null, $pageNum = 1){
 
-        //validate user inputs
+        // validate user inputs
         $validation = new Validation();
         if(!$validation->validate([
             'User Name' => [$name,  'alphaNumWithSpaces|maxLen(30)'],
@@ -33,24 +33,24 @@ class Admin extends User{
             return false;
         }
 
-        //in $options array, add all possible values from user, and their name parameters
-        //then applyOptions() method will see if value is not empty, then add it to our query
+        // in $options array, add all possible values from user, and their name parameters
+        // then applyOptions() method will see if value is not empty, then add it to our query
         $options = [
-            $name      => "name = :name ",
+            $name      => "name LIKE :name ",
             $email     => "email = :email ",
             $role      => "role = :role "
         ];
 
-        //get options query
+        // get options query
         $options = $this->applyOptions($options, "AND ");
         $options = empty($options)? "": "WHERE " . $options;
 
         $values = [];
-        if (!empty($name))  $values[":name"]  = $name;
+        if (!empty($name))  $values[":name"]  = "%". $name ."%";
         if (!empty($email)) $values[":email"] = $email;
         if (!empty($role))  $values[":role"]  = $role;
 
-        //get pagination object so that we can add offset and limit in our query
+        // get pagination object so that we can add offset and limit in our query
         $pagination = Pagination::pagination("users", $options, $values, $pageNum);
         $offset     = $pagination->getOffset();
         $limit      = $pagination->perPage;
@@ -87,9 +87,9 @@ class Admin extends User{
          $name = (!empty($name) && $name !== $user["name"])? $name: null;
          $role = (!empty($role) && $role !== $user["role"])? $role: null;
 
-         //current admin can't change his role,
-         //changing the role requires to logout or reset session,
-         //because role is stored in the session
+         // current admin can't change his role,
+         // changing the role requires to logout or reset session,
+         // because role is stored in the session
          if(!empty($role) && $adminId === $user["id"]){
              $this->errors[] = "You can't change your role";
              return false;
@@ -148,7 +148,7 @@ class Admin extends User{
      */
     public function deleteUser($adminId, $userId){
 
-        //current admin can't delete himself
+        // current admin can't delete himself
         $validation = new Validation();
         if(!$validation->validate([ 'User ID' => [$userId, "notEqual(".$adminId.")"]])) {
             $this->errors  = $validation->errors();
@@ -189,8 +189,13 @@ class Admin extends User{
          foreach ($files as $file) {
              if ($file != "." && $file != "..") {
 
-                 //backup file has name with something like this: backup-1435788336
-                 list($filename, $unixTimestamp) = explode('-', pathinfo($file, PATHINFO_FILENAME));
+                 $filename_array = explode('-', pathinfo($file, PATHINFO_FILENAME));
+                 if(count($filename_array) !== 2){
+                     continue;
+                 }
+
+                 // backup file has name with something like this: backup-1435788336
+                 list($filename, $unixTimestamp) = $filename_array;
                  $basename = $file;
                  break;
              }
@@ -212,7 +217,7 @@ class Admin extends User{
          $dir = APP . "backups/";
          $files = scandir($dir);
 
-         //delete and clean all current files in backup directory
+         // delete and clean all current files in backup directory
          foreach ($files as $file) {
              if ($file != "." && $file != "..") {
                  if (is_file("$dir/$file")) {
@@ -221,7 +226,7 @@ class Admin extends User{
              }
          }
 
-         //Use another username and password only for this function, while the main user has limited privileges
+         // you can use another username and password only for this function, while the main user has limited privileges
          $windows = true;
          if($windows){
              exec('C:\wamp\bin\mysql\mysql5.6.17\bin\mysqldump --user=' . escapeshellcmd(Config::get('DB_USER')) . ' --password=' . escapeshellcmd(Config::get('DB_PASS')) . ' ' . escapeshellcmd(Config::get('DB_NAME')) . ' > '. APP.'backups\backup-' . time() . '.sql');

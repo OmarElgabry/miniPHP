@@ -46,7 +46,7 @@ class Session{
         $userId      = self::getUserId();
         $userRole    = self::getUserRole();
 
-        //1. check if there is any data in session
+        // 1. check if there is any data in session
         if(empty($isLoggedIn) || empty($userId) || empty($userRole)){
             return false;
         }
@@ -56,14 +56,14 @@ class Session{
             return false;
         }*/
 
-        //2. then check ip address and user agent
+        // 2. then check ip address and user agent
         if(!self::validateIPAddress($ip) || !self::validateUserAgent($userAgent)) {
             Logger::log("SESSION", "current session is invalid", __FILE__, __LINE__);
             self::remove();
             return false;
         }
 
-        //3. check if session is expired
+        // 3. check if session is expired
         if(!self::validateSessionExpiry()){
             self::remove();
             return false;
@@ -286,7 +286,7 @@ class Session{
      */
     public static function reset($data){
 
-        //remove old and regenerate session ID.
+        // remove old and regenerate session ID.
         session_regenerate_id(true);
         $_SESSION = array();
 
@@ -294,18 +294,18 @@ class Session{
         $_SESSION["user_id"]      = (int)$data["user_id"];
         $_SESSION["role"]         = $data["role"];
 
-        //save these values in the session,
-        //they are needed to avoid session hijacking and fixation
+        // save these values in the session,
+        // they are needed to avoid session hijacking and fixation
         $_SESSION['ip']             = $data["ip"];
         $_SESSION['user_agent']     = $data["user_agent"];
         $_SESSION['generated_time'] = time();
 
-        //update session id in database
+        // update session id in database
         self::updateSessionId($data["user_id"], session_id());
 
-        //set session cookie setting manually,
-        //Why? because you need to explicitly set session expiry, path, domain, secure, and HTTP.
-        //@see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet#Cookies
+        // set session cookie setting manually,
+        // Why? because you need to explicitly set session expiry, path, domain, secure, and HTTP.
+        // @see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet#Cookies
         setcookie(session_name(), session_id(), time() + Config::get('SESSION_COOKIE_EXPIRY') /*a week*/, Config::get('COOKIE_PATH'), Config::get('COOKIE_DOMAIN'), Config::get('COOKIE_SECURE'), Config::get('COOKIE_HTTP'));
     }
 
@@ -341,7 +341,7 @@ class Session{
      */
     public static function remove($keep = false){
 
-        //update session in database
+        // update session in database
         $userId = self::getUserId();
         if(!empty($userId)){
             self::updateSessionId(self::getUserId());
@@ -349,17 +349,17 @@ class Session{
 
         if($keep){
 
-            //regenerate it's id in browser, and file
-            //also clear any data stored in session
+            // regenerate it's id in browser, and file
+            // also clear any data stored in session
             session_regenerate_id(true);
             $_SESSION = array();
 
         } else {
 
-            //clear session data
+            // clear session data
             $_SESSION = array();
 
-            //remove session cookie
+            // remove session cookie
             if (ini_get("session.use_cookies")) {
                 $params = session_get_cookie_params();
                 setcookie(session_name(), '', time() - 42000,
@@ -368,7 +368,7 @@ class Session{
                 );
             }
 
-            //destroy session file on server
+            // destroy session file on server
             session_destroy();
         }
     }

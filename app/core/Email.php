@@ -35,8 +35,8 @@
          $mail             = new PHPMailer();
          $mail->IsSMTP();
 
-         //good for debugging, otherwise keep it commented
-         //$mail->SMTPDebug  = EMAIL_SMTP_DEBUG;
+         // good for debugging, otherwise keep it commented
+         // $mail->SMTPDebug  = EMAIL_SMTP_DEBUG;
          $mail->SMTPAuth   = Config::get('EMAIL_SMTP_AUTH');
          $mail->SMTPSecure = Config::get('EMAIL_SMTP_SECURE');
          $mail->Host       = Config::get('EMAIL_SMTP_HOST');
@@ -75,8 +75,8 @@
                  break;
          }
 
-          // If you don't have an email setup, you can instead save emails in log.txt file using Logger.
-          // Logger::log("EMAIL", $mail->Body);
+         // If you don't have an email setup, you can instead save emails in log.txt file using Logger.
+         // Logger::log("EMAIL", $mail->Body);
          if(!$mail->Send()) {
              throw new Exception("Email couldn't be sent to ". $userData["id"] ." for type: ". $type);
          }

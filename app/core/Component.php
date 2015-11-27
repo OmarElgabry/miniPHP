@@ -55,13 +55,13 @@
       */
      public function config($key, $value = null){
 
-         //set
+         // set
          if($value !== null){
              $this->config = array_merge($this->config, [$key => $value]);
              return $this;
          }
 
-         //get
+         // get
          return array_key_exists($key, $this->config)? $this->config[$key]: null;
      }
 

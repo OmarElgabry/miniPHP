@@ -36,7 +36,7 @@ class Login extends Model{
             $isValid = false;
         }
 
-        //validate captcha
+        // validate captcha
         if(empty($captcha['user']) || strtolower($captcha['user']) !== strtolower($captcha['session'])){
             $this->errors[] = "The entered characters for captcha don't match";
             $isValid = false;
@@ -49,9 +49,9 @@ class Login extends Model{
         $database = Database::openConnection();
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT, array('cost' => Config::get('HASH_COST_FACTOR')));
 
-        //it's very important to use transaction to ensure both:
-        //1. user will be inserted to database
-        //2. the verification email will be sent
+        // it's very important to use transaction to ensure both:
+        // 1. user will be inserted to database
+        // 2. the verification email will be sent
         $database->beginTransaction();
         $query = "INSERT INTO users (name, email, role, hashed_password, email_token, email_last_verification) ".
                  "VALUES (:name, :email, :role, :hashed_password, :email_token, :email_last_verification)";
@@ -62,7 +62,7 @@ class Login extends Model{
         $database->bindValue(':role', "user");
         $database->bindValue(':hashed_password', $hashedPassword);
 
-        //email token and time of generating it
+        // email token and time of generating it
         $token = sha1(uniqid(mt_rand(), true));
         $database->bindValue(':email_token', $token);
         $database->bindValue(':email_last_verification', time());
@@ -89,13 +89,13 @@ class Login extends Model{
      */
     public function doLogIn($email, $password, $rememberMe, $userIp, $userAgent){
 
-        //1. check if user is blocked
+        // 1. check if user is blocked
         if($this->isIpBlocked($userIp)) {
             $this->errors[] = "Your IP Address has been blocked";
             return false;
         }
 
-        //2. validate only presence
+        // 2. validate only presence
         $validation = new Validation();
         if(!$validation->validate([
             "Your Email" => [$email, 'required'],
@@ -104,7 +104,7 @@ class Login extends Model{
             return false;
         }
 
-        //3. check if user has previous failed login attempts
+        // 3. check if user has previous failed login attempts
         $database = Database::openConnection();
         $database->getByUserEmail("failed_logins", $email);
         $failedLogin = $database->fetchAssociative();
@@ -112,15 +112,15 @@ class Login extends Model{
         $last_time   = isset($failedLogin["last_failed_login"])? $failedLogin["last_failed_login"]: null;
         $count       = isset($failedLogin["failed_login_attempts"])? $failedLogin["failed_login_attempts"]: null;
 
-        //check if the failed login attempts exceeded limits
-        //@see Validation::attempts()
+        // check if the failed login attempts exceeded limits
+        // @see Validation::attempts()
         if(!$validation->validate([
             'Failed Login' => [["last_time" => $last_time, "count" => $count], 'attempts']])){
             $this->errors = $validation->errors();
             return false;
         }
 
-        //4. get user from database
+        // 4. get user from database
         $database->prepare("SELECT * FROM users WHERE email = :email AND is_email_activated = 1 LIMIT 1");
         $database->bindValue(':email', $email);
         $database->execute();
@@ -129,28 +129,28 @@ class Login extends Model{
         $userId = isset($user["id"])? $user["id"]: null;
         $hashedPassword = isset($user["hashed_password"])? $user["hashed_password"]: null;
 
-        //5. validate data returned from users table
+        // 5. validate data returned from users table
         if(!$validation->validate([
             "Login" => [["user_id" => $userId, "hashed_password" => $hashedPassword, "password" => $password], 'credentials']])){
 
-            //if not valid, then increment number of failed logins
+            // if not valid, then increment number of failed logins
             $this->incrementFailedLogins($email, $failedLogin);
 
-            //also, check if current IP address is trying to login using multiple accounts,
-            //if so, then block it, if not, just add a new record to database
+            // also, check if current IP address is trying to login using multiple accounts,
+            // if so, then block it, if not, just add a new record to database
             $this->handleIpFailedLogin($userIp, $email);
 
             $this->errors = $validation->errors();
             return false;
         }
 
-        //reset session
+        // reset session
         Session::reset(["user_id" => $userId, "role" => $user["role"], "ip" => $userIp, "user_agent" => $userAgent]);
 
-        //if remember me checkbox is checked, then save data to cookies as well
+        // if remember me checkbox is checked, then save data to cookies as well
         if(!empty($rememberMe) && $rememberMe === "rememberme"){
 
-            //reset cookie, Cookie token usable only once
+            // reset cookie, Cookie token usable only once
             Cookie::reset($userId);
 
         } else {
@@ -158,8 +158,8 @@ class Login extends Model{
             Cookie::remove($userId);
         }
 
-        //if user credentials are valid then,
-        //reset failed logins & forgotten password tokens
+        // if user credentials are valid then,
+        // reset failed logins & forgotten password tokens
         $this->resetFailedLogins($email);
         $this->resetPasswordToken($userId);
 
@@ -175,7 +175,7 @@ class Login extends Model{
      */
     private function blockIp($userIp){
 
-        //if user is already blocked, this method won't be triggered
+        // if user is already blocked, this method won't be triggered
         /*if(!$this->isIpBlocked($userIp)){}*/
 
         $database = Database::openConnection();
@@ -221,15 +221,15 @@ class Login extends Model{
         $ips   = $database->fetchAllAssociative();
         $count = count($ips);
 
-        //block IP if there were failed login attempts(>= 10) with different emails from the same IP address
+        // block IP if there were failed login attempts(>= 10) with different emails from the same IP address
         if($count >= 2){
 
             $this->blockIp($userIp);
 
         } else {
 
-            //check if ip_failed_logins already has a record with current ip + email
-            //if not, then insert it.
+            // check if ip_failed_logins already has a record with current ip + email
+            // if not, then insert it.
             if(!in_array(["ip" => $userIp, "user_email" => $email], $ips, true)){
                 $database->prepare("INSERT INTO ip_failed_logins (ip, user_email) VALUES (:ip, :user_email)");
                 $database->bindValue(":ip", $userIp);
@@ -260,8 +260,8 @@ class Login extends Model{
                      "VALUES (:user_email, :last_failed_login, 1)";
         }
 
-        //Remember? the user_email we are using here is not a foreign key from users table
-        //Why? because this will block even un registered users
+        // Remember? the user_email we are using here is not a foreign key from users table
+        // Why? because this will block even un registered users
         $database->prepare($query);
         $database->bindValue(':last_failed_login', time());
         $database->bindValue(':user_email', $email);
@@ -310,11 +310,11 @@ class Login extends Model{
 
         if($this->isEmailExists($email)){
 
-            //depends on the last query made by isEmailExists()
+            // depends on the last query made by isEmailExists()
             $database = Database::openConnection();
             $user     = $database->fetchAssociative();
 
-            //If no previous records in forgotten_passwords, So, $forgottenPassword will be FALSE.
+            // If no previous records in forgotten_passwords, So, $forgottenPassword will be FALSE.
             $database->getByUserId("forgotten_passwords", $user["id"]);
             $forgottenPassword = $database->fetchAssociative();
 
@@ -326,15 +326,15 @@ class Login extends Model{
                 return false;
             }
 
-            //You need to get the new password token from the database after updating/inserting it
+            // You need to get the new password token from the database after updating/inserting it
             $newPasswordToken = $this->generateForgottenPasswordToken($user["id"], $forgottenPassword);
 
             Email::sendEmail(Config::get('EMAIL_PASSWORD_RESET'), $user["email"], ["id" => $user["id"], "name" => $user["name"]], $newPasswordToken);
         }
 
-        //This will return true even if the email doesn't exists,
-        //because you don't want to give any clue
-        //to (un)authenticated user if email is actually exists or not
+        // This will return true even if the email doesn't exists,
+        // because you don't want to give any clue
+        // to (un)authenticated user if email is actually exists or not
         return true;
     }
 
@@ -348,8 +348,8 @@ class Login extends Model{
      */
     private function isEmailExists($email){
 
-        //email is already unique in the database,
-        //So, we can't have more than 2 users with the same emails
+        // email is already unique in the database,
+        // So, we can't have more than 2 users with the same emails
         $database = Database::openConnection();
         $database->prepare("SELECT * FROM users WHERE email = :email AND is_email_activated = 1 LIMIT 1");
         $database->bindValue(':email', $email);
@@ -380,7 +380,7 @@ class Login extends Model{
                      "VALUES (:user_id, :password_token, :password_last_reset, 1)";
         }
 
-        //generate random hash for email verification (40 char string)
+        // generate random hash for email verification (40 char string)
         $passwordToken = sha1(uniqid(mt_rand(), true));
 
         $database->prepare($query);
@@ -417,27 +417,27 @@ class Login extends Model{
         $database->execute();
         $forgottenPassword = $database->fetchAssociative();
 
-        //It's bad to send the users any passwords, because you can't be sure if the email will be secured,
-        //Also don't send plain text password,
-        //So, sending a token that will be expired after 24 hours is better.
+        // It's bad to send the users any passwords, because you can't be sure if the email will be secured,
+        // Also don't send plain text password,
+        // So, sending a token that will be expired after 24 hours is better.
         $expiry_time = (24 * 60 * 60);
         $time_elapsed = time() - $forgottenPassword['password_last_reset'];
 
         if ($database->countRows() === 1 && $time_elapsed < $expiry_time) {
 
-            //reset token only after the user enters his password.
+            // reset token only after the user enters his password.
             return true;
 
         } else if($database->countRows() === 1 && $time_elapsed > $expiry_time){
 
-            //reset if the user id & token exists in the database, but exceeded the $expiry_time
+            // reset if the user id & token exists in the database, but exceeded the $expiry_time
             $this->resetPasswordToken($userId);
             return false;
 
         }else {
 
-            //reset the token if invalid,
-            //But, if the user id was invalid, this won't make any affect on database
+            // reset the token if invalid,
+            // But, if the user id was invalid, this won't make any affect on database
             $this->resetPasswordToken($userId);
             Logger::log("PASSWORD TOKEN", "User ID ". $userId . " is trying to reset password using invalid token: " . $passwordToken, __FILE__, __LINE__);
             return false;
@@ -478,7 +478,7 @@ class Login extends Model{
             throw new Exception("Couldn't update password");
         }
 
-        //resetting the password token comes ONLY after successful updating password
+        // resetting the password token comes ONLY after successful updating password
         $this->resetPasswordToken($userId);
 
         return true;
@@ -528,20 +528,20 @@ class Login extends Model{
         $user = $database->fetchAssociative();
         $isTokenValid = ($user["email_token"] === $emailToken)? true: false;
 
-        //check if user is already verified
+        // check if user is already verified
         if(!empty($user["is_email_activated"])){
             $this->resetEmailVerificationToken($userId, true);
             return false;
         }
 
-        //setting expiry time on email verification is much better,
-        //you can't be sure if the email will be secured,
-        //also any user can register with email of another person,
-        //so this person won't be able to register at all!.
+        // setting expiry time on email verification is much better,
+        // you can't be sure if the email will be secured,
+        // also any user can register with email of another person,
+        // so this person won't be able to register at all!.
         $expiry_time = (24 * 60 * 60);
         $time_elapsed = time() - $user['email_last_verification'];
 
-        //token is usable only once.
+        // token is usable only once.
         if($database->countRows() === 1 && $isTokenValid && $time_elapsed < $expiry_time) {
 
             $this->resetEmailVerificationToken($userId, true);
@@ -554,8 +554,8 @@ class Login extends Model{
 
         }else{
 
-            //reset token if invalid,
-            //But, if the user id was invalid, this won't make any affect on database
+            // reset token if invalid,
+            // But, if the user id was invalid, this won't make any affect on database
             $this->resetEmailVerificationToken($userId, false);
             Logger::log("EMAIL TOKEN", "User ID ". $userId . " is trying to access using invalid email token " . $emailToken, __FILE__, __LINE__);
             return false;

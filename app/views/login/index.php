@@ -23,6 +23,11 @@
                                         <input name="remember_me" type="checkbox" value="rememberme">Remember Me
                                     </label>
                                 </div>
+                                <?php if (!empty($redirect)) { ?>
+                                    <div class="form-group">
+                                        <input type="hidden" name="redirect" value="<?= $this->encodeHTML($redirect); ?>" />
+                                    </div>
+                                <?php } ?>
 								<div class="form-group form-actions text-right">
                                    <button type="submit" name="submit" value="submit" class="btn btn-sm btn-success">
 										<i class="fa fa-check"></i> Login

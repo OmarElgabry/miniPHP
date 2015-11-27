@@ -251,22 +251,51 @@ class Request{
      */
     public function currentUrl(){
 
-        //1. get uri
+        // 1. get uri
         $uri = $this->uri();
         if (strpos($uri, '?') !== false) {
             list($uri) = explode('?', $uri, 2);
         }
 
-        //2. add querystring arguments(neglect 'url')
+        // 2. add querystring arguments(neglect 'url' & 'redirect')
         $query    = "";
         $queryArr = $this->query;
         unset($queryArr['url']);
+        unset($queryArr['redirect']);
 
         if(!empty($queryArr)){
             $query .= '?' . http_build_query($queryArr, null, '&');
         }
 
         return  $this->name() . $uri . $query;
+    }
+
+    /**
+     * Validates Url(protocol, host, ...)
+     *
+     * @param  string   $url
+     * @return bool
+     */
+    public function validateUrl($url){
+
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }else{
+
+            $url = explode('/', filter_var(trim($url, '/'), FILTER_SANITIZE_URL));
+            $url = array_values(array_filter($url));
+
+            if(count($url) <= 1){
+                return false;
+            }
+
+            $protocol = rtrim($url[0], ":");
+            $host     = $url[1];
+
+            return
+                ($protocol === "http" || $protocol === "https") &&
+                ($this->name() !== null && $this->name() === $host);
+        }
     }
 
 } 

@@ -177,7 +177,7 @@ class SecurityComponent extends Component{
             $config['fields'][] = 'csrf_token';
         }
 
-        //exclude any checkboxes, radio buttons, possible empty arrays, ...etc.
+        // exclude any checkboxes, radio buttons, possible empty arrays, ...etc.
         $exclude = empty($config["exclude"])? []: (array)$config["exclude"];
 
         if($this->request->countData($exclude) !== count($config['fields'])){
@@ -193,7 +193,7 @@ class SecurityComponent extends Component{
             }
         }
 
-        //by default, validate csrf token as well.
+        // by default, validate csrf token as well.
         return $this->CsrfToken();
     }
 

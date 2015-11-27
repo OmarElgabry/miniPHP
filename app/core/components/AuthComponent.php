@@ -52,7 +52,7 @@ class AuthComponent extends Component{
         $this->controller->login->logOut(Session::getUserId());
 
         if($this->request->isAjax()) { $this->controller->response->setStatusCode(403)->send(); }
-        else                         { Redirector::Login(); }
+        else                         { Redirector::Login($this->controller->request->url); }
     }
 
     /**
@@ -186,11 +186,11 @@ class AuthComponent extends Component{
 
         if (Cookie::isCookieValid()) {
 
-            //get role from user class, because cookies don't store roles
+            // get role from user class, because cookies don't store roles
             $role = $this->controller->user->getProfileInfo(Cookie::getUserId())["role"];
             Session::reset(["user_id" => Cookie::getUserId(), "role" => $role, "ip" => $this->request->clientIp(), "user_agent" => $this->request->userAgent()]);
 
-            //reset cookie, Cookie token is usable only once
+            // reset cookie, Cookie token is usable only once
             Cookie::reset(Session::getUserId());
 
             return true;

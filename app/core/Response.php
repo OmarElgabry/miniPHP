@@ -115,7 +115,7 @@ class Response {
             $this->writeCSV();
 
         } else {
-            //$this->sendContent();
+            // $this->sendContent();
         }
 
         if (function_exists('fastcgi_finish_request')) {
@@ -132,7 +132,7 @@ class Response {
      */
     private function sendHeaders(){
 
-        //check headers have already been sent by the developer
+        // check headers have already been sent by the developer
         if (headers_sent()) {
             return $this;
         }
@@ -141,7 +141,7 @@ class Response {
         header(sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText), true, $this->statusCode);
 
         // Content-Type
-        //if Content-Type is already exists in headers, then don't send it
+        // if Content-Type is already exists in headers, then don't send it
         if(!array_key_exists('Content-Type', $this->headers)){
             header('Content-Type: ' . 'text/html; charset=' . $this->charset);
         }

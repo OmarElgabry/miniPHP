@@ -37,12 +37,13 @@ class UserController extends Controller{
      */
     public function index(){
 
-        $this->vars['globalPage'] = "dashboard";
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'dashboard/index.php');
+        $this->vars['curPage'] = "dashboard";
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'dashboard/index.php');
     }
 
     public function profile(){
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php');
+        $this->vars['curPage'] = "profile";
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php');
     }
 
     public function updateProfileInfo(){
@@ -82,16 +83,17 @@ class UserController extends Controller{
      */
     public function revokeEmail(){
 
-        $userId = Encryption::decryptId($this->request->query("id"));
-        $token  = $this->request->query("token");
+        $userId  = $this->request->query("id");
+        $userId  = empty($userId)? null: Encryption::decryptId($this->request->query("id"));
+        $token   = $this->request->query("token");
 
         $result = $this->user->revokeEmail($userId, $token);
 
         if(!$result){
             $this->error("notfound");
         }else{
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php',
-                array("emailUpdates" => ["success" => "Your email updates has been revokes successfully."]));
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php',
+                array("emailUpdates" => ["success" => "Your email updates has been revoked successfully."]));
         }
     }
 
@@ -102,8 +104,9 @@ class UserController extends Controller{
      */
     public function updateEmail(){
 
-        $userId = Encryption::decryptId($this->request->query("id"));
-        $token  = $this->request->query("token");
+        $userId  = $this->request->query("id");
+        $userId  = empty($userId)? null: Encryption::decryptId($this->request->query("id"));
+        $token   = $this->request->query("token");
 
         $result = $this->user->updateEmail($userId, $token);
         $errors = $this->user->errors();
@@ -111,10 +114,10 @@ class UserController extends Controller{
         if(!$result && empty($errors)){
             $this->error("notfound");
         }else if(!$result && !empty($errors)){
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php',
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php',
                 array("emailUpdates" => ["errors" => $this->user->errors()]));
         }else{
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'user/profile.php',
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php',
                 array("emailUpdates" => ["success" => "Your email updates has been updated successfully."]));
         }
     }
@@ -127,8 +130,8 @@ class UserController extends Controller{
      *
      */
     public function bugs(){
-        $this->vars['globalPage'] = "bugs";
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'bugs/index.php');
+        $this->vars['curPage'] = "bugs";
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'bugs/index.php');
     }
 
     /**

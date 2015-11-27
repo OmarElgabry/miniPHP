@@ -20,9 +20,9 @@ class Comment extends Model{
      */
     public function getAll($postId, $pageNum = 1, $commentsCreated = 0){
 
-        //Only for comments, We use $commentsCreated
-        //What's it? Whenever we create a comment, It will be added in-place to the current comments in current .php page,
-        //So, we need to track of those were created, and skip them in the Pagination($offset & $totalCount).
+        // Only for comments, We use $commentsCreated
+        // What's it? Whenever we create a comment, It will be added in-place to the current comments in current .php page,
+        // So, we need to track of those were created, and skip them in the Pagination($offset & $totalCount).
 
         $options    = "WHERE comments.post_id = :post_id ";
         $pagination = Pagination::pagination("comments", $options, [":post_id" => $postId], $pageNum, $commentsCreated);
@@ -43,7 +43,7 @@ class Comment extends Model{
         $database->execute();
         $comments = $database->fetchAllAssociative();
 
-        //you can have post with no comments yet!
+        // you can have post with no comments yet!
         return array("comments" => $comments, "pagination" => $pagination);
     }
 

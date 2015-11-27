@@ -19,7 +19,7 @@
 							</a>
 							
 							<?php 
-								//current admin can't delete himself!
+								// current admin can't delete himself!
 								if(Session::getUserId() !== $user["id"]){?>
 									<a class="btn btn-danger delete"><i class="fa fa-times"></i></a>
 							<?php }?>

@@ -56,8 +56,13 @@
                                             <label>Role</label>
                                             <select name="role" class="form-control" size="1">
 												<option value="">Select Role</option>
-                                                <option value="admin">Admin</option>
-                                                <option value="user">User</option>
+                                                <?php foreach(['admin', 'user'] as $role){ ?>
+                                                    <?php if($role === $info['role']) { ?>
+                                                        <option selected value="<?= $info['role']; ?>"><?= ucfirst($info['role']); ?></option>
+                                                    <?php } else { ?>
+                                                        <option  value="<?= $info['role']; ?>"><?= ucfirst($info['role']); ?></option>
+                                                    <?php } ?>
+                                                <?php } ?>
                                             </select>
                                         </div>
 										<div class="form-group form-actions text-right">

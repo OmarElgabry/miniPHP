@@ -19,7 +19,7 @@ class File extends Model{
      */
     public function getAll($pageNum = 1){
 
-        //get pagination object
+        // get pagination object
         $pagination = Pagination::pagination("files", "", [], $pageNum);
         $offset     = $pagination->getOffset();
         $limit      = $pagination->perPage;
@@ -97,7 +97,7 @@ class File extends Model{
      */
     public function create($userId, $fileData){
 
-        //upload
+        // upload
         $file = Uploader::uploadFile($fileData);
 
         if(!$file) {
@@ -116,7 +116,7 @@ class File extends Model{
         $database->bindValue(':extension', strtolower($file["extension"]));
         $database->execute();
 
-        //if insert failed, then delete the file
+        // if insert failed, then delete the file
         if($database->countRows() !== 1){
             Uploader::deleteFile(APP ."uploads/" . $file["basename"]);
             throw new Exception ("Couldn't upload file");
@@ -143,7 +143,7 @@ class File extends Model{
         $database->getById("files", $id);
         $file = $database->fetchAssociative();
 
-        //start a transaction to guarantee the file will be deleted from both; database and filesystem
+        // start a transaction to guarantee the file will be deleted from both; database and filesystem
         $database->beginTransaction();
         $database->deleteById("files", $id);
 

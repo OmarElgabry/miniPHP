@@ -153,16 +153,16 @@ class CommentsController extends Controller{
         $role = Session::getUserRole();
         $resource = "comments";
 
-        //only for admins
+        // only for admins
         Permission::allow('admin', $resource, ['*']);
 
-        //only for normal users
+        // only for normal users
         Permission::allow('user', $resource, ['getAll', 'getById', 'create']);
         Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
 
         $commentId = $this->request->data("comment_id");
         if(!empty($commentId)){
-            Encryption::decryptIdWithDash($commentId);
+            $commentId = Encryption::decryptIdWithDash($commentId);
         }
 
         $config = [

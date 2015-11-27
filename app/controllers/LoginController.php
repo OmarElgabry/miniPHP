@@ -26,6 +26,8 @@ class LoginController extends Controller {
 
         parent::beforeAction();
 
+        $this->vars['curPage'] = "login";
+
         $action = $this->request->param('action');
         $actions = ['login', 'forgotPassword', 'updatePassword'];
         $this->Security->requireAjax($actions);
@@ -37,7 +39,7 @@ class LoginController extends Controller {
                 $this->Security->config("form", [ 'fields' => ['name', 'email', 'password', 'confirm_password', 'captcha']]);
                 break;
             case "login":
-                $this->Security->config("form", [ 'fields' => ['email', 'password'], 'exclude' => ['remember_me']]);
+                $this->Security->config("form", [ 'fields' => ['email', 'password'], 'exclude' => ['remember_me', 'redirect']]);
                 break;
             case "forgotPassword":
                 $this->Security->config("form", [ 'fields' => ['email']]);
@@ -54,22 +56,26 @@ class LoginController extends Controller {
      */
     public function index(){
 
-        //check first if user is already logged in via session or cookie
+        // check first if user is already logged in via session or cookie
         if($this->Auth->isLoggedIn()){
 
             Redirector::dashboard();
 
         } else {
 
-            //clear and regenerate session and cookies(instead of using the existing one in browser),
-            //then show login form.
+            // clear and regenerate session and cookies(instead of using the existing one in browser),
+            // then show login form.
 
-            //But, this won't allow user(un-trusted) to open more than one login form,
-            //because every time it loads, it generates a new CSRF Token
-            //So, keep it commented
-            //$this->login->logOut(Session::getUserId(), true);
+            // But, this won't allow user(un-trusted) to open more than one login form,
+            // because every time it loads, it generates a new CSRF Token
+            // So, keep it commented
+            // $this->login->logOut(Session::getUserId(), true);
 
-            echo $this->view->renderWithLayouts(Config::get('LOGIN_PATH'), Config::get('LOGIN_PATH') . "index.php");
+            // get redirect url if any
+            // validation for the url will be delayed until login()
+            $redirect = $this->request->query('redirect');
+
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . "index.php", ['redirect' => $redirect]);
         }
     }
 
@@ -81,11 +87,11 @@ class LoginController extends Controller {
      */
     public function getCaptcha(){
 
-        //create a captcha with the Captcha library
+        // create a captcha with the Captcha library
         $captcha = new Gregwar\Captcha\CaptchaBuilder;
         $captcha->build();
 
-        //save the captcha characters in session
+        // save the captcha characters in session
         Session::set('captcha', $captcha->getPhrase());
 
         return $captcha;
@@ -121,15 +127,16 @@ class LoginController extends Controller {
      */
     public function verifyUser(){
 
-        $userId = Encryption::decryptId($this->request->query("id"));
-        $token  = $this->request->query("token");
+        $userId  = $this->request->query("id");
+        $userId  = empty($userId)? null: Encryption::decryptId($this->request->query("id"));
+        $token   = $this->request->query("token");
 
         $result = $this->login->isEmailVerificationTokenValid($userId, $token);
 
         if(!$result){
             $this->error("notfound");
         }else{
-            echo $this->view->renderWithLayouts(Config::get('LOGIN_PATH'), Config::get('LOGIN_PATH') . 'userVerified.php');
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'userVerified.php');
         }
     }
 
@@ -142,14 +149,21 @@ class LoginController extends Controller {
         $email       = $this->request->data("email");
         $password    = $this->request->data("password");
         $rememberMe  = $this->request->data("remember_me");
+        $redirect    = $this->request->data("redirect");
 
         $result = $this->login->doLogIn($email, $password, $rememberMe, $this->request->clientIp(), $this->request->userAgent());
 
         if(!$result){
             echo $this->view->renderErrors($this->login->errors());
         }else{
-            //$this->response->setStatusCode(403)->send();
-            echo $this->view->JSONEncode(array("redirect" => PUBLIC_ROOT));
+
+            // check for redirect url, and validate it
+            if(!empty($redirect) && !$this->request->validateUrl($redirect)){
+                $redirect = null;
+            }
+
+            // $this->response->setStatusCode(403)->send();
+            echo $this->view->JSONEncode(array("redirect" => empty($redirect)? PUBLIC_ROOT: $redirect));
         }
     }
 
@@ -176,7 +190,8 @@ class LoginController extends Controller {
      */
     public function resetPassword(){
 
-        $userId  = Encryption::decryptId($this->request->query("id"));
+        $userId  = $this->request->query("id");
+        $userId  = empty($userId)? null: Encryption::decryptId($this->request->query("id"));
         $token   = $this->request->query("token");
 
         $result = $this->login->isForgottenPasswordTokenValid($userId, $token);
@@ -187,20 +202,20 @@ class LoginController extends Controller {
 
         } else {
 
-            //If there is a user already logged in, then log out.
-            //It not necessary for the logged in user to be the same as user_id in the requested reset password URL.
+            // If there is a user already logged in, then log out.
+            // It not necessary for the logged in user to be the same as user_id in the requested reset password URL.
 
-            //But, this won't allow user to open more than one update password form,
-            //because every time it loads, it generates a new CSRF Token
-            //So, keep it commented
-            //$this->login->logOut(Session::getUserId(), true);
+            // But, this won't allow user to open more than one update password form,
+            // because every time it loads, it generates a new CSRF Token
+            // So, keep it commented
+            // $this->login->logOut(Session::getUserId(), true);
 
-            //don't store the user id in a hidden field in the update password form,
-            //because user can easily open inspector and change it,
-            //so you will ending up using updatePassword() on an invalid user id.
+            // don't store the user id in a hidden field in the update password form,
+            // because user can easily open inspector and change it,
+            // so you will ending up using updatePassword() on an invalid user id.
             Session::set("user_id_reset_password", $userId);
 
-            echo $this->view->renderWithLayouts(Config::get('LOGIN_PATH'), Config::get('LOGIN_PATH') . 'updatePassword.php');
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'updatePassword.php');
         }
     }
 
@@ -220,7 +235,7 @@ class LoginController extends Controller {
             echo $this->view->renderErrors($this->login->errors());
         } else {
 
-            //logout, and clear any existing session and cookies
+            // logout, and clear any existing session and cookies
             $this->login->logOut(Session::getUserId());
 
             echo $this->view->renderSuccess("Your password has been changed successfully, Please login again.");

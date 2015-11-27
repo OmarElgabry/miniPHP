@@ -8,12 +8,12 @@
 			$currentPage = $pagination->currentPage;
 			
 			if($totalPages > 1) {
-				//1.
+				// 1.
 				if($pagination->hasPreviousPage()) {
 					$html .= "<li><a href='javascript:void(0)' class='prev' ><i class='fa fa-angle-left'></i></a></li>";
 				}
 				
-				//2.
+				// 2.
 				$i = (($currentPage - 4) > 1)? ($currentPage - 4): 1;
 				$end = (($currentPage + 4) < $totalPages)? ($currentPage + 4): $totalPages;
 				for(; $i <= $end; $i++) {
@@ -24,7 +24,7 @@
 					}
 				}
 				
-				//3.
+				// 3.
 				if($pagination->hasNextPage()) {
 					$html .= "<li><a href='javascript:void(0)' class='next' ><i class='fa fa-angle-right'></i></a></li>";
 				}

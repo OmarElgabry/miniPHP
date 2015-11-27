@@ -13,7 +13,7 @@ class FilesController extends Controller {
 
         parent::beforeAction();
 
-        $this->vars['globalPage'] = "files";
+        $this->vars['curPage'] = "files";
 
         $action = $this->request->param('action');
         $actions = ['getAll', 'create', 'delete'];
@@ -35,10 +35,10 @@ class FilesController extends Controller {
 
     public function index(){
 
-        //clear all notifications whenever you hit 'files' in the navigation bar
+        // clear all notifications whenever you hit 'files' in the navigation bar
         $this->user->clearNotifications(Session::getUserId(), $this->file->table);
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('VIEWS_PATH') . 'files/index.php');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'files/index.php');
     }
 
     public function getAll(){
@@ -86,16 +86,16 @@ class FilesController extends Controller {
         $role = Session::getUserRole();
         $resource = "files";
 
-        //only for admins
+        // only for admins
         Permission::allow('admin', $resource, ['*']);
 
-        //only for normal users
+        // only for normal users
         Permission::allow('user', $resource, ['index', 'getAll', 'create']);
         Permission::allow('user', $resource, ['delete'], 'owner');
 
         $fileId = $this->request->data("file_id");
         if(!empty($fileId)){
-            Encryption::decryptIdWithDash($fileId);
+            $fileId = Encryption::decryptIdWithDash($fileId);
         }
 
         $config = [

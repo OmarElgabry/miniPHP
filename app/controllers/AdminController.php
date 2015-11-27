@@ -22,12 +22,12 @@ class AdminController extends Controller {
         $action = $this->request->param('action');
         $actions = ['getUsers', 'updateUserInfo', 'deleteUser', 'updateBackup', 'restoreBackup'];
 
-        //define the action methods that needs to be triggered only through POST & Ajax request.
+        // define the action methods that needs to be triggered only through POST & Ajax request.
         $this->Security->requireAjax($actions);
         $this->Security->requirePost($actions);
 
-        //You need to explicitly define the form fields that you expect to be returned in POST request,
-        //if form field wasn't defined, this will detected as form tampering attempt.
+        // You need to explicitly define the form fields that you expect to be returned in POST request,
+        // if form field wasn't defined, this will detected as form tampering attempt.
         switch($action){
             case "getUsers":
                 $this->Security->config("form", [ 'fields' => ['name', 'email', 'role', 'page_number']]);
@@ -51,8 +51,8 @@ class AdminController extends Controller {
      */
     public function users(){
 
-        $this->vars['globalPage'] = "users";
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
+        $this->vars['curPage'] = "users";
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
     }
 
     /**
@@ -91,10 +91,10 @@ class AdminController extends Controller {
             $this->error("notfound");
         }
 
-        $this->vars['globalPage']   = "users";
-        $this->vars['globalPageId'] = $userId;
+        $this->vars['curPage']   = "users";
+        $this->vars['curPageId'] = $userId;
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
     }
 
     /**
@@ -143,8 +143,8 @@ class AdminController extends Controller {
      */
     public function backups(){
 
-        $this->vars['globalPage'] = "backups";
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
+        $this->vars['curPage'] = "backups";
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
     }
 
     /**

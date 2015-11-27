@@ -14,7 +14,7 @@ CREATE TABLE `users` (
  `email_token` varchar(48) DEFAULT NULL,
  `email_last_verification` int(11) DEFAULT NULL COMMENT 'unix timestamp',
  `pending_email` varchar(64) DEFAULT NULL COMMENT 'temporary email that will be used when user updates his current one',
- `pending_email_token` varchar(48) CHARACTER SET utf16 DEFAULT NULL,
+ `pending_email_token` varchar(48) DEFAULT NULL,
  `profile_picture` varchar(48) NOT NULL DEFAULT 'default.png' COMMENT 'The base name for the image. Its not always unique because of default.jpg',
  PRIMARY KEY (`id`),
  UNIQUE KEY `email` (`email`)

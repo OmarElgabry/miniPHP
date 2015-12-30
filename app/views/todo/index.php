@@ -10,14 +10,16 @@ if(!empty(Session::get('success'))){
 }
 ?>
 
-<div style="width:80%; margin: 0 auto; margin-top: 5%;">
+<div class="todo_container">
+
+<h2>TODO Application</h2>
 
 <!-- in case of normal post request  -->
 <form action= "<?= PUBLIC_ROOT . "Todo/create" ?>"  method="post">
     <label>Content <span class="text-danger">*</span></label>
     <textarea name="content" class="form-control" required placeholder="What are you thinking?"></textarea>
     <input type='hidden' name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>">
-    <button type="submit" name="submit" value="submit">Create</button>
+    <button type="submit" name="submit" value="submit" class="btn btn-success">Create</button>
 </form>
 
 
@@ -25,7 +27,7 @@ if(!empty(Session::get('success'))){
 <form action= "#" id="form-create-todo" method="post">
     <label>Content <span class="text-danger">*</span></label>
     <textarea name="content" class="form-control" required placeholder="What are you thinking?"></textarea>
-    <button type="submit" name="submit" value="submit">Create</button>
+    <button type="submit" name="submit" value="submit" class="btn btn-success">Create</button>
 </form>
 -->
 
@@ -43,14 +45,14 @@ if(!empty(Session::get('success'))){
             <form action= "<?= PUBLIC_ROOT . "Todo/delete" ?>" method="post">
                 <input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
                 <input type='hidden' name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>">
-                <button type="submit" name="submit" value="submit">Delete</button>
+                <button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
             </form>
 
 
             <!-- in case of ajax request 
             <form action= "#"  method="post">
                 <input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
-                <button type="submit" name="submit" value="submit">Delete</button>
+                <button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
             </form>
              -->
         </li>

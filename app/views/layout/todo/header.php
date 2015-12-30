@@ -15,6 +15,32 @@
     <link rel="stylesheet" href="<?= PUBLIC_ROOT;?>css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= PUBLIC_ROOT;?>css/sb-admin-2.css">
     <link rel="stylesheet" href="<?= PUBLIC_ROOT;?>css/font-awesome.min.css" rel="stylesheet" type="text/css">
-		
+    
+    <!-- Styles for ToDo Application -->
+    <style>
+        .todo_container{
+            width:80%; 
+            margin: 0 auto; 
+            margin-top: 5%
+        }
+        #todo-list li{ 
+            list-style-type: none; 
+            border: 1px solid #e7e7e7;
+            padding: 3px;
+            margin: 3px;
+        }
+        #todo-list li:hover{
+            background-color: #eee;
+        }
+        form button{
+            float:right;
+            margin: 3px;
+        }
+        form:after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+    </style>
 </head>
 <body>

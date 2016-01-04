@@ -250,7 +250,7 @@ Check & validate if request is coming from the same domain. Although they can be
 
 Validate submitted form coming from POST request. The pitfall of this method is you need to define the expected form fields, or data that will be sent with POST request. 
 
-By default, the framework will make sure the CSRF token is passed with the form fields, if you don't want to validate the CSRF token, then assign ```validateCsrfToken``` to ```false``` as show in the example.
+By default, the framework will validate for form tampering when POST request is made, and it will make sure the CSRF token is passed with the form fields.
 
 + Unknown fields cannot be added to the form.
 + Fields cannot be removed from the form.
@@ -273,8 +273,8 @@ By default, the framework will make sure the CSRF token is passed with the form 
                 $this->Security->config("form", [ 'fields' => ['note_text']]);
                 break;
             case "delete":
-				// if you don't want to validate the CSRF Token, then assign 'validateCsrfToken' to false
-                // $this->Security->config("validateCsrfToken", false);
+				// If you want to disable validation for form tampering
+				// $this->Security->config("validateForm", false);
                 $this->Security->config("form", [ 'fields' => ['note_id']]);
                 break;
         }
@@ -286,7 +286,29 @@ CSRF Tokens are important to validate the submitted forms, and to make sure they
 
 They are valid for a certain duration(>= 1 day), then it will be regenerated and stored in user's session.
 
-CSRF tokens are generated per session. You can either add a hidden form field with ``` name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>" ```
+CSRF validation is disabled by default. If you want to validate the CSRF token, then assign ```validateCsrfToken``` to ```true``` as shown in the example. CSRF validation will be forced when request is POST and form tampering is enabled.
+
+```php
+    // NotesController
+
+    public function beforeAction(){
+
+        parent::beforeAction();
+
+		$action = $this->request->param('action');
+		$actions = ['index'];
+
+        $this->Security->requireGet($actions);
+
+        switch($action){
+            case "index":
+                $this->Security->config("validateCsrfToken", true);
+                break;
+        }
+    }
+```
+
+CSRF tokens are generated per session. You can either add a hidden form field with ``` name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>" ``` OR in the URL as query parameter  ``` PUBLIC_ROOT . "?csrf_token=" . urlencode(Session::generateCsrfToken()) ```
 
 In case of Ajax calls, assign ```Session::generateCsrfToken()``` to a JavaScript varibale in the [footer.php](https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php), which you can send with every ajax request.
 
@@ -542,8 +564,8 @@ class TodoController extends Controller{
                 $this->Security->config("form", [ 'fields' => ['content'], 'exclude' => ['submit']]);
                 break;
             case "delete":
-				// if you don't want to validate the CSRF Token, then assign 'validateCsrfToken' to false
-                // $this->Security->config("validateCsrfToken", false);
+				// If you want to disable validation for form tampering
+				// $this->Security->config("validateForm", false);
                 $this->Security->config("form", [ 'fields' => ['todo_id'], 'exclude' => ['submit']]);
                 break;
         }

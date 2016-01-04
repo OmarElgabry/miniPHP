@@ -28,8 +28,8 @@ class TodoController extends Controller{
                 $this->Security->config("form", [ 'fields' => ['content'], 'exclude' => ['submit']]);
                 break;
             case "delete":
-                // if you don't want to validate the CSRF Token, then assign 'validateCsrfToken' to false
-                // $this->Security->config("validateCsrfToken", false);
+				// If you want to disable validation for form tampering
+				// $this->Security->config("validateForm", false);
                 $this->Security->config("form", [ 'fields' => ['todo_id'], 'exclude' => ['submit']]);
                 break;
         }

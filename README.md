@@ -830,7 +830,7 @@ if(!empty(Session::get('success'))){
 			
 			
 			<!-- in case of ajax request 
-			<form action= "#"  method="post">
+			<form class="form-delete-todo" action= "#"  method="post">
 				<input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
 				<button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
 			</form>
@@ -881,7 +881,7 @@ var events = {
 	            }
 	        },
 	        delete: function(){
-	            $("#todo-list form").submit(function(e){
+	            $("#todo-list form.form-delete-todo").submit(function(e){
 	                e.preventDefault();
 	                if (!confirm("Are you sure?")) { return; }
 					

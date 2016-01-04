@@ -1198,7 +1198,7 @@ var events = {
                 }
 	        },
 	        delete: function(){
-	            $("#todo-list form").submit(function(e){
+	            $("#todo-list form.form-delete-todo").submit(function(e){
                     e.preventDefault();
                     if (!confirm("Are you sure?")) { return; }
 					

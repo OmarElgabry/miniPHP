@@ -37,6 +37,7 @@ Either way, It's important to understand the PHP MVC skeleton, and know how to a
 			- [Form Tampering](#form-tampering)
 			- [CSRF](#csrf)
 			- [htaccess](#htaccess)
+		+ [Turn on/off Components](#turn-on-off-components)
 	+ [Views](#views)
 	+ [Models](#models)
 	+ [JavaScript & Ajax](#js)
@@ -153,9 +154,7 @@ The AuthComponent takes care of user session.
 	- Cookies in browser are also configured to be expired after (>= 2 weeks)
 	
 ### Authorization <a name="authorization"></a>
-Do you have the right to access or to perform X action?. The AuthComponent takes care of authorization for each controller. Each controller must implement ``` isAuthorized() ``` method.
-
-This method will be called by default at the end of controller constructor. What you need to do is to return ``` boolean ``` value.
+Do you have the right to access or to perform X action?. The AuthComponent takes care of authorization for each controller. Each controller should implement ``` isAuthorized() ``` method. This method will be called by default at the end of controller constructor. What you need to do is to return ``` boolean ``` value.
 
 So, for example, in order to check if current user is admin or not, you would do something like this:
 ```php
@@ -210,9 +209,7 @@ The SecurityComponent takes care of various security tasks and validation.
 
 #### HTTP Method<a name="http-method"></a>
 
-It's important to restrict the request methods. As an example, if you have an action method that accepts form values, So, ONLY POST request will be accepted. The same idea for Ajax, GET, ..etc.
-
-You can do this inside ```initialize()``` method, or keep it inside ```beforeAction() ``` method. These methods are inherited from ```Controller``` Class.
+It's important to restrict the request methods. As an example, if you have an action method that accepts form values, So, ONLY POST request will be accepted. The same idea for Ajax, GET, ..etc. You can do this inside ```beforeAction() ``` method. 
 
 ```php
     // NotesController
@@ -228,7 +225,7 @@ You can do this inside ```initialize()``` method, or keep it inside ```beforeAct
     }
 ```
 
-Also if you require all requests to be through secured connection, you can configure whole controller, and specific actions to redirect all requests to HTTPS instead of HTTP.
+Also if you require all requests to be through secured connection, you can configure the whole controller, or specific actions to redirect all requests to HTTPS instead of HTTP.
 
 ```php
     // NotesController
@@ -237,7 +234,8 @@ Also if you require all requests to be through secured connection, you can confi
 
         parent::beforeAction();
 
-        $actions = ['create', 'delete'];
+        $actions = ['create', 'delete'];	// specific action methods	
+        $actions = ['*'];					// all action methods
 
         $this->Security->requireSecure($actions);
     }
@@ -250,7 +248,7 @@ Check & validate if request is coming from the same domain. Although they can be
 
 Validate submitted form coming from POST request. The pitfall of this method is you need to define the expected form fields, or data that will be sent with POST request. 
 
-By default, the framework will validate for form tampering when POST request is made, and it will make sure the CSRF token is passed with the form fields.
+By default, the framework will validate for form tampering when POST request is made, and it will make sure the CSRF token is passed with the form fields. In this situation, if you didn't pass the CSRF token, it will be considered as a Security thread.
 
 + Unknown fields cannot be added to the form.
 + Fields cannot be removed from the form.
@@ -273,8 +271,8 @@ By default, the framework will validate for form tampering when POST request is 
                 $this->Security->config("form", [ 'fields' => ['note_text']]);
                 break;
             case "delete":
-				// If you want to disable validation for form tampering
-				// $this->Security->config("validateForm", false);
+            	// If you want to disable validation for form tampering
+            	// $this->Security->config("validateForm", false);
                 $this->Security->config("form", [ 'fields' => ['note_id']]);
                 break;
         }
@@ -317,6 +315,38 @@ In case of Ajax calls, assign ```Session::generateCsrfToken()``` to a JavaScript
 + All requests will be redirected to ```index.php``` in public root folder. 
 + Block directory traversal/browsing
 + Deny access to app directory(Althought it's not needed if you setup the application correctly)
+
+### Turn on/off Components <a name="turn-on-off-components"></a>
+Sometimes you need to have a control on these components, such as when want to have a Controller without Authentication or Authorization, or Security component is enabled. This can be done by override ```initialize()``` method inside your Controller class, and load only needed Components.
+
+**Example 1**: Don't load any component, no authentication or authorization, or security validations.
+```php
+public function initialize(){
+
+	$this->loadComponents([]);
+}
+```
+**Example 2**: Load Security, & Auth component, but don't authenticate and authorize, just in case you want to use the Auth component inside the action methods. [LoginController](https://github.com/OmarElGabry/miniPHP/blob/master/app/controllers/LoginController.php#L60) is an example on how to access login page without require a logged-in user.
+```php
+public function initialize(){
+	$this->loadComponents([ 
+	    	'Auth',
+	    	'Security'
+	    ]);
+}
+ ```
+**Example 3**: Load Security, & Auth component, and authenticate user & authorize for the current controller. This is the default behavior in the [core/Controller class](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Controller.php#L137)
+```php
+public function initialize(){
+	$this->loadComponents([
+		'Auth' => [
+			'authenticate' => ['User'],
+			'authorize' => ['Controller']
+		],
+		'Security'
+	    ]);
+}
+``` 
 
 ### Views <a name="views"></a>
 

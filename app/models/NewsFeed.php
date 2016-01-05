@@ -1,4 +1,4 @@
- <?php
+<?php
 
  /**
   * NewsFeed Class

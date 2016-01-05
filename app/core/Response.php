@@ -230,7 +230,11 @@ class Response {
      * @return void
      */
     public function clearBuffer(){
-        return ob_clean();
+	
+		// check if output_buffering is active
+		if(ob_get_level() > 0){
+			return ob_clean();
+		}
     }
 
     /**

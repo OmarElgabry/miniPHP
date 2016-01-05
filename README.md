@@ -477,7 +477,7 @@ Solution:
 CAPTCHAs are particularly effective in preventing automated logins. Using [Captcha](https://github.com/Gregwar/Captcha) an awesome PHP Captcha library.
 
 #### Block IP Address<a name="block-ip"></a>
-Blocking IP Addresses is the last solution to think about. IP Address will be blocked if the same IP failed to login multiple times(>=10) using different credentials(emails).
+Blocking IP Addresses is the last solution to think about. IP Address will be blocked if the same IP failed to login multiple times using different credentials(>=10).
 
 ### Database<a name="database"></a>
 PHP Data Objects (PDO) is used for preparing and executing database queries. Inside ```Database``` Class, there are various methods that hides complexity and let's you instantiate database object, prepare, bind, and execute in few lines.

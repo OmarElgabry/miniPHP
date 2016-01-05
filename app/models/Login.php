@@ -221,7 +221,7 @@ class Login extends Model{
         $ips   = $database->fetchAllAssociative();
         $count = count($ips);
 
-        // block IP if there were failed login attempts(>= 10) with different emails from the same IP address
+        // block IP if there were failed login attempts using different emails(>= 10) from the same IP address
         if($count >= 10){
 
             $this->blockIp($userIp);

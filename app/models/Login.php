@@ -222,7 +222,7 @@ class Login extends Model{
         $count = count($ips);
 
         // block IP if there were failed login attempts(>= 10) with different emails from the same IP address
-        if($count >= 2){
+        if($count >= 10){
 
             $this->blockIp($userIp);
 

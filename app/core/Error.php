@@ -10,7 +10,7 @@
   * @author     Omar El Gabry <omar.elgabry.93@gmail.com>
   */
 
-class Error{
+class Errors{
 
     /**
      * Constructor

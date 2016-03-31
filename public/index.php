@@ -4,7 +4,7 @@
 require  '../vendor/autoload.php';
 
 // error & exception handlers
-Error::register();
+Errors::register();
 
 // path to public root directory where your index.php, css, and js files
 define('PUBLIC_ROOT', 'http://' . Environment::get('HTTP_HOST') . str_replace(['public', '\\'], ['', '/'], dirname(Environment::get('SCRIPT_NAME'))));

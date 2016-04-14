@@ -20,23 +20,34 @@
 						</tbody>
 					</table>
 					<hr>
-					<form action="#" id='form-update-post' method="post">
+					<form action="<?php echo PUBLIC_ROOT; ?>Posts/update" id='form-update-post' method="post">
 						<div class="form-group">
 							<label>Title</label>
 							<input dir="auto" type="text" name="title" value = "<?= $this->encodeHTML($post["title"]); ?>" class="form-control" required maxlength="80" placeholder="Title">
 						</div>
 						<div class="form-group">
 							<label>Content</label>
-							
 							<textarea dir="auto" rows="20" maxlength="1800" name="content" class="form-control" required > <?= $this->encodeHTML($post["content"]); ?></textarea>
-						
 							<p class="help-block"><em>The maximum number of characters allowed is <strong>1800</strong></em></p>
 						</div>
+						<div class="form-group">
+                            <input type="hidden" name="post_id" value="<?= $this->encodeHTML(Encryption::encryptId($post["id"])); ?>" />
+                        </div>
+						<div class="form-group">
+                            <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+                        </div>
 						<div class="form-group form-actions text-right">
-							<button type='button' name='cancel' value='cancel' class="btn btn-md btn-default"><i class="fa fa-times"></i> Cancel</button>
-							<button type='submit' name='edit' value='edit' class="btn btn-md btn-primary"><i class="fa fa-pencil"></i> Edit</button>
+							<a href="<?= PUBLIC_ROOT . "Posts/View/" . urlencode(Encryption::encryptId($post["id"])); ?>">
+								<button type='button' name='cancel' value='cancel' class="btn btn-md btn-default"><i class="fa fa-times"></i> Cancel</button>
+							</a>
+							<button type='submit' name='submit' value='edit' class="btn btn-md btn-primary"><i class="fa fa-pencil"></i> Edit</button>
 						</div>
 					</form>
+					<?php 
+						if(!empty(Session::get('posts-errors'))){
+							echo $this->renderErrors(Session::getAndDestroy('posts-errors'));
+						}
+					?>
 				</div>
 				<!-- /.col-lg-6 (nested) -->
 			</div>

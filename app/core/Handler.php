@@ -1,7 +1,7 @@
 <?php
 
  /**
-  * Error class.
+  * Handler class.
   *
   * Provides basic error and exception handling for your application.
   * It captures and handles all unhandled exceptions and errors.
@@ -10,7 +10,7 @@
   * @author     Omar El Gabry <omar.elgabry.93@gmail.com>
   */
 
-class Errors{
+class Handler{
 
     /**
      * Constructor
@@ -128,9 +128,7 @@ class Errors{
      *
      */
     private static  function viewError(){
-
-        $controller = new ErrorsController();
-        $controller->error("system");
+        (new ErrorsController())->error(500);
     }
 
 }

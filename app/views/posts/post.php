@@ -2,8 +2,12 @@
 			<div dir='auto' class="panel-heading">
 				<?php if(Session::getUserId() === $post["user_id"] || Session::getUserRole() === "admin"){?>
 					<div class="pull-right">
-						<button type="button" class="btn btn-default btn-circle edit"><i class="fa fa-pencil"></i></button>
-						<button type="button" class="btn btn-danger btn-circle delete"><i class="fa fa-times"></i></button>
+						<a href="<?= PUBLIC_ROOT . "Posts/View/" . urlencode(Encryption::encryptId($post["id"])) . "?action=update"; ?>">
+							<button type="button" class="btn btn-default btn-circle edit"><i class="fa fa-pencil"></i></button>
+						</a>
+						<a href="<?= PUBLIC_ROOT . "Posts/delete/" . urlencode(Encryption::encryptId($post["id"])) . "?csrf_token=" . urlencode(Session::generateCsrfToken()); ?>">
+							<button type="button" class="btn btn-danger btn-circle delete"><i class="fa fa-times"></i></button>
+						</a>
 					</div>
 				<?php }?>
 				<h5><?= $post["title"]; ?></h5>

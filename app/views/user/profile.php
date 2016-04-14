@@ -17,7 +17,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <form action="#" id="form-profile-info" method="post" >
+                                    <form action="<?php echo PUBLIC_ROOT; ?>User/updateProfileInfo" id="form-profile-info" method="post" >
 										<div class="form-group">
 											<div class="block-section text-center">
 												<img src="<?= $info["image"];?>" class="img-circle profile-pic-lg">
@@ -45,12 +45,24 @@
                                              <input type="email" name="confirm_email" value="" class="form-control" maxlength="50" placeholder="Confirm Email">
 											 <p class="help-block"><em>Please enter your email again.</em></p>
                                         </div>
+										<div class="form-group">
+											<input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+										</div>
 										<div class="form-group form-actions text-right">
 											<button type="submit" name="submit" value="submit" class="btn btn-md btn-primary">
 												<i class="fa fa-check"></i> Update
 											</button>
 										</div>
                                     </form>
+									
+									<?php 
+										if(!empty(Session::get('profile-info-errors'))){
+											echo $this->renderErrors(Session::getAndDestroy('profile-info-errors'));
+										}else if(!empty(Session::get('profile-info-success'))){
+											echo $this->renderSuccess(Session::getAndDestroy('profile-info-success'));
+										}
+									?>
+
 									<?php if(!empty($emailUpdates["success"])):?>
 										<div class="success">
 											<div class="alert alert-success">
@@ -69,7 +81,8 @@
 									
 									<hr>
 									<!-- Upload Profile Picture -->
-                                    <form action="#" id="form-profile-picture" method="post" enctype="multipart/form-data">
+                                    <form action="<?php echo PUBLIC_ROOT; ?>User/updateProfilePicture" id="form-profile-picture" 
+                                    	method="post" enctype="multipart/form-data">
 										<div class="form-group">
 											<label>Profile Picture</label>
 											<input type="file" name="file" required>
@@ -80,12 +93,21 @@
 										<div class="progress progress-striped active display-none">
 											<div class="progress-bar progress-bar-success" style="width: 0%"></div>
 										</div>
+										<div class="form-group">
+											<input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+										</div>
 										<div class="form-group form-actions text-right">
 											<button type="submit" value="submit" class="btn btn-md btn-primary">
 												<i class="fa fa-upload"></i> Upload
 											</button>
 										</div>
 									</form>
+									<?php 
+										if(!empty(Session::get('profile-picture-errors'))){
+											echo $this->renderErrors(Session::getAndDestroy('profile-picture-errors'));
+										}
+									?>
+
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
                             </div>

@@ -34,7 +34,7 @@
                                     </thead>
                                     <tbody>
                                        <?php 
-											$postsData = $this->controller->post->getAll();
+											$postsData = $this->controller->post->getAll(empty($pageNum)? 1: $pageNum);
 											echo $this->render(Config::get('VIEWS_PATH') . "posts/posts.php", array("posts" => $postsData["posts"]));
 										?>
                                     </tbody>
@@ -45,7 +45,8 @@
 							<div class="text-right">
 								<ul class="pagination">
 									<?php 
-										echo $this->render(Config::get('VIEWS_PATH') . "pagination/default.php", array("pagination" => $postsData["pagination"]));
+										echo $this->render(Config::get('VIEWS_PATH') . "pagination/default.php", 
+                                            ["pagination" => $postsData["pagination"], "link"=> "Posts"]);
 									?>
 								</ul>
 							</div>

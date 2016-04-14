@@ -33,14 +33,14 @@ class DownloadsController extends Controller {
         $file = $this->file->getByHashedName($hashedFileName);
 
         if(empty($file)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $fullPath .= $hashedFileName . "." . $file["extension"];
         $file["basename"] = $file["filename"] . "." . $file["extension"];
 
         if(!Uploader::isFileExists($fullPath)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $this->response->download($fullPath, ["basename" => $file["basename"], "extension" => $file["extension"]])->send();

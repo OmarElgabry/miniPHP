@@ -12,8 +12,13 @@
                <div class="col-sm-8 col-lg-8">
 					<div id="view-post" class="panel panel-default">
                        <?php 
-							$post = $this->controller->post->getById($postId);
-							echo $this->render(Config::get('VIEWS_PATH') . "posts/post.php", array("post" => $post));
+                            $post = $this->controller->post->getById($postId);
+
+                       		if(empty($action)){
+								echo $this->render(Config::get('VIEWS_PATH') . "posts/post.php", array("post" => $post));
+                       		}else if($action === "update"){
+                       			echo $this->render(Config::get('VIEWS_PATH') . 'posts/postUpdateForm.php', array("post" => $post));
+                       		}
 						?>
                     </div>
 					

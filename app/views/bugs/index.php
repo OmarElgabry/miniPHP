@@ -17,7 +17,9 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                <form action="#" id="form-bug" method="post">
+
+                                <?php if(empty(Session::get('report-bug-success'))){ ?>
+                                <form action="<?php echo PUBLIC_ROOT; ?>User/reportBug" id="form-bug" method="post">
                                         <div class="form-group">
                                             <label>Subject <span class="text-danger">*</span></label>
 											<input type="text" name="subject" class="form-control" required maxlength="80" placeholder="Write the subject">
@@ -40,12 +42,21 @@
 											<textarea class="form-control" name="message" required rows="20" maxlength="1800"></textarea>
 											<p class="help-block"><em>The maximum number of characters allowed is <strong>1800</strong></em></p>
                                         </div>
+                                        <div class="form-group">
+                                            <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+                                        </div>
 										<div class="form-group form-actions text-right">
 											<button type="submit" name="submit" value="submit" class="btn btn-md btn-success">
 												<i class="fa fa-check"></i> Send
 											</button>
 										</div>
                                     </form>
+                                    <?php } else { echo $this->renderSuccess(Session::getAndDestroy('report-bug-success')); } ?>
+                                    <?php 
+                                        if(!empty(Session::get('report-bug-errors'))){
+                                            echo $this->renderErrors(Session::getAndDestroy('report-bug-errors'));
+                                        }
+                                    ?>
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
                             </div>

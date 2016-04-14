@@ -20,7 +20,7 @@ class AdminController extends Controller {
         parent::beforeAction();
 
         $action = $this->request->param('action');
-        $actions = ['getUsers', 'updateUserInfo', 'deleteUser', 'updateBackup', 'restoreBackup'];
+        $actions = ['getUsers', 'updateUserInfo', 'deleteUser'];
 
         // define the action methods that needs to be triggered only through POST & Ajax request.
         $this->Security->requireAjax($actions);
@@ -30,7 +30,7 @@ class AdminController extends Controller {
         // if form field wasn't defined, this will detected as form tampering attempt.
         switch($action){
             case "getUsers":
-                $this->Security->config("form", [ 'fields' => ['name', 'email', 'role', 'page_number']]);
+                $this->Security->config("form", [ 'fields' => ['name', 'email', 'role', 'page']]);
                 break;
             case "updateUserInfo":
                 $this->Security->config("form", [ 'fields' => ['user_id', 'name', 'password', 'role']]);
@@ -40,7 +40,7 @@ class AdminController extends Controller {
                 break;
             case "updateBackup":
             case "restoreBackup":
-                $this->Security->config("validateForm", false);
+                $this->Security->config("validateCsrfToken", true);
                 break;
         }
     }
@@ -51,7 +51,7 @@ class AdminController extends Controller {
      */
     public function users(){
 
-        $this->vars['curPage'] = "users";
+        Config::addJsConfig('curPage', "users");
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
     }
 
@@ -64,7 +64,7 @@ class AdminController extends Controller {
         $name     = $this->request->data("name");
         $email    = $this->request->data("email");
         $role     = $this->request->data("role");
-        $pageNum  = $this->request->data("page_number");
+        $pageNum  = $this->request->data("page");
 
         $usersData = $this->admin->getUsers($name, $email, $role, $pageNum);
 
@@ -88,11 +88,11 @@ class AdminController extends Controller {
         $userId = Encryption::decryptId($userId);
 
         if(!$this->user->exists($userId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
-        $this->vars['curPage']   = "users";
-        $this->vars['curPageId'] = $userId;
+        Config::addJsConfig('curPage', "users");
+        Config::addJsConfig('userId', Encryption::encryptId($userId));
 
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
     }
@@ -103,13 +103,13 @@ class AdminController extends Controller {
      */
     public function updateUserInfo(){
 
-        $userId     = (int)$this->request->data("user_id");
+        $userId     = Encryption::decryptId($this->request->data("user_id"));
         $name       = $this->request->data("name");
         $password   = $this->request->data("password");
         $role       = $this->request->data("role");
 
         if(!$this->user->exists($userId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $result = $this->admin->updateUserInfo($userId, Session::getUserId(), $name, $password, $role);
@@ -130,7 +130,7 @@ class AdminController extends Controller {
         $userId = Encryption::decryptIdWithDash($this->request->data("user_id"));
 
         if(!$this->user->exists($userId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $this->admin->deleteUser(Session::getUserId(), $userId);
@@ -143,7 +143,7 @@ class AdminController extends Controller {
      */
     public function backups(){
 
-        $this->vars['curPage'] = "backups";
+        Config::addJsConfig('curPage', "backups");
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
     }
 
@@ -154,7 +154,9 @@ class AdminController extends Controller {
     public function updateBackup(){
 
         $this->admin->updateBackup();
-        echo $this->view->renderSuccess("Backup has been updated");
+
+        Session::set('backup-success', "Backup has been updated");
+        Redirector::root("Admin/Backups");
     }
 
     /**
@@ -166,9 +168,11 @@ class AdminController extends Controller {
         $result = $this->admin->restoreBackup();
 
         if(!$result){
-            echo $this->view->renderErrors($this->admin->errors());
+            Session::set('backup-errors', $this->admin->errors());
+            Redirector::root("Admin/Backups");
         }else{
-            echo $this->view->renderSuccess("Backup has been restored successfully");
+            Session::set('backup-success', "Backup has been restored successfully");
+            Redirector::root("Admin/Backups");
         }
     }
 

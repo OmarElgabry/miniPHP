@@ -15,7 +15,6 @@ class UserController extends Controller{
 
         $action = $this->request->param('action');
         $actions = ['updateProfileInfo', 'updateProfilePicture', 'reportBug'];
-        $this->Security->requireAjax($actions);
         $this->Security->requirePost($actions);
 
         switch($action){
@@ -37,12 +36,13 @@ class UserController extends Controller{
      */
     public function index(){
 
-        $this->vars['curPage'] = "dashboard";
+        Config::addJsConfig('curPage', "dashboard");
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'dashboard/index.php');
     }
 
     public function profile(){
-        $this->vars['curPage'] = "profile";
+
+        Config::addJsConfig('curPage', "profile");
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php');
     }
 
@@ -56,24 +56,30 @@ class UserController extends Controller{
         $result = $this->user->updateProfileInfo(Session::getUserId(), $name, $password, $email, $confirmEmail);
 
         if(!$result){
-            echo $this->view->renderErrors($this->user->errors());
+
+            Session::set('profile-info-errors', $this->user->errors());
+
         }else{
+
             $message  = "Your Profile has been updated. ";
             $message .= $result["emailUpdated"]? "Please check your new email to confirm the changes, or your current email to revoke the changes": "";
-            echo $this->view->renderSuccess($message);
+
+            Session::set('profile-info-success', $message);
         }
+
+        Redirector::root("User/Profile");
     }
 
     public function updateProfilePicture(){
 
-        $fileData = $this->request->data("file");
-        $image = $this->user->updateProfilePicture(Session::getUserId(), $fileData);
+        $fileData   = $this->request->data("file");
+        $image      = $this->user->updateProfilePicture(Session::getUserId(), $fileData);
 
         if(!$image){
-            echo $this->view->renderErrors($this->user->errors());
-        }else{
-            echo $this->view->JSONEncode(array("data" => ["src" => PUBLIC_ROOT . "img/profile_pictures/" . $image["basename"]]));
+            Session::set('profile-picture-errors', $this->user->errors());
         }
+
+        Redirector::root("User/Profile");
     }
 
     /**
@@ -90,10 +96,9 @@ class UserController extends Controller{
         $result = $this->user->revokeEmail($userId, $token);
 
         if(!$result){
-            $this->error("notfound");
+            $this->error(404);
         }else{
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php',
-                array("emailUpdates" => ["success" => "Your email updates has been revoked successfully."]));
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php', ["emailUpdates" => ["success" => "Your email updates has been revoked successfully."]]);
         }
     }
 
@@ -112,13 +117,12 @@ class UserController extends Controller{
         $errors = $this->user->errors();
 
         if(!$result && empty($errors)){
-            $this->error("notfound");
+            $this->error(404);
         }else if(!$result && !empty($errors)){
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php',
-                array("emailUpdates" => ["errors" => $this->user->errors()]));
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php', ["emailUpdates" => ["errors" => $this->user->errors()]]);
         }else{
             echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php',
-                array("emailUpdates" => ["success" => "Your email updates has been updated successfully."]));
+                ["emailUpdates" => ["success" => "Your email updates has been updated successfully."]]);
         }
     }
 
@@ -130,7 +134,7 @@ class UserController extends Controller{
      *
      */
     public function bugs(){
-        $this->vars['curPage'] = "bugs";
+        Config::addJsConfig('curPage', "bugs");
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'bugs/index.php');
     }
 
@@ -145,11 +149,14 @@ class UserController extends Controller{
         $message = $this->request->data("message");
 
         $result = $this->user->reportBug(Session::getUserId(), $subject, $label, $message);
+
         if(!$result){
-            echo $this->view->renderErrors($this->user->errors());
+            Session::set('report-bug-errors', $this->user->errors());
         }else{
-            echo $this->view->renderSuccess("Email has been sent successfully, We will consider your report.");
+            Session::set('report-bug-success', "Email has been sent successfully, We will consider your report.");
         }
+        
+        Redirector::root("User/Bugs");
     }
 
     public function isAuthorized(){

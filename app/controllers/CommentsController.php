@@ -20,7 +20,7 @@ class CommentsController extends Controller{
 
         switch($action){
             case "getAll":
-                $this->Security->config("form", [ 'fields' => ['post_id', 'page_number', 'comments_created']]);
+                $this->Security->config("form", [ 'fields' => ['post_id', 'page', 'comments_created']]);
                 break;
             case "create":
                 $this->Security->config("form", [ 'fields' => ['post_id', 'content']]);
@@ -44,8 +44,9 @@ class CommentsController extends Controller{
      */
     public function getAll(){
 
-        $postId          = $this->request->data("post_id");
-        $pageNum         = $this->request->data("page_number");
+        $postId = Encryption::decryptId($this->request->data("post_id"));
+
+        $pageNum         = $this->request->data("page");
         $commentsCreated = (int)$this->request->data("comments_created");
 
         $commentsData = $this->comment->getAll($postId, $pageNum, $commentsCreated);
@@ -58,7 +59,8 @@ class CommentsController extends Controller{
 
     public function create(){
 
-        $postId   = $this->request->data("post_id");
+        $postId = Encryption::decryptId($this->request->data("post_id"));
+
         $content  = $this->request->data("content");
 
         $comment = $this->comment->create(Session::getUserId(), $postId, $content);
@@ -83,7 +85,7 @@ class CommentsController extends Controller{
         $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
 
         if(!$this->comment->exists($commentId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $comment = $this->comment->getById($commentId);
@@ -102,7 +104,7 @@ class CommentsController extends Controller{
         $content  = $this->request->data("content");
 
         if(!$this->comment->exists($commentId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $comment = $this->comment->update($commentId, $content);
@@ -125,7 +127,7 @@ class CommentsController extends Controller{
         $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
 
         if(!$this->comment->exists($commentId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $comment = $this->comment->getById($commentId);
@@ -139,7 +141,7 @@ class CommentsController extends Controller{
         $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
 
         if(!$this->comment->exists($commentId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $this->comment->deleteById($commentId);

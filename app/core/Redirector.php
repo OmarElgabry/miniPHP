@@ -22,8 +22,28 @@ class Redirector{
      *
      * @param string $location
      */
-    public static function to($location){
-        $response = new Response('', 302, ["Location" => $location]);
+    public static function to($location, $query = ""){
+
+        if(!empty($query)){
+            $query = '?' . http_build_query((array)$query, null, '&');
+        }
+
+        $response = new Response('', 302, ["Location" => $location . $query]);
+        $response->send();
+    }
+
+    /**
+     * Redirect to the given location from the root
+     *
+     * @param string $location
+     */
+    public static function root($location = "", $query = ""){
+
+        if(!empty($query)){
+            $query = '?' . http_build_query((array)$query, null, '&');
+        }
+
+        $response = new Response('', 302, ["Location" => PUBLIC_ROOT . $location . $query]);
         $response->send();
     }
 

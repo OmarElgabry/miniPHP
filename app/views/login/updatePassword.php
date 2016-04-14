@@ -8,13 +8,22 @@
                         <h3 class="panel-title"><i class="fa fa-lock"></i> Update Your Password</h3>
                     </div>
                     <div class="panel-body">
-                        <form action="#" id="form-update-password" method="post">
+                        <form action="<?php echo PUBLIC_ROOT; ?>Login/updatePassword" id="form-update-password" method="post">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Password" required name="password" type="password">
                                 </div>
 								<div class="form-group">
                                     <input class="form-control" placeholder="Confirm Password" required name="confirm_password" type="password">
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="id" value="<?= $this->encodeHTML($this->controller->request->query("id")); ?>" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="token" value="<?= $this->encodeHTML($this->controller->request->query("token")); ?>" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
                                 </div>
 								<div class="form-group form-actions text-right">
                                     <button type="submit" name="submit" value="submit" class="btn btn-md btn-success">
@@ -23,6 +32,12 @@
                                 </div>
                             </fieldset>
                         </form>
+                        <?php 
+                            if(!empty(Session::get('update-password-errors'))){
+                                echo $this->renderErrors(Session::getAndDestroy('update-password-errors'));
+                            }
+                        ?>
+
                     </div>
                 </div>
             </div>

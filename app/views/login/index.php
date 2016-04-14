@@ -10,7 +10,11 @@
                         <h3 class="panel-title">Login</h3>
                     </div>
                     <div class="panel-body">
-                        <form action="#" id="form-login" method="post" >
+
+                    <?php $display_form = Session::getAndDestroy('display-form'); ?>
+                    
+                        <form action="<?php echo PUBLIC_ROOT; ?>Login/login" id="form-login" method="post" 
+                            <?php if(!empty($display_form)){ echo "class='display-none'"; } ?> >
                             <fieldset>
                                 <div class="form-group">
                                     <input type="email" name="email" class="form-control" required placeholder="E-mail" autofocus>
@@ -28,6 +32,9 @@
                                         <input type="hidden" name="redirect" value="<?= $this->encodeHTML($redirect); ?>" />
                                     </div>
                                 <?php } ?>
+                                <div class="form-group">
+                                    <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+                                </div>
 								<div class="form-group form-actions text-right">
                                    <button type="submit" name="submit" value="submit" class="btn btn-sm btn-success">
 										<i class="fa fa-check"></i> Login
@@ -38,13 +45,22 @@
                                 </div>
                             </fieldset>
                         </form>
-						
-						<form action="#" id="form-forgot-password" method="post" class="display-none">
+						<?php 
+                            if(!empty(Session::get('login-errors'))){
+                                echo $this->renderErrors(Session::getAndDestroy('login-errors'));
+                            }
+                        ?>
+
+                        <?php if(empty(Session::get('forgot-password-success'))){ ?>
+						<form action="<?php echo PUBLIC_ROOT; ?>Login/forgotPassword" id="form-forgot-password" method="post" 
+                            <?php if($display_form !== "forgot-password"){ echo "class='display-none'"; } ?> >
                             <fieldset>
                                 <div class="form-group">
                                     <input type="email" name="email" class="form-control" required placeholder="E-mail" autofocus >
                                 </div>
-								
+								<div class="form-group">
+                                    <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+                                </div>
 								<div class="form-group form-actions text-right">
                                    <button type="submit" name="submit" value="submit" class="btn btn-sm btn-success">
 										<i class="fa fa-check"></i> Send
@@ -55,8 +71,16 @@
                                 </div>
                             </fieldset>
                         </form>
-						
-						<form action="#" id="form-register" method="post" class="display-none">
+						<?php } else { echo $this->renderSuccess(Session::getAndDestroy('forgot-password-success')); } ?>
+                        <?php 
+                            if(!empty(Session::get('forgot-password-errors'))){
+                                echo $this->renderErrors(Session::getAndDestroy('forgot-password-errors'));
+                            }
+                        ?>
+
+                        <?php if(empty(Session::get('register-success'))){ ?>
+						<form action="<?php echo PUBLIC_ROOT; ?>Login/register" id="form-register" method="post" 
+                                <?php if($display_form !== "register"){ echo "class='display-none'"; } ?> >
                             <fieldset>
 								<div class="form-group">
                                     <input class="form-control" placeholder="User Name" required name="name" type="text" autofocus >
@@ -77,6 +101,9 @@
 									<?php $captcha = $this->controller->getCaptcha(); ?>
 									<img src="<?= $captcha->inline();?>">
                                 </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+                                </div>
                                 <div class="form-group form-actions text-right">
                                    <button type="submit" name="submit" value="submit" class="btn btn-sm btn-success">
 										<i class="fa fa-check"></i> Resiger
@@ -89,6 +116,12 @@
 								
                             </fieldset>
                         </form>
+                        <?php } else { echo $this->renderSuccess(Session::getAndDestroy('register-success')); } ?>
+                        <?php 
+                            if(!empty(Session::get('register-errors'))){
+                                echo $this->renderErrors(Session::getAndDestroy('register-errors'));
+                            }
+                        ?>
                     </div>
                 </div>
             </div>

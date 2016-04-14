@@ -17,7 +17,9 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <form action="#" id="form-create-post" method="post">
+
+                                    <?php if(empty(Session::get('posts-success'))){ ?>
+                                    <form action="<?php echo PUBLIC_ROOT; ?>Posts/create" id="form-create-post" method="post">
                                         <div class="form-group">
                                             <label>Title <span class='text-danger'>*</span></label>
                                             <input dir="auto" type="text" name="title" class="form-control" required maxlength="60" placeholder="Title">
@@ -27,12 +29,21 @@
                                             <textarea dir="auto" class="form-control" name="content" required rows="20" maxlength="1800"></textarea>
 											<p class="help-block"><em>The maximum number of characters allowed is <strong>1800</strong></em></p>
                                         </div>
+                                        <div class="form-group">
+                                            <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" />
+                                        </div>
 										<div class="form-group form-actions text-right">
 											 <button type="submit" name="submit" value="submit" class="btn btn-md btn-success">
 												<i class="fa fa-check"></i> Post
 											</button>
 										</div>
                                     </form>
+                                    <?php } else { echo $this->renderSuccess(Session::getAndDestroy('posts-success')); } ?>
+                                    <?php 
+                                        if(!empty(Session::get('posts-errors'))){
+                                            echo $this->renderErrors(Session::getAndDestroy('posts-errors'));
+                                        }
+                                    ?>
                                 </div>
                                 <!-- /.col-lg-6 (nested) -->
                             </div>

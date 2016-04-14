@@ -78,15 +78,15 @@ class View {
 
     /**
      * Renders errors
+     * A json respond will be sent in case of ajax call
      *
      * @param  array  $errors
-     * @param  bool   $jsonEncoded
      * @return mixed  Rendered output
      */
-    public function renderErrors($errors, $jsonEncoded = true){
+    public function renderErrors($errors){
 
          $html = $this->render(Config::get('VIEWS_PATH') . 'alerts/errors.php', ["errors" => $errors]);
-         if($jsonEncoded){
+         if($this->controller->request->isAjax()){
              return self::JSONEncode(array("error" => $html));
          }else{
              return $html;
@@ -95,22 +95,22 @@ class View {
 
     /**
      * Renders success message
+     * A json respond will be sent in case of ajax call
      *
      * @param  string  $message
-     * @param  bool   $jsonEncoded
      * @return mixed  Rendered output
      */
-    public function renderSuccess($message, $jsonEncoded = true){
+    public function renderSuccess($message){
 
          $html = $this->render(Config::get('VIEWS_PATH') . 'alerts/success.php', array("success" => $message));
-         if($jsonEncoded){
+         if($this->controller->request->isAjax()){
              return self::JSONEncode(array("success" => $html));
          }else{
              return $html;
          }
      }
 
-     /** *********************************************** **/
+    /** *********************************************** **/
     /** **************     JSON View     ************** **/
     /** *********************************************** **/
 

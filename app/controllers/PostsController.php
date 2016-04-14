@@ -14,28 +14,21 @@ class PostsController extends Controller{
 
         parent::beforeAction();
 
-        $this->vars['curPage'] = "posts";
+        Config::addJsConfig('curPage', "posts");
 
         $action  = $this->request->param('action');
-        $actions = ['getAll', 'create', 'getUpdateForm', 'update', 'getById', 'delete'];
-        $this->Security->requireAjax($actions);
+        $actions = ['create', 'update'];
         $this->Security->requirePost($actions);
 
         switch($action){
-            case "getAll":
-                $this->Security->config("form", [ 'fields' => ['page_number']]);
-                break;
             case "create":
                 $this->Security->config("form", [ 'fields' => ['title', 'content']]);
-                break;
-            case "getUpdateForm":
-                $this->Security->config("form", [ 'fields' => ['post_id']]);
                 break;
             case "update":
                 $this->Security->config("form", [ 'fields' => ['post_id', 'title', 'content']]);
                 break;
-            case "getById":
             case "delete":
+                $this->Security->config("validateCsrfToken", true);
                 $this->Security->config("form", [ 'fields' => ['post_id']]);
                 break;
         }
@@ -50,7 +43,9 @@ class PostsController extends Controller{
         // clear all notifications
         $this->user->clearNotifications(Session::getUserId(), $this->post->table);
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/index.php');
+        $pageNum  = $this->request->query("page");
+
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/index.php', ['pageNum' => $pageNum]);
     }
 
     /**
@@ -63,13 +58,14 @@ class PostsController extends Controller{
         $postId = Encryption::decryptId($postId);
 
         if(!$this->post->exists($postId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
-        $this->vars['curPage'] = ["posts", "comments"];
-        $this->vars['curPageId'] = $postId;
+        Config::addJsConfig('curPage', ["posts", "comments"]);
+        Config::addJsConfig('postId', Encryption::encryptId($postId));
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', array("postId" => $postId));
+        $action  = $this->request->query('action');
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', ["action"=> $action, "postId" => $postId]);
     }
 
     /**
@@ -77,26 +73,6 @@ class PostsController extends Controller{
      */
     public function newPost(){
         echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/newPost.php');
-    }
-
-    /**
-     * get all posts
-     *
-     */
-    public function getAll(){
-
-        $pageNum = $this->request->data("page_number");
-
-        $postData = $this->post->getAll($pageNum);
-
-        if(!$postData){
-            echo $this->view->renderErrors($this->post->errors());
-        }else{
-
-            $postsHTML      = $this->view->render(Config::get('VIEWS_PATH') . 'posts/posts.php', array("posts" => $postData["posts"]));
-            $paginationHTML = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $postData["pagination"]));
-            echo $this->view->JSONEncode(array("data" => ["posts" => $postsHTML, "pagination" => $paginationHTML]));
-        }
     }
 
     /**
@@ -111,28 +87,12 @@ class PostsController extends Controller{
         $result = $this->post->create(Session::getUserId(), $title, $content);
 
         if(!$result){
-            echo $this->view->renderErrors($this->post->errors());
+            Session::set('posts-errors', $this->post->errors());
         }else{
-            echo $this->view->renderSuccess("Post has been created");
-        }
-    }
-
-    /**
-     * get update form for editing a post
-     *
-     */
-    public function getUpdateForm(){
-
-        $postId = $this->request->data("post_id");
-
-        if(!$this->post->exists($postId)){
-            $this->error("notfound");
+            Session::set('posts-success', "Post has been created");
         }
 
-        $post = $this->post->getById($postId);
-
-        $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/postUpdateForm.php', array("post" => $post));
-        echo $this->view->JSONEncode(array("data" => $html));
+        Redirector::root("Posts/newPost");
     }
 
     /**
@@ -145,48 +105,35 @@ class PostsController extends Controller{
         $title   = $this->request->data("title");
         $content = $this->request->data("content");
 
+        $postId = Encryption::decryptId($postId);
+
         if(!$this->post->exists($postId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $post = $this->post->update($postId, $title, $content);
+
         if(!$post){
-            echo $this->view->renderErrors($this->post->errors());
+
+            Session::set('posts-errors', $this->post->errors());
+            Redirector::root("Posts/View/" . urlencode(Encryption::encryptId($postId)) . "?action=update");
+
         }else{
-
-            $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/post.php', array("post" => $post));
-            echo $this->view->JSONEncode(array("data" => $html));
+            Redirector::root("Posts/View/" . urlencode(Encryption::encryptId($postId)));
         }
     }
 
-    /**
-     * get post by Id
-     *
-     */
-    public function getById(){
+    public function delete($postId = 0){
 
-        $postId  = $this->request->data("post_id");
+        $postId = Encryption::decryptId($postId);
 
         if(!$this->post->exists($postId)){
-            $this->error("notfound");
-        }
-
-        $post = $this->post->getById($postId);
-        $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/post.php', array("post" => $post));
-
-        echo $this->view->JSONEncode(array("data" => $html));
-    }
-
-    public function delete(){
-
-        $postId  = $this->request->data("post_id");
-
-        if(!$this->post->exists($postId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $this->post->deleteById($postId);
-        echo $this->view->renderSuccess("Post has been successfully deleted");
+
+        Redirector::root("Posts");
     }
 
     public function isAuthorized(){
@@ -199,10 +146,13 @@ class PostsController extends Controller{
         Permission::allow('admin', $resource, ['*']);
 
         // only for normal users
-        Permission::allow('user', $resource, ['index', 'view', 'newPost', 'getAll', 'getById', 'create']);
-        Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
+        Permission::allow('user', $resource, ['index', 'view', 'newPost', 'create']);
+        Permission::allow('user', $resource, ['update', 'delete'], 'owner');
 
-        $postId  = $this->request->data("post_id");
+        $postId  = ($action === "delete")? $this->request->param("args")[0]: $this->request->data("post_id");
+        if(!empty($postId)){
+            $postId = Encryption::decryptId($postId);
+        } 
 
         $config = [
             "user_id" => Session::getUserId(),

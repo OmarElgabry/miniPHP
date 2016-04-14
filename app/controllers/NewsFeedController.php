@@ -13,17 +13,13 @@ class NewsFeedController extends Controller{
 
         parent::beforeAction();
 
-        $this->vars['curPage'] = "newsfeed";
+        Config::addJsConfig('curPage', "newsfeed");
 
         $action = $this->request->param('action');
-        $actions = ['getAll', 'create', 'getUpdateForm', 'update', 'getById', 'delete'];
-        $this->Security->requireAjax($actions);
+        $actions = ['create', 'getUpdateForm', 'update', 'getById', 'delete'];
         $this->Security->requirePost($actions);
 
         switch($action){
-            case "getAll":
-                $this->Security->config("form", [ 'fields' => ['page_number']]);
-                break;
             case "create":
                 $this->Security->config("form", [ 'fields' => ['content']]);
                 break;
@@ -43,18 +39,10 @@ class NewsFeedController extends Controller{
     public function index(){
 
         $this->user->clearNotifications(Session::getUserId(), $this->newsfeed->table);
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'newsfeed/index.php');
-    }
 
-    public function getAll(){
+        $pageNum  = $this->request->query("page");
 
-        $pageNum  = $this->request->data("page_number");
-
-        $data   = $this->newsfeed->getAll($pageNum);
-        $html   = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $data["newsfeed"]));
-        $pagination = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $data["pagination"]));
-
-        echo $this->view->JSONEncode(array("data" => ["newsfeed" => $html, "pagination" => $pagination]));
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'newsfeed/index.php', ['pageNum' => $pageNum]);
     }
 
     public function create(){
@@ -64,11 +52,13 @@ class NewsFeedController extends Controller{
         $newsfeed = $this->newsfeed->create(Session::getUserId(), $content);
 
         if(!$newsfeed){
-            echo $this->view->renderErrors($this->newsfeed->errors());
+
+            Session::set('newsfeed-errors', $this->newsfeed->errors());
+            Redirector::root("NewsFeed");
+
         }else{
 
-            $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
-            echo $this->view->JSONEncode(array("data" => $html));
+            Redirector::root("NewsFeed");
         }
     }
 
@@ -77,7 +67,7 @@ class NewsFeedController extends Controller{
         $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
 
         if(!$this->newsfeed->exists($newsfeedId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $newsfeed = $this->newsfeed->getById($newsfeedId);
@@ -88,12 +78,12 @@ class NewsFeedController extends Controller{
 
     public function update(){
 
-        //Remember? each news feed has an id that looks like this: feed-51b2cfa
+        // Remember? each news feed has an id that looks like this: feed-51b2cfa
         $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
         $content    = $this->request->data("content");
 
         if(!$this->newsfeed->exists($newsfeedId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $newsfeed = $this->newsfeed->update($newsfeedId, $content);
@@ -111,7 +101,7 @@ class NewsFeedController extends Controller{
         $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
 
         if(!$this->newsfeed->exists($newsfeedId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $newsfeed = $this->newsfeed->getById($newsfeedId);
@@ -138,7 +128,7 @@ class NewsFeedController extends Controller{
         Permission::allow('admin', $resource, ['*']);
 
         // only for normal users
-        Permission::allow('user', $resource, ['index', 'getAll', 'getById', 'create']);
+        Permission::allow('user', $resource, ['index', 'getById', 'create']);
         Permission::allow('user', $resource, ['update', 'delete', 'getUpdateForm'], 'owner');
 
         $newsfeedId = $this->request->data("newsfeed_id");

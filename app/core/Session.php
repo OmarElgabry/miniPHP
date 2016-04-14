@@ -159,6 +159,29 @@ class Session{
     }
 
     /**
+     * get session value by $key and destroy it
+     *
+     * @access public
+     * @static static method
+     * @param  $key
+     * @return mixed
+     *
+     */
+    public static function getAndDestroy($key){
+
+        if(array_key_exists($key, $_SESSION)){
+
+            $value = $_SESSION[$key];
+            $_SESSION[$key] = null;
+            unset($_SESSION[$key]);
+
+            return $value;
+        }
+        
+        return null;
+    }
+
+    /**
      * matches current IP Address with the one stored in the session
      *
      * @access public

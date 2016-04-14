@@ -1,15 +1,3 @@
-<?php
-
-// display success or error messages in session
-if(!empty(Session::get('success'))){
-    var_dump(Session::get('success'));
-    Session::set('success', null);
-}else if(!empty(Session::get('error'))){
-    var_dump(Session::get('error'));
-    Session::set('error', null);
-}
-?>
-
 <div class="todo_container">
 
 <h2>TODO Application</h2>
@@ -31,7 +19,19 @@ if(!empty(Session::get('success'))){
 </form>
 -->
 
-<br><br>
+<br>
+<?php 
+
+// display success or error messages in session
+if(!empty(Session::get('success'))){
+    echo $this->renderSuccess(Session::getAndDestroy('success'));
+}else if(!empty(Session::get('errors'))){
+    echo $this->renderErrors(Session::getAndDestroy('errors'));
+}
+
+?>
+
+<br><hr><br>
 
 <ul id="todo-list">
 <?php 

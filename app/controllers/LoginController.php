@@ -26,13 +26,12 @@ class LoginController extends Controller {
 
         parent::beforeAction();
 
-        $this->vars['curPage'] = "login";
+        Config::addJsConfig('curPage', "login");
 
         $action = $this->request->param('action');
-        $actions = ['login', 'forgotPassword', 'updatePassword'];
-        $this->Security->requireAjax($actions);
+        $actions = ['login', 'register', 'forgotPassword', 'updatePassword'];
         $this->Security->requirePost($actions);
-        $this->Security->requireGet(['resetPassword', 'logOut']);
+        $this->Security->requireGet(['index', 'verifyUser', 'resetPassword', 'logOut']);
 
         switch($action){
             case "register":
@@ -45,7 +44,7 @@ class LoginController extends Controller {
                 $this->Security->config("form", [ 'fields' => ['email']]);
                 break;
             case "updatePassword":
-                $this->Security->config("form", [ 'fields' => ['password', 'confirm_password']]);
+                $this->Security->config("form", [ 'fields' => ['password', 'confirm_password', 'id', 'token']]);
                 break;
         }
     }
@@ -111,12 +110,15 @@ class LoginController extends Controller {
         $sessionCaptcha  = Session::get('captcha');
 
         $result = $this->login->register($name, $email, $password, $confirmPassword, ['user' => $userCaptcha, 'session' => $sessionCaptcha]);
+        Session::set('display-form', 'register');
 
         if(!$result){
-            echo $this->view->renderErrors($this->login->errors());
+            Session::set('register-errors', $this->login->errors());
         }else{
-            echo $this->view->renderSuccess("Congratulations!, Your account has been created. Please check your email to validate your account within 24 hour");
+            Session::set('register-success', "Congratulations!, Your account has been created. Please check your email to validate your account within 24 hour");
         }
+
+        Redirector::login();
     }
 
     /**
@@ -134,7 +136,7 @@ class LoginController extends Controller {
         $result = $this->login->isEmailVerificationTokenValid($userId, $token);
 
         if(!$result){
-            $this->error("notfound");
+            $this->error(404);
         }else{
             echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'userVerified.php');
         }
@@ -154,7 +156,10 @@ class LoginController extends Controller {
         $result = $this->login->doLogIn($email, $password, $rememberMe, $this->request->clientIp(), $this->request->userAgent());
 
         if(!$result){
-            echo $this->view->renderErrors($this->login->errors());
+            
+            Session::set('login-errors', $this->login->errors());
+            Redirector::login($redirect);
+
         }else{
 
             // check for redirect url, and validate it
@@ -162,8 +167,7 @@ class LoginController extends Controller {
                 $redirect = null;
             }
 
-            // $this->response->setStatusCode(403)->send();
-            echo $this->view->JSONEncode(array("redirect" => empty($redirect)? PUBLIC_ROOT: $redirect));
+            Redirector::to(empty($redirect)? PUBLIC_ROOT: $redirect);
         }
     }
 
@@ -176,12 +180,16 @@ class LoginController extends Controller {
 
         $email  = $this->request->data("email");
         $result = $this->login->forgotPassword($email);
+        
+        Session::set('display-form', 'forgot-password');
 
         if(!$result){
-            echo $this->view->renderErrors($this->login->errors());
+            Session::set('forgot-password-errors', $this->login->errors());
         }else{
-            echo $this->view->renderSuccess("Email has been sent to you. Please check your email to validate your email address within 24 hour");
+            Session::set('forgot-password-success', "Email has been sent to you. Please check your email to validate your email address within 24 hour");
         }
+
+        Redirector::login();
     }
 
     /**
@@ -198,7 +206,7 @@ class LoginController extends Controller {
 
         if(!$result){
 
-            $this->error("notfound");
+            $this->error(404);
 
         } else {
 
@@ -232,13 +240,16 @@ class LoginController extends Controller {
         $result =  $this->login->updatePassword($userId, $password, $confirmPassword);
 
         if(!$result){
-            echo $this->view->renderErrors($this->login->errors());
+
+            Session::set('update-password-errors', $this->login->errors());
+            Redirector::to(PUBLIC_ROOT . "Login/resetPassword", ['id' => $this->request->data("id"), 'token' => $this->request->data("token")]);
+
         } else {
 
             // logout, and clear any existing session and cookies
             $this->login->logOut(Session::getUserId());
 
-            echo $this->view->renderSuccess("Your password has been changed successfully, Please login again.");
+            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'passwordUpdated.php');
         }
     }
 

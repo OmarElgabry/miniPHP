@@ -213,7 +213,7 @@ class App {
     private function notFound(){
 
         $this->controller = new ErrorsController();
-        $this->controller->error("notfound");
+        $this->controller->error(404);
     }
 
 }

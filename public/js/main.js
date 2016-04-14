@@ -8,14 +8,14 @@
 
 
 /*
- * Global Variables
+ * Configuration Variables
  * An Object with key-value paris assigned in footer.php
  *
  * @see footer.php
  * @see core/Controller.php
  */
 
-var globalVars = {};
+var config = {};
 
 /*
  * Ajax
@@ -37,7 +37,7 @@ var ajax = {
         var spinnerEle = null;
 
         $.ajax({
-            url: globalVars.root + url,
+            url: config.root + url,
             type: "POST",
             data: helpers.appendCsrfToken(postData),
             dataType: "json",
@@ -59,7 +59,7 @@ var ajax = {
                 // stopSpinner(spinnerBlock);
                 switch (jqXHR.status){
                     case 302:
-                        helpers.redirectTo(globalVars.root);
+                        helpers.redirectTo(config.root);
                         break;
                     default:
                         helpers.displayErrorPage(jqXHR);
@@ -81,7 +81,7 @@ var ajax = {
     upload: function(url, fileData, callback){
 
         $.ajax({
-            url: globalVars.root + url,
+            url: config.root + url,
             type: "POST",
             data: helpers.appendCsrfToken(fileData),
             dataType: "json",
@@ -108,7 +108,7 @@ var ajax = {
             .fail(function(jqXHR) {
                 switch (jqXHR.status){
                     case 302:
-                        helpers.redirectTo(globalVars.root);
+                        helpers.redirectTo(config.root);
                         break;
                     default:
                         helpers.displayErrorPage(jqXHR);
@@ -158,18 +158,18 @@ var helpers = {
 
         if(typeof (data) === "string"){
             if(data.length > 0){
-                data = data + "&csrf_token=" + globalVars.csrfToken;
+                data = data + "&csrf_token=" + config.csrfToken;
             }else{
-                data = data + "csrf_token=" + globalVars.csrfToken;
+                data = data + "csrf_token=" + config.csrfToken;
             }
         }
 
         else if(data.constructor.name === "FormData"){
-            data.append("csrf_token", globalVars.csrfToken);
+            data.append("csrf_token", config.csrfToken);
         }
 
         else if(typeof(data) === "object"){
-            data.csrf_token = globalVars.csrfToken;
+            data.csrf_token = config.csrfToken;
         }
 
         return data;
@@ -294,7 +294,7 @@ var helpers = {
     validateFileSize: function (fileId){
 
         var size = document.getElementById(fileId).files[0].size;
-        return size < globalVars.fileSizeOverflow;
+        return size < config.fileSizeOverflow;
     },
 
     /**
@@ -327,14 +327,14 @@ var helpers = {
      * The data coming from PHP should be something like this:
      *      data = [error = "some html code", success = "some html code", data = "some html code", redirect = "link"];
      *
-     * @param   object   PHPData        The Data that was sent from the server(PHP)
+     * @param   object   result        The Data that was sent from the server(PHP)
      * @param   string   targetBlock    The target block where the error or success alerts(if exists) will be inserted inside/after it
      * @param   string   errorFunc      The function that will be used to display the error, Ex: html(), after(), ..etc.
      * @param   string   errorType      specifies how the error will be displayed, default or as row
      * @param   string   returnVal      the expected value returned from the server(regardless of errors and redirections), Ex: success, data, ..etc.
      * @return  boolean
      */
-    validateData: function (PHPData, targetBlock, errorFunc, errorType, returnVal){
+    validateData: function (result, targetBlock, errorFunc, errorType, returnVal){
 
         // 1. clear all existing error or success messages
         helpers.clearMessages(targetBlock);
@@ -344,26 +344,26 @@ var helpers = {
         else if(errorFunc === "after")  errorFunc = helpers.after;
         else                            errorFunc = helpers.html;
 
-        // 3. check if PHPData is empty
-        if(helpers.empty(PHPData)){
+        // 3. check if result is empty
+        if(helpers.empty(result)){
             helpers.displayError(targetBlock);
             return false;
         }
 
         // If there was a redirection
-        else if(!helpers.empty(PHPData.redirect)){
-            helpers.redirectTo(PHPData.redirect);
+        else if(!helpers.empty(result.redirect)){
+            helpers.redirectTo(result.redirect);
             return false;
         }
 
         // If there was errors encountered and sent from the server, then display it
-        else if(!helpers.empty(PHPData.error)){
+        else if(!helpers.empty(result.error)){
 
             if(errorType === "default" || helpers.empty(errorType)){
-                errorFunc(targetBlock, PHPData.error);
+                errorFunc(targetBlock, result.error);
             } else if(errorType === "row"){
                 var td = $("<td>").attr("colspan", "5");
-                errorFunc(targetBlock, $(td).html(PHPData.error));
+                errorFunc(targetBlock, $(td).html(result.error));
             }
 
             return false;
@@ -371,10 +371,10 @@ var helpers = {
 
         else{
 
-            if(returnVal === "success" && helpers.empty(PHPData.success)){
+            if(returnVal === "success" && helpers.empty(result.success)){
                 helpers.displayError(targetBlock);
                 return false;
-            } else if(returnVal === "data" && helpers.empty(PHPData.data)){
+            } else if(returnVal === "data" && helpers.empty(result.data)){
                 helpers.displayError(targetBlock);
                 return false;
             } else if(returnVal !== "data" && returnVal !== "success"){
@@ -395,27 +395,29 @@ var helpers = {
 var app = {
     init: function (){
 
-		// initialize todo application event
-		events.todo.init();
-		
-        if(!helpers.empty(globalVars.curPage)){
-
-            // add 'active' class to current navigation list
-            $(".sidebar-nav #"+(globalVars.curPage.constructor === Array? globalVars.curPage[0]: globalVars.curPage)+" a").addClass("active");
+        // initialize todo application event
+        events.todo.init();
+        
+        if(!helpers.empty(config.curPage)){
 
             // pagination
             events.pagination.init();
 
             // events of current page
-            if(globalVars.curPage === "profile")                                         { events.profile.init(); }
-            if(globalVars.curPage === "newsfeed")                                        { events.newsfeed.init(); }
-            if(globalVars.curPage === "posts" || globalVars.curPage.indexOf("posts") != -1)         { events.posts.init(); }
-            if(globalVars.curPage === "comments" || globalVars.curPage.indexOf("comments") != -1)   { events.comments.init(); }
-            if(globalVars.curPage === "files")                                           { events.files.init(); }
-            if(globalVars.curPage === "users")                                           { events.users.init(); }
-            if(globalVars.curPage === "login")                                           { events.login.init(); }
-            if(globalVars.curPage === "bugs")                                            { events.bugs.init(); }
-            if(globalVars.curPage === "backups")                                         { events.backups.init(); }
+            if(config.curPage.constructor === Array){
+
+                config.curPage.forEach(function(sub) {
+                
+                    // add 'active' class to current navigation list
+                    $(".sidebar-nav #"+ sub +" a").addClass("active");
+                    events[sub].init();
+                });
+
+            }else{
+
+                $(".sidebar-nav #"+ config.curPage +" a").addClass("active");
+                events[config.curPage].init();
+            }
         }
     }
 };
@@ -441,14 +443,14 @@ var events = {
          */
         commentsCreated: 0,
 
+
         init: function(){
 
             $("ul.pagination a").click(function(e){
-                e.preventDefault();
 
                 var pageNumber;
 
-                if(globalVars.curPage === "comments" || globalVars.curPage.indexOf("comments") > -1){
+                if(config.curPage === "comments" || config.curPage.indexOf("comments") > -1){
                     pageNumber = ++events.pagination.viewMoreCounter;
                 }
                 else if($(this).hasClass("prev")){
@@ -463,11 +465,14 @@ var events = {
                     pageNumber = $(this).index("ul.pagination a:not(.prev):not(.next)") + 1;
                 }
 
-                if(globalVars.curPage === "newsfeed")                                 { events.newsfeed.get(pageNumber); }
-                else if(globalVars.curPage === "posts")                                          { events.posts.get(pageNumber); }
-                else if(globalVars.curPage === "comments" || globalVars.curPage.indexOf("comments") != -1)  { events.comments.get(pageNumber, events.pagination.commentsCreated); }
-                else if(globalVars.curPage === "files")                                          { events.files.get(pageNumber); }
-                else if(globalVars.curPage === "users")                                          { events.users.get(pageNumber); }
+                if(config.curPage === "comments" || config.curPage.indexOf("comments") != -1) {
+                    e.preventDefault();
+                    events.comments.get(pageNumber, events.pagination.commentsCreated); 
+                }
+                else if(config.curPage === "users") { 
+                    e.preventDefault();
+                    events.users.get(pageNumber);
+                }
 
             });
         },
@@ -490,86 +495,6 @@ var events = {
      */
     login: {
         init: function(){
-            events.login.login();
-            events.login.register();
-            events.login.forgotPassword();
-            events.login.passwordUpdate();
-        },
-        login: function(){
-
-            $("#form-login").submit(function(e){
-                e.preventDefault();
-                ajax.send("Login/login", helpers.serialize(this), function (PHPData){
-                    if(helpers.validateData(PHPData, "#form-login", "after", "default")){
-                        helpers.redirectTo(globalVars.root);
-                    }
-                }, "#form-login");
-            });
-
-            $("#form-login #link-forgot-password, #form-forgot-password #link-login").click(function() {
-
-                $( "#form-login, #form-forgot-password" ).toggleClass("display-none");
-                $(".error").remove();
-                $(".success").remove();
-            });
-
-            $("#link-register").click(function() {
-
-                $( "#form-login, #form-forgot-password").addClass("display-none");
-                $("#form-register").removeClass("display-none");
-                $(".panel-title").text("Register");
-                $(".error").remove();
-                $(".success").remove();
-            });
-
-            $("#form-register #link-login").click(function() {
-
-                $(".panel-title").text("Login");
-                $( "#form-register").addClass("display-none");
-                $( "#form-login").removeClass("display-none");
-                $(".error").remove();
-                $(".success").remove();
-            });
-        },
-        register: function(){
-
-            $("#form-register").submit(function(e){
-                e.preventDefault();
-                ajax.send("Login/register", helpers.serialize(this), registerCallBack, "#form-register");
-            });
-
-            function registerCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-register", "after", "default", "success")){
-                    $("#form-register").after(PHPData.success);
-                    $("#form-register").remove();
-                }
-            }
-        },
-        forgotPassword: function(){
-            $("#form-forgot-password").submit(function(e){
-                e.preventDefault();
-                ajax.send("Login/forgotPassword", helpers.serialize(this), forgotPasswordCallBack, "#form-forgot-password");
-            });
-
-            function forgotPasswordCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-forgot-password", "after", "default", "success")){
-                    $("#form-forgot-password").after(PHPData.success);
-                    /*$("#form-reminder").remove();*/
-                }
-            }
-        },
-        passwordUpdate: function(){
-            $("#form-update-password").submit(function(e){
-                e.preventDefault();
-                ajax.send("Login/updatePassword", helpers.serialize(this), updatePasswordCallBack, "#form-update-password");
-            });
-
-            function updatePasswordCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-update-password", "after", "default", "success")){
-                    $("#form-update-password").after(PHPData.success);
-                    $("#form-update-password").remove();
-                }
-            }
         }
     },
 
@@ -578,43 +503,6 @@ var events = {
      */
     profile: {
         init: function(){
-            events.profile.updateInfo();
-            events.profile.updatePicture();
-        },
-        updateInfo: function(){
-
-            $("#form-profile-info").submit(function(e){
-                e.preventDefault();
-                ajax.send("User/updateProfileInfo", helpers.serialize(this), updateProfileInfoCallBack, "#form-profile-info");
-            });
-
-            function updateProfileInfoCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-profile-info", "after", "default", "success")){
-                    $("#form-profile-info").after(PHPData.success);
-                    // $("#form-profile-info").remove();
-                }
-            }
-        },
-        updatePicture: function(){
-            $("#form-profile-picture").submit(function(e){
-                e.preventDefault();
-                ajax.upload("User/updateProfilePicture", new FormData(this), uploadProfilePictureCallBack);
-            });
-
-            function uploadProfilePictureCallBack(PHPData){
-
-                if(helpers.validateData(PHPData, "#form-profile-picture", "after", "default", "data")){
-
-                    // refresh image(profile and navigation) after uploading
-                    //@see http://stackoverflow.com/questions/1985268/possible-to-clear-cache-of-browser-with-php-code
-
-                    var src = PHPData.data.src;
-                    $("img[class*='profile-pic']").attr( 'src', src + '?last_update=' + (+new Date()) );
-
-                    // $("#form-profile-picture").after(PHPData.success);
-                    // $("#form-profile-picture").remove();
-                }
-            }
         }
     },
 
@@ -623,7 +511,6 @@ var events = {
      */
     newsfeed:{
         init: function(){
-            events.newsfeed.create();
             events.newsfeed.update();
             events.newsfeed.delete();
         },
@@ -633,38 +520,6 @@ var events = {
             // so you can call the function after ajax calls to re-initialize them
             events.newsfeed.update();
             events.newsfeed.delete();
-        },
-        get: function(pageNumber){
-
-            if(helpers.empty(pageNumber)) pageNumber = 1;
-            ajax.send("NewsFeed/getAll", {page_number: pageNumber}, getNewsFeedCallBack, "#list-newsfeed");
-
-            function getNewsFeedCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#list-newsfeed", "html", "default", "data")){
-                    $("#list-newsfeed").html(PHPData.data.newsfeed);
-                    events.newsfeed.reInit();
-
-                    $("ul.pagination").html(PHPData.data.pagination);
-                    events.pagination.init();
-                }else{
-                    $("ul.pagination").html("");
-                }
-            }
-        },
-        create: function(){
-            $("#form-create-newsfeed").submit(function(e){
-                e.preventDefault();
-                ajax.send("NewsFeed/create", helpers.serialize(this), createNewsFeedCallBack, "#form-create-newsfeed");
-            });
-
-            function createNewsFeedCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-create-newsfeed", "after", "default", "data")){
-                    $("#list-newsfeed .no-data").remove();
-                    $(PHPData.data).hide().prependTo("#list-newsfeed").fadeIn();
-                    $("#form-create-newsfeed textarea").val('');
-                    events.newsfeed.reInit();
-                }
-            }
         },
         update: function(){
             $("#list-newsfeed .header .edit").off('click').on('click', function() {
@@ -678,9 +533,9 @@ var events = {
                 function getNewsFeedUpdateForm(){
                     ajax.send("NewsFeed/getUpdateForm", {newsfeed_id: newsfeedId}, getNewsFeedUpdateFormCallBack);
 
-                    function getNewsFeedUpdateFormCallBack(PHPData){
-                        if(helpers.validateData(PHPData, newsfeedBody, "html", "default", "data")){
-                            newsfeedBody.html(PHPData.data);
+                    function getNewsFeedUpdateFormCallBack(result){
+                        if(helpers.validateData(result, newsfeedBody, "html", "default", "data")){
+                            newsfeedBody.html(result.data);
                             activateCancelNewsFeedEvent();
                             activateUpdateNewsFeedEvent();
                         }
@@ -694,9 +549,9 @@ var events = {
                         e.preventDefault();
                         ajax.send("NewsFeed/getById", {newsfeed_id: newsfeedId}, getNewsFeedByIdCallBack);
 
-                        function getNewsFeedByIdCallBack(PHPData){
-                            if(helpers.validateData(PHPData, newsfeedBody, "html", "default", "data")){
-                                $(newsfeedBody).after(PHPData.data);
+                        function getNewsFeedByIdCallBack(result){
+                            if(helpers.validateData(result, newsfeedBody, "html", "default", "data")){
+                                $(newsfeedBody).after(result.data);
                                 $(newsfeedBody).remove();
                                 events.newsfeed.reInit();
                             }
@@ -711,9 +566,9 @@ var events = {
                         e.preventDefault();
                         ajax.send("NewsFeed/update", helpers.serialize("#form-update-"+newsfeedId, "newsfeed_id="+newsfeedId), updateNewsFeedCallBack);
 
-                        function updateNewsFeedCallBack(PHPData){
-                            if(helpers.validateData(PHPData, newsfeedBody, "after", "default", "data")){
-                                $(newsfeedBody).after(PHPData.data);
+                        function updateNewsFeedCallBack(result){
+                            if(helpers.validateData(result, newsfeedBody, "after", "default", "data")){
+                                $(newsfeedBody).after(result.data);
                                 $(newsfeedBody).remove();
                                 events.newsfeed.reInit();
                             }
@@ -733,8 +588,8 @@ var events = {
                 var newsfeedId   = newsfeedBody.attr("id");
 
                 ajax.send("NewsFeed/delete", {newsfeed_id: newsfeedId}, deleteNewsFeedCallBack);
-                function deleteNewsFeedCallBack(PHPData){
-                    if(helpers.validateData(PHPData, newsfeedBody, "html", "default", "success")){
+                function deleteNewsFeedCallBack(result){
+                    if(helpers.validateData(result, newsfeedBody, "html", "default", "success")){
                         $(newsfeedBody).remove();
                     }
                 }
@@ -747,108 +602,6 @@ var events = {
      */
     posts: {
         init: function(){
-            events.posts.create();
-            events.posts.update();
-            events.posts.delete();
-        },
-        reInit: function(){
-            events.posts.update();
-            events.posts.delete();
-        },
-        get: function(pageNumber){
-
-            if(typeof(pageNumber) === "undefined") pageNumber = 1;
-            ajax.send("Posts/getAll", {page_number: pageNumber}, getPostsCallBack, "#list-posts");
-
-            function getPostsCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#list-posts", "html", "default", "data")){
-                    $("#list-posts tbody").html(PHPData.data.posts);
-                    $("ul.pagination").html(PHPData.data.pagination);
-                    events.pagination.init();
-                }else{
-                    $("ul.pagination").html("");
-                }
-            }
-        },
-        create: function(){
-
-            $("#form-create-post").submit(function(e){
-                e.preventDefault();
-                ajax.send("Posts/create", helpers.serialize(this), createPostCallBack, "#form-create-post");
-            });
-            function createPostCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-create-post", "after", "default", "success")){
-                    $("#form-create-post").after(PHPData.success);
-                    $("#form-create-post").remove();
-                }
-            }
-        },
-        update: function(){
-
-            $("#view-post .panel-heading .edit").click(function(){
-
-                var postBody = $(this).parent().parent().parent();
-                getPostUpdateForm();
-
-                // 1. get the update form
-                function getPostUpdateForm(){
-                    ajax.send("Posts/getUpdateForm", {post_id: globalVarscurPageId}, getPostUpdateFormCallBack);
-                    function getPostUpdateFormCallBack(PHPData){
-                        if(helpers.validateData(PHPData, postBody, "html", "default", "data")){
-                            postBody.html(PHPData.data);
-                            activateCancelPostEvent();
-                            activateUpdatePostEvent();
-                        }
-                    }
-                }
-
-                // 2.
-                function activateCancelPostEvent(){
-                    $("#form-update-post button[name='cancel']").click(function(e){
-                        e.preventDefault();
-                        ajax.send("Posts/getById", {post_id: globalVars.curPageId}, getPostByIdCallBack);
-                        function getPostByIdCallBack(PHPData){
-                            if(helpers.validateData(PHPData, postBody, "html", "default", "data")){
-                                $(postBody).html(PHPData.data);
-                                events.posts.reInit();
-                            }
-                        }
-                    });
-                }
-
-                // 3.
-                function activateUpdatePostEvent(){
-                    $("#form-update-post").submit(function(e){
-                        e.preventDefault();
-                        ajax.send("Posts/update", helpers.serialize("#form-update-post", "post_id="+globalVars.curPageId), updatePostCallBack, "#view-post-"+globalVars.curPageId);
-                        function updatePostCallBack(PHPData){
-                            if(helpers.validateData(PHPData, "#form-update-post", "after", "default", "data")){
-                                $(postBody).html(PHPData.data);
-                                events.posts.reInit();
-                            }
-                        }
-                    });
-                }
-
-            });
-        },
-        delete: function(){
-
-            $("#view-post .panel-heading .delete").click(function(e){
-                e.preventDefault();
-                // optional confirmation
-                if (!confirm("Are you sure?")) { return; }
-
-                var postBody = $(this).parent().parent().parent();
-
-                ajax.send("Posts/delete", {post_id: globalVars.curPageId}, deletePostCallBack);
-                function deletePostCallBack(PHPData){
-                    if(helpers.validateData(PHPData, postBody, "html", "default", "success")){
-                        // here we remove all the two columns of post and that of comments as well!.
-                        $(".row:eq(1)").children().eq(1).html(PHPData.success);
-                    }
-                }
-            });
         }
     },
 
@@ -870,15 +623,15 @@ var events = {
             if(helpers.empty(pageNumber)) pageNumber = 1;
             if(helpers.empty(commentsCreated)) commentsCreated = 0;
 
-            ajax.send("Comments/getAll", {post_id: globalVars.curPageId, page_number: pageNumber,
+            ajax.send("Comments/getAll", {post_id: config.postId, page: pageNumber,
                 comments_created: commentsCreated}, getCommentsCallBack, "#list-comments");
 
-            function getCommentsCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#list-comments", "html", "default", "data")){
-                    $("#list-comments").append(PHPData.data.comments);
+            function getCommentsCallBack(result){
+                if(helpers.validateData(result, "#list-comments", "html", "default", "data")){
+                    $("#list-comments").append(result.data.comments);
                     events.comments.reInit();
 
-                    $("ul.pagination").html(PHPData.data.pagination);
+                    $("ul.pagination").html(result.data.pagination);
                     events.pagination.init();
                 }else{
                     $("ul.pagination").html("");
@@ -889,12 +642,12 @@ var events = {
         create: function(){
             $("#form-create-comment").submit(function(e){
                 e.preventDefault();
-                ajax.send("Comments/create", helpers.serialize(this, "post_id="+globalVars.curPageId), createCommentCallBack, "#form-create-comment");
+                ajax.send("Comments/create", helpers.serialize(this, "post_id="+config.postId), createCommentCallBack, "#form-create-comment");
             });
-            function createCommentCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-create-comment", "after", "default", "data")){
+            function createCommentCallBack(result){
+                if(helpers.validateData(result, "#form-create-comment", "after", "default", "data")){
                     $("#list-comments .no-data").remove();
-                    $("#list-comments").append(PHPData.data);
+                    $("#list-comments").append(result.data);
 
                     $("#form-create-comment textarea").val('');
 
@@ -916,9 +669,9 @@ var events = {
                 function getCommentUpdateForm(){
                     ajax.send("Comments/getUpdateForm", {comment_id: commentId}, getCommentUpdateFormCallBack);
 
-                    function getCommentUpdateFormCallBack(PHPData){
-                        if(helpers.validateData(PHPData, commentBody, "html", "default", "data")){
-                            commentBody.html(PHPData.data);
+                    function getCommentUpdateFormCallBack(result){
+                        if(helpers.validateData(result, commentBody, "html", "default", "data")){
+                            commentBody.html(result.data);
                             activateCancelCommentEvent();
                             activateUpdateCommentEvent();
                         }
@@ -930,9 +683,9 @@ var events = {
                     $("#form-update-"+commentId+" button[name='cancel']").click(function(e){
                         e.preventDefault();
                         ajax.send("Comments/getById", {comment_id: commentId}, getCommentByIdCallBack);
-                        function getCommentByIdCallBack(PHPData){
-                            if(helpers.validateData(PHPData, commentBody, "html", "default", "data")){
-                                $(commentBody).after(PHPData.data);
+                        function getCommentByIdCallBack(result){
+                            if(helpers.validateData(result, commentBody, "html", "default", "data")){
+                                $(commentBody).after(result.data);
                                 $(commentBody).remove();
                                 events.comments.reInit();
                             }
@@ -945,9 +698,9 @@ var events = {
                     $("#form-update-"+commentId).submit(function(e){
                         e.preventDefault();
                         ajax.send("Comments/update", helpers.serialize("#form-update-"+commentId, "comment_id="+commentId), updateCommentCallBack);
-                        function updateCommentCallBack(PHPData){
-                            if(helpers.validateData(PHPData, commentBody, "after", "default", "data")){
-                                $(commentBody).after(PHPData.data);
+                        function updateCommentCallBack(result){
+                            if(helpers.validateData(result, commentBody, "after", "default", "data")){
+                                $(commentBody).after(result.data);
                                 $(commentBody).remove();
                                 events.comments.reInit();
                             }
@@ -967,8 +720,8 @@ var events = {
                 var commentId = commentBody.attr("id");
 
                 ajax.send("Comments/delete", {comment_id: commentId}, deleteCommentCallBack);
-                function deleteCommentCallBack(PHPData){
-                    if(helpers.validateData(PHPData, commentBody, "html", "default", "success")){
+                function deleteCommentCallBack(result){
+                    if(helpers.validateData(result, commentBody, "html", "default", "success")){
                         $(commentBody).remove();
                     }
                 }
@@ -987,23 +740,6 @@ var events = {
         reInit: function(){
             events.files.delete();
         },
-        get: function(pageNumber){
-
-            if(typeof(pageNumber) === "undefined") pageNumber = 1;
-            ajax.send("Files/getAll", {page_number: pageNumber}, getFilesCallBack, "#list-files");
-
-            function getFilesCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#list-files", "html", "default", "data")){
-                    $("#list-files tbody").html(PHPData.data.files);
-                    events.files.reInit();
-
-                    $("ul.pagination").html(PHPData.data.pagination);
-                    events.pagination.init();
-                }else{
-                    $("ul.pagination").html("");
-                }
-            }
-        },
         create: function(){
 
             $("#form-upload-file").submit(function(e){
@@ -1016,14 +752,14 @@ var events = {
                 }
             });
 
-            function createFileCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-upload-file", "after", "default", "data")){
+            function createFileCallBack(result){
+                if(helpers.validateData(result, "#form-upload-file", "after", "default", "data")){
 
                     $("#list-files .no-data").remove();
 
                     //How to insert/append an element by fadeIn()?
                     //@see http://stackoverflow.com/questions/4687579/append-an-element-with-fade-in-effect-jquery
-                    $(PHPData.data).hide().prependTo("#list-files tbody").fadeIn();
+                    $(result.data).hide().prependTo("#list-files tbody").fadeIn();
 
                     events.files.reInit();
                 }
@@ -1039,8 +775,8 @@ var events = {
                 var fileId  = row.attr("id");
 
                 ajax.send("Files/delete", {file_id: fileId}, deleteFileCallBack);
-                function deleteFileCallBack(PHPData){
-                    if(helpers.validateData(PHPData, row, "after", "row", "success")){
+                function deleteFileCallBack(result){
+                    if(helpers.validateData(result, row, "after", "row", "success")){
                         $(row).remove();
                     }
                 }
@@ -1068,22 +804,22 @@ var events = {
             var email   = $("#form-search-users input[name='email']").val();
             var role    = $("#form-search-users select[name='role']").val();
 
-            ajax.send("Admin/getUsers", {name: name, email: email, role: role, page_number: pageNumber},
+            ajax.send("Admin/getUsers", {name: name, email: email, role: role, page: pageNumber},
                 events.users.get_search_callback, "#list-users");
         },
         search: function(){
 
             $("#form-search-users").submit(function(e){
                 e.preventDefault();
-                ajax.send("Admin/getUsers", helpers.serialize(this, "page_number=1"), events.users.get_search_callback, "#list-users");
+                ajax.send("Admin/getUsers", helpers.serialize(this, "page=1"), events.users.get_search_callback, "#list-users");
             });
         },
-        get_search_callback: function(PHPData){
-            if(helpers.validateData(PHPData, "#form-search-users", "after", "default", "data")){
-                $("#list-users tbody").html(PHPData.data.users);
+        get_search_callback: function(result){
+            if(helpers.validateData(result, "#form-search-users", "after", "default", "data")){
+                $("#list-users tbody").html(result.data.users);
                 events.users.reInit();
 
-                $("ul.pagination").html(PHPData.data.pagination);
+                $("ul.pagination").html(result.data.pagination);
                 events.pagination.init();
             }else{
                 $("ul.pagination").html("");
@@ -1093,12 +829,12 @@ var events = {
 
             $("#form-update-user-info").submit(function(e){
                 e.preventDefault();
-                ajax.send("Admin/updateUserInfo", helpers.serialize(this, "user_id="+globalVars.curPageId), updateUserInfoCallBack, "#form-update-user-info");
+                ajax.send("Admin/updateUserInfo", helpers.serialize(this, "user_id="+config.userId), updateUserInfoCallBack, "#form-update-user-info");
             });
 
-            function updateUserInfoCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-update-user-info", "after", "default", "success")){
-                    $("#form-update-user-info").after(PHPData.success);
+            function updateUserInfoCallBack(result){
+                if(helpers.validateData(result, "#form-update-user-info", "after", "default", "success")){
+                    $("#form-update-user-info").after(result.success);
                 }
             }
         },
@@ -1112,8 +848,8 @@ var events = {
                 var userId  = row.attr("id");
 
                 ajax.send("Admin/deleteUser", {user_id: userId}, deleteUserCallBack);
-                function deleteUserCallBack(PHPData){
-                    if(helpers.validateData(PHPData, row, "after", "row", "success")){
+                function deleteUserCallBack(result){
+                    if(helpers.validateData(result, row, "after", "row", "success")){
                         $(row).remove();
                     }
                 }
@@ -1126,20 +862,6 @@ var events = {
      */
     bugs:{
         init: function(){
-            events.bugs.create();
-        },
-        create: function(){
-            $("#form-bug").submit(function(e){
-                e.preventDefault();
-                ajax.send("User/reportBug", helpers.serialize(this), reportBugCallBack, "#form-bug");
-            });
-
-            function reportBugCallBack(PHPData){
-                if(helpers.validateData(PHPData, "#form-bug", "after", "default", "success")){
-                    $("#form-bug").after(PHPData.success);
-                    $("#form-bug").remove();
-                }
-            }
         }
     },
 
@@ -1148,74 +870,47 @@ var events = {
      */
     backups:{
         init: function(){
-            events.backups.update();
-            events.backups.restore();
+        }
+    },
+    
+    /*
+     * Todo application
+     */
+    todo:{
+        init: function(){
+            events.todo.create();
+            events.todo.delete();
         },
-        update: function(){
-
-            $("table#backups .update-backup").click(function(e){
+        create: function(){
+            $("#form-create-todo").submit(function(e){
                 e.preventDefault();
-                ajax.send("Admin/updateBackup", {}, updateBackupCallBack, "table#backups");
-                function updateBackupCallBack(PHPData){
-                    if(helpers.validateData(PHPData, "table#backups", "after", "default", "success")){
-                        $("table#backups").after(PHPData.success);
-                    }
-                }
+                ajax.send("Todo/create", helpers.serialize(this), createTodoCallBack, "#form-create-todo");
             });
-        },
-        restore: function(){
 
-            $("table#backups .restore-backup").click(function(e){
+            function createTodoCallBack(result){
+                if(helpers.validateData(result, "#form-create-todo", "after", "default", "success")){
+                    alert(result.success + " refresh the page to see the results");
+                }
+            }
+        },
+        delete: function(){
+            $("#todo-list form.form-delete-todo").submit(function(e){
                 e.preventDefault();
-                ajax.send("Admin/restoreBackup", {}, restoreBackupCallBack, "table#backups");
-                function restoreBackupCallBack(PHPData){
-                    if(helpers.validateData(PHPData, "table#backups", "after", "default", "success")){
-                        $("table#backups").after(PHPData.success);
+                if (!confirm("Are you sure?")) { return; }
+                
+                var cur_todo = $(this).parent();
+                ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
+
+                function deleteTodoCallBack(result){
+                    if(helpers.validateData(result, cur_todo, "after", "default", "success")){
+                        $(cur_todo).remove();
+                        alert(result.success);
                     }
                 }
             });
         }
-    },
-	
-	/*
-     * Todo application
-     */
-	todo:{
-	        init: function(){
-	            events.todo.create();
-	            events.todo.delete();
-	        },
-	        create: function(){
-	            $("#form-create-todo").submit(function(e){
-                    e.preventDefault();
-                    ajax.send("Todo/create", helpers.serialize(this), createTodoCallBack, "#form-create-todo");
-                });
-	
-	            function createTodoCallBack(PHPData){
-                    if(helpers.validateData(PHPData, "#form-create-todo", "after", "default", "success")){
-                        alert(PHPData.success + " refresh the page to see the results");
-                    }
-                }
-	        },
-	        delete: function(){
-	            $("#todo-list form.form-delete-todo").submit(function(e){
-                    e.preventDefault();
-                    if (!confirm("Are you sure?")) { return; }
-					
-					var cur_todo = $(this).parent();
-					ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
-	
-	                function deleteTodoCallBack(PHPData){
-                        if(helpers.validateData(PHPData, cur_todo, "after", "default", "success")){
-                            $(cur_todo).remove();
-                            alert(PHPData.success);
-                        }
-                    }
-                });
-			}
-		}
+    }
 };
-
 
 
 

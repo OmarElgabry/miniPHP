@@ -163,6 +163,7 @@ class SecurityComponent extends Component{
       * - Fields cannot be removed from the form.
       *
       * Use $exclude to exclude anything mightn't be sent with the form, like possible empty arrays, checkboxes, radio buttons, ...etc.
+      * By default, the submit field will be excluded.
       *
       * @param array  $config  configuration data
       * @return boolean
@@ -179,6 +180,9 @@ class SecurityComponent extends Component{
 
         // exclude any checkboxes, radio buttons, possible empty arrays, ...etc.
         $exclude = empty($config["exclude"])? []: (array)$config["exclude"];
+        if(!in_array('submit', $exclude, true)){
+            $exclude[] = 'submit';
+        }
 
         if($this->request->countData($exclude) !== count($config['fields'])){
             Logger::log("Form Tampering", "User: ". Session::getUserId() ." is tampering the form with invalid number of fields", __FILE__, __LINE__);

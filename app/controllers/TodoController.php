@@ -25,12 +25,12 @@ class TodoController extends Controller{
         switch($action){
             case "create":
                 // you can exclude form fields if you don't care if they were sent with form fields or not
-                $this->Security->config("form", [ 'fields' => ['content'], 'exclude' => ['submit']]);
+                $this->Security->config("form", [ 'fields' => ['content']]);
                 break;
             case "delete":
 				// If you want to disable validation for form tampering
 				// $this->Security->config("validateForm", false);
-                $this->Security->config("form", [ 'fields' => ['todo_id'], 'exclude' => ['submit']]);
+                $this->Security->config("form", [ 'fields' => ['todo_id']]);
                 break;
         }
     }
@@ -51,8 +51,8 @@ class TodoController extends Controller{
         if(!$todo){
 
             // in case of normal post request
-            Session::set('error', $this->todo->errors());
-            Redirector::to(PUBLIC_ROOT . "Todo");
+            Session::set('errors', $this->todo->errors());
+            Redirector::root("Todo");
 
             // in case of ajax
             // echo $this->view->renderErrors($this->todo->errors());
@@ -61,7 +61,7 @@ class TodoController extends Controller{
 
             // in case of normal post request
             Session::set('success', "Todo has been created");
-            Redirector::to(PUBLIC_ROOT . "Todo");
+            Redirector::root("Todo");
 
             // in case of ajax
             // echo $this->view->JSONEncode(array("success" => "Todo has been created"));
@@ -75,7 +75,7 @@ class TodoController extends Controller{
 
         // in case of normal post request
         Session::set('success', "Todo has been deleted");
-        Redirector::to(PUBLIC_ROOT . "Todo");
+        Redirector::root("Todo");
 
         // in case of ajax
         // echo $this->view->JSONEncode(array("success" => "Todo has been deleted"));

@@ -44,17 +44,32 @@
 											<td><em><?= $data["date"]; ?></em></td>
 											<td>
 											   <span class="btn-group btn-group-sm">
-													<a class="btn btn-success update-backup" ><i class="fa fa-refresh"></i></a>
+													<a href="<?= PUBLIC_ROOT . "Admin/updateBackup" . 
+														"?csrf_token=" . urlencode(Session::generateCsrfToken()); ?>" 
+														class="btn btn-success update-backup" >
+														<i class="fa fa-refresh"></i>
+													</a>
 												</span>
 										   </td>
 										   <td>
 											   <span class="btn-group btn-group-sm">
-													<a class="btn btn-danger restore-backup" ><i class="fa fa-rotate-left"></i></a>
+													<a href="<?= PUBLIC_ROOT . "Admin/restoreBackup" . 
+														"?csrf_token=" . urlencode(Session::generateCsrfToken()); ?>"  
+														class="btn btn-danger restore-backup" >
+														<i class="fa fa-rotate-left"></i>
+													</a>
 												</span>
 										   </td>
 										</tr>
                                     </tbody>
                                 </table>
+                                <?php 
+									if(!empty(Session::get('backup-errors'))){
+										echo $this->renderErrors(Session::getAndDestroy('backup-errors'));
+									}else if(!empty(Session::get('backup-success'))){
+										echo $this->renderSuccess(Session::getAndDestroy('backup-success'));
+									}
+								?>
                             </div>
                             <!-- /.table-responsive -->
                         </div>

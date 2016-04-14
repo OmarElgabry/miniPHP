@@ -13,19 +13,6 @@
 class Controller {
 
     /**
-     * set of variables that will converted into JS vars in the footer.php
-     *
-     * @var
-     * @see views/layout/footer.php
-     */
-    public $vars =[
-        'root' => PUBLIC_ROOT,          /* public root used in ajax calls and redirection from client-side */
-        'curPage' => null,              /* identifies the current page(s), and it will be used to add 'active' css class on navigation */
-        'curPageId' => null,            /* the current page's id if exists, like in viewPost, and viewUser */
-        'fileSizeOverflow' => 10485760  /* max file size, this is important to avoid overflow in files with big size */
-    ];
-
-    /**
      * view
      *
      * @var View
@@ -174,30 +161,29 @@ class Controller {
      * call error action method and set response status code
      * This will work as well for ajax call, see how ajax calls are handled in main.js
      *
-     * @param string $error
+     * @param int|string $code
      *
      */
-    public function error($error){
-
-        $errorController = new ErrorsController();
-        if(!method_exists("ErrorsController", $error)){
-            $error = "System";
-        }
+    public function error($code){
 
         $errors = [
-            "notfound"      => 404,
-            "system"        => 500,
-            "badrequest"    => 400,
-            "unauthorized"  => 401,
-            "forbidden"     => 403,
+            404 => "notfound",
+            500 => "system",
+            400 => "badrequest",
+            401 => "unauthorized",
+            403 => "forbidden"
         ];
 
-        $code = isset($errors[strtolower($error)])? $errors[strtolower($error)]: 500;
+        if(!isset($errors[$code]) || !method_exists("ErrorsController", $errors[$code])){
+            $code = 500;
+        }
+
+        $action = isset($errors[$code])? $errors[$code]: "System";
         $this->response->setStatusCode($code);
 
         // clear, get page, then send headers
         $this->response->clearBuffer();
-        $errorController->{$error}();
+        (new ErrorsController())->{$action}();
         $this->response->send();
     }
 
@@ -226,16 +212,6 @@ class Controller {
      */
     public function loadModel($model){
         return $this->{$model} = new $model();
-    }
-
-    /**
-     * add a new variable to set of variables declared in $vars
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function addVar($key, $value){
-        $this->vars[$key] = $value;
     }
 
     /**

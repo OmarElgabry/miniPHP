@@ -13,17 +13,14 @@ class FilesController extends Controller {
 
         parent::beforeAction();
 
-        $this->vars['curPage'] = "files";
+        Config::addJsConfig('curPage', "files");
 
         $action = $this->request->param('action');
-        $actions = ['getAll', 'create', 'delete'];
+        $actions = ['create', 'delete'];
         $this->Security->requireAjax($actions);
         $this->Security->requirePost($actions);
 
         switch($action){
-            case "getAll":
-                $this->Security->config("form", [ 'fields' => ['page_number']]);
-                break;
             case "create":
                 $this->Security->config("form", [ 'fields' => ['file']]);
                 break;
@@ -38,18 +35,9 @@ class FilesController extends Controller {
         // clear all notifications whenever you hit 'files' in the navigation bar
         $this->user->clearNotifications(Session::getUserId(), $this->file->table);
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'files/index.php');
-    }
+        $pageNum  = $this->request->query("page");
 
-    public function getAll(){
-
-        $pageNum = $this->request->data("page_number");
-
-        $filesData  = $this->file->getAll($pageNum);
-
-        $filesHTML  = $this->view->render(Config::get('VIEWS_PATH') . 'files/files.php', array("files" => $filesData["files"]));
-        $paginationHTML = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $filesData["pagination"]));
-        echo $this->view->JSONEncode(array("data" => ["files" => $filesHTML, "pagination" => $paginationHTML]));
+        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'files/index.php', ['pageNum' => $pageNum]);
     }
 
     public function create(){
@@ -72,7 +60,7 @@ class FilesController extends Controller {
         $fileId = Encryption::decryptIdWithDash($this->request->data("file_id"));
 
         if(!$this->file->exists($fileId)){
-            $this->error("notfound");
+            $this->error(404);
         }
 
         $this->file->deleteById($fileId);
@@ -90,7 +78,7 @@ class FilesController extends Controller {
         Permission::allow('admin', $resource, ['*']);
 
         // only for normal users
-        Permission::allow('user', $resource, ['index', 'getAll', 'create']);
+        Permission::allow('user', $resource, ['index', 'create']);
         Permission::allow('user', $resource, ['delete'], 'owner');
 
         $fileId = $this->request->data("file_id");

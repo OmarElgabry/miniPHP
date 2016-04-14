@@ -23,40 +23,39 @@ Either way, It's important to understand the PHP MVC skeleton, and know how to a
 
 ## Index
 + [Installation](#installation)
-+ [How It Works?](#how-it-works)
-	+ [Routing](#routing)
-	+ [Controller](#controller)
-	+ [Components](#components)
-		+ [Authentication](#authentication)
-		    - [Session](#session)
-		    - [Cookies](#cookies)
-		+ [Authorization](#authorization)
-		+ [Security](#security)
-			- [HTTP Methods](#http-method)
-			- [Domain Validation](#referer)
-			- [Form Tampering](#form-tampering)
-			- [CSRF](#csrf)
-			- [htaccess](#htaccess)
-		+ [Turn on/off Components](#turn-on-off-components)
-	+ [Views](#views)
-	+ [Models](#models)
-	+ [JavaScript & Ajax](#js)
-	+ [Login](#login)
-		- [User Verification](#user-verification)
-		- [Forgotten Password](#forgotten-password)
-		- [Brute-Force attack](#brute-force)
-		- [Captcha](#captcha)
-		- [Block IP Addresses](#block-ip)
-	+ [Database](#database)
-	+ [Encryption](#encryption)
-	+ [Validation](#validation)
-	+ [Error](#error)
-	+ [Logger](#logger)
-	+ [Email](#email)
-+ [How to Use?](#how-to-use)
-	+ [Intro](#intro)
-	+ [ToDo Application](#todo)
-+ [Additional Features](#features)
++ [Routing](#routing)
++ [Controller](#controller)
++ [Components(Middlewares)](#components)
+	+ [Authentication](#authentication)
+	    - [Session](#session)
+	    - [Cookies](#cookies)
+	+ [Authorization](#authorization)
+	+ [Security](#security)
+		- [HTTP Methods](#http-method)
+		- [Domain Validation](#referer)
+		- [Form Tampering](#form-tampering)
+		- [CSRF](#csrf)
+		- [htaccess](#htaccess)
+	+ [Turn on/off Components](#turn-on-off-components)
++ [Views](#views)
++ [Models](#models)
++ [Login](#login)
+	- [User Verification](#user-verification)
+	- [Forgotten Password](#forgotten-password)
+	- [Brute-Force attack](#brute-force)
+	- [Captcha](#captcha)
+	- [Block IP Addresses](#block-ip)
++ [Database](#database)
++ [Encryption](#encryption)
++ [Validation](#validation)
++ [Error](#error)
++ [Logger](#logger)
++ [Email](#email)
++ [Configurations](#configurations)
++ [JavaScript & Ajax](#js)
++ [Application(Demo)](#demo)
+	+ [Intro](#intro-demo)
+	+ [Installation](#installation-demo)
 	+ [User Profile](#profile)
 	+ [Files](#files)
 	+ [News Feed & Posts & Comments](#newsfeed-posts-comments)
@@ -64,34 +63,22 @@ Either way, It's important to understand the PHP MVC skeleton, and know how to a
 	+ [Notifications](#notifications)
 	+ [Report Bugs](#bugs)
 	+ [Backups](#backups)
++ [ToDo Application(Step By Step Implementation)](#todo)
 + [Support](#support)
 + [Contribute](#contribute)
 + [Dependencies](#dependencies)
 + [License](#license)
 
-### Installation <a name="installation"></a>
-Steps:
+## Installation <a name="installation"></a>
+Install via [Composer](https://getcomposer.org/doc/00-intro.md)
 
-1. Edit configuration file in _app/config/config.php_ with your credentials
+```
+	composer install
+```
 
-2. Execute SQL queries in __installation_ directory
+## Routing <a name="routing"></a>
 
-3. Install [Composer](https://getcomposer.org/doc/00-intro.md) for dependencies
-	```
-		composer install
-	```
-4. Login
-	+ Admin:
-		+ Email: admin@demo.com
-		+ Password: 12345
-	+ Normal User:
-		+ Email: user@demo.com
-		+ Password: 12345
-
-## How It Works? <a name="how-it-works"></a>
-### Routing <a name="routing"></a>
-
-Whenever you make a request to the application, it wil be directed to index.php inside public root folder. 
+Whenever you make a request to the application, it wil be directed to _index.php_ inside public folder. 
 So, if you make a request: ```http://localhost/miniPHP/User/update/412 ```. This will be splitted and translated into 
 
 + Controller: User
@@ -100,11 +87,11 @@ So, if you make a request: ```http://localhost/miniPHP/User/update/412 ```. This
 
 In fact, htaccess splits everything comes after ```http://localhost/miniPHP ``` and adds it to the URL as querystring argument. So, this request will be converted to: ```http://localhost/miniPHP?url='User/update/412' ```.
 
-Then ```App``` Class, Inside ```splitUrl()```, will split the query string ```$_GET['url']``` intro controller, action method, and any passed arguments to action method.
+Then ```App``` Class, Inside ```splitUrl()```, will split the query string ```$_GET['url']``` into controller, action method, and any passed arguments to action method.
 
 In ```App``` Class, Inside ```__construct()```, it will instantiate an object from controller class, and make a call to action method, passing any arguments if exist.
 
-### Controller <a name="controller"></a>
+## Controller <a name="controller"></a>
 
 After the ```App``` Class intantiates controller object, The constructor of ```Controller```Class will trigger 3 consective events/methods:
 
@@ -112,16 +99,16 @@ After the ```App``` Class intantiates controller object, The constructor of ```C
 2. ```beforeAction()```: Perform any logic actions before calling controller's action method
 3. ```triggerComponents()```: Trigger startup() method of loaded components
 
-The constructor of ```Controller``` Class **shouldn't** be overridden, instead you can override the 3 methods above in extending classes, and constructor of ```Controller``` Class will call them one after another. 
+The constructor of ```Controller``` Class **shouldn't** be overridden, instead you can override the 3 methods above in the extending classes, and constructor of ```Controller``` Class will call them one after another. 
 
-After the constructor finishes it's job, Then, the requested action method will be called, and arguments will be passed(if any)
+After the constructor finishes it's job, Then, the requested action method will be called, and arguments will be passed(if any).
 
-### Components <a name="components"></a>
-Components are pretty much like backbone for controller. They provide reusable logic to be used as part of the controller. Authentication, Authorization, Form Tampering, and Validate CSRF Tokens are implemented inside Components. 
+## Components(Middlewares) <a name="components"></a>
+Components are the middlewares. They provide reusable logic to be used as part of the controller. Authentication, Authorization, Form Tampering, and Validate CSRF Tokens are implemented inside Components. 
 
 It's better to pull these pieces of logic out of controller class, and keep all various tasks and validations inside these Components.
 
-Every component inherits from the base/super class called ```Component```. Each has a defined task. There are two components, one for Authentication and Authorization, and another one for other Security Issues.
+Every component inherits from the base/super class called ```Component```. Each has a defined task. There are two components, one for called _Auth_ for Authentication and Authorization, and the other one called _Security_ for other Security Issues.
 
 They are very simple to deal with, and they will be called inside controller constructor.
 
@@ -154,7 +141,7 @@ The AuthComponent takes care of user session.
 	- Cookies in browser are also configured to be expired after (>= 2 weeks)
 	
 ### Authorization <a name="authorization"></a>
-Do you have the right to access or to perform X action?. The AuthComponent takes care of authorization for each controller. Each controller should implement ``` isAuthorized() ``` method. This method will be called by default at the end of controller constructor. What you need to do is to return ``` boolean ``` value.
+Do you have the right to access or to perform X action?. The _Auth_ Component takes care of authorization for each controller. Thus, each controller should implement ``` isAuthorized() ``` method. What you need to do is to return ``` boolean ``` value.
 
 So, for example, in order to check if current user is admin or not, you would do something like this:
 ```php
@@ -235,14 +222,14 @@ Also if you require all requests to be through secured connection, you can confi
         parent::beforeAction();
 
         $actions = ['create', 'delete'];	// specific action methods	
-        $actions = ['*'];					// all action methods
+        $actions = ['*'];		        	// all action methods
 
         $this->Security->requireSecure($actions);
     }
 ```
 #### Domain Validation<a name="referer"></a>
 
-Check & validate if request is coming from the same domain. Although they can be faked, It's good to keep them as part of our security layers.
+It checks & validates if request is coming from the same domain. Although they can be faked, It's good to keep them as part of our security layers.
 
 #### Form Tampering<a name="form-tampering"></a>
 
@@ -284,7 +271,9 @@ CSRF Tokens are important to validate the submitted forms, and to make sure they
 
 They are valid for a certain duration(>= 1 day), then it will be regenerated and stored in user's session.
 
-CSRF validation is disabled by default. If you want to validate the CSRF token, then assign ```validateCsrfToken``` to ```true``` as shown in the example. CSRF validation will be forced when request is POST and form tampering is enabled.
+CSRF validation is disabled by default. If you want to validate the CSRF token, then assign ```validateCsrfToken``` to ```true``` as shown in the example below. CSRF validation will be forced when request is POST and form tampering is enabled. 
+
+Now, You do not need to manually verify the CSRF token on every requests. The _Security_ Component will verify token in the request versus the token stored in the session.
 
 ```php
     // NotesController
@@ -306,9 +295,21 @@ CSRF validation is disabled by default. If you want to validate the CSRF token, 
     }
 ```
 
-CSRF tokens are generated per session. You can either add a hidden form field with ``` name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>" ``` OR in the URL as query parameter  ``` PUBLIC_ROOT . "?csrf_token=" . urlencode(Session::generateCsrfToken()) ```
+CSRF tokens are generated per session. You can either add a hidden form field, or in the URL as query parameter.
 
-In case of Ajax calls, assign ```Session::generateCsrfToken()``` to a JavaScript varibale in the [footer.php](https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php), which you can send with every ajax request.
+**Form**
+
+``` <input type="hidden" name="csrf_token" value="<?= Session::generateCsrfToken(); ?>" /> ``` 
+
+**URL**
+
+``` <a href="<?= PUBLIC_ROOT . "?csrf_token=" . urlencode(Session::generateCsrfToken()); ?>">Link</a> ```
+
+**JavaScript**
+
+You can also assign the CSRF token to a javascript variable. 
+
+```<script>config = <?= json_encode(Session::generateCsrfToken()); ?>;</script>``` 
 
 #### htacess<a name="htaccess"></a>
 
@@ -316,8 +317,8 @@ In case of Ajax calls, assign ```Session::generateCsrfToken()``` to a JavaScript
 + Block directory traversal/browsing
 + Deny access to app directory(Althought it's not needed if you setup the application correctly)
 
-### Turn on/off Components <a name="turn-on-off-components"></a>
-Sometimes you need to have a control on these components, such as when want to have a Controller without Authentication or Authorization, or Security component is enabled. This can be done by override ```initialize()``` method inside your Controller class, and load only needed Components.
+### Turn on/off Components(Middlewares) <a name="turn-on-off-components"></a>
+Sometimes you need to have a control on these components, such as when want to have a Controller without Authentication or Authorization, or a Security component is enabled. This can be done by override ```initialize()``` method inside your Controller class, and load only needed Components.
 
 **Example 1**: Don't load any component, no authentication or authorization, or security validations.
 ```php
@@ -326,7 +327,7 @@ public function initialize(){
 	$this->loadComponents([]);
 }
 ```
-**Example 2**: Load Security, & Auth component, but don't authenticate and authorize, just in case you want to use the Auth component inside the action methods. [LoginController](https://github.com/OmarElGabry/miniPHP/blob/master/app/controllers/LoginController.php#L60) is an example on how to access login page without require a logged-in user.
+**Example 2**: Load Security, & Auth component, but don't authenticate and authorize, just in case you want to use the Auth component inside the action methods. [LoginController](https://github.com/OmarElGabry/miniPHP/blob/master/app/controllers/LoginController.php#L60) is an example on how to access a page without require a logged-in user.
 ```php
 public function initialize(){
 	$this->loadComponents([ 
@@ -335,7 +336,7 @@ public function initialize(){
 	    ]);
 }
  ```
-**Example 3**: Load Security, & Auth component, and authenticate user & authorize for the current controller. This is the default behavior in the [core/Controller class](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Controller.php#L137)
+**Example 3**: Load Security, & Auth component, and authenticate user & authorize for the current controller. This is the default behavior in the [core/Controller](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Controller.php#L137) Class
 ```php
 public function initialize(){
 	$this->loadComponents([
@@ -348,9 +349,9 @@ public function initialize(){
 }
 ``` 
 
-### Views <a name="views"></a>
+## Views <a name="views"></a>
 
-Inside the action method you can make a call to model to get some data, and/or render pages inside views directory
+Inside the action method you can make a call to model to get some data, and/or render pages inside _views_ folder
 
 ```php
   //  NotesController
@@ -358,18 +359,18 @@ Inside the action method you can make a call to model to get some data, and/or r
   public function index(){
  
 	// render full page with layout(header and footer)
-  	echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'notes/index.php');
-  	
+	echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'notes/index.php');
+	
 	// render page without layout
-  	echo $this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
-  	
+	echo $this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
+	
 	// render using json_encode() for ajax calls
-    $html = $this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
-    echo $this->view->JSONEncode(array("data" => $html));
+	$html = $this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
+	echo $this->view->JSONEncode(array("data" => $html));
   }
 ```
 
-### Models <a name="models"></a>
+## Models <a name="models"></a>
 > In MVC, the model represents the information (the data) and the business rules; the view contains elements of the user interface such as text, form inputs; and the controller manages the communication between the model and the view.
 [Source](http://www.yiiframework.com/doc/guide/1.1/en/basics.mvc)
 
@@ -381,14 +382,14 @@ All operations like create, delete, update, and validation are implemented in mo
     public function create(){
     
 		// get content of note submitted to a form
-    	// then pass the content along with the current user to Note class
-        $content  = $this->request->data("note_text");
-        $note     = $this->note->create(Session::getUserId(), $content);
+		// then pass the content along with the current user to Note class
+		$content  = $this->request->data("note_text");
+		$note     = $this->note->create(Session::getUserId(), $content);
         
         if(!$note){
-            echo $this->view->renderErrors($this->note->errors(), false);
+            echo $this->view->renderErrors($this->note->errors());
         }else{
-            Redirector::to(PUBLIC_ROOT . "Notes");
+            Redirector::root("Notes");
         }
     }
 ```
@@ -423,39 +424,20 @@ All operations like create, delete, update, and validation are implemented in mo
      }
 ```
 
-### JavaScript & Ajax <a name="js"></a>
-In order to send request and recieve a respond, you may depend on Ajax calls to do so. This framework is heavily depends on ajax requests to perform actions, but, you still can do the same thing for normal requests with just small tweaks.
-
-#### In _public/main.js_
-
-**globalVars** object is assigned to key-value pairs in [footer.php](https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php). These key-value pairs can be initialized in server-side code in Controller ```Controller::addVar()```, which will be assigned then to _globalVars_ object in footer.php.
-
-**ajax** namespace has two main functions for sending ajax request. One for normal ajax calls, and another for for uploading files.
-
-**helpers** namespace has variety of functions display errors, serialize, redirect, encodeHTML, and so on
-
-**app** namespace is used to initalize the whole javascript events for the current page
-
-**events** namespace is used to declare all of events that may occure, like when user clicks on a link to create, delete or update.
-
-### Login<a name="login"></a>
+## Login<a name="login"></a>
 Using the framework, you would probably do login, register, and logout. These actions are implemented in _app/models/Login_ & _app/controllers/LoginController_. In most situations, you won't need to modify anything related to login actions, just understand the behaviour of the framework. 
 
-**NOTE** 
+**NOTE** If you don't have SSL, you would better want to encrypt data manually at Client Side, If So, read [this](http://stackoverflow.com/questions/3715920/about-password-hashing-system-on-client-side) and also [this](http://stackoverflow.com/questions/4121629/password-encryption-at-client-side?lq=1).
 
-If you don't have SSL, you would better want to encrypt data manually at Client Side, If So, read [this](http://stackoverflow.com/questions/3715920/about-password-hashing-system-on-client-side) and also [this](http://stackoverflow.com/questions/4121629/password-encryption-at-client-side?lq=1)
-
-#### User Verification<a name="user-verification"></a>
-Whenever the user registers, An email will be sent with token concatenated with encrypted user id. This token will be expired after 24 hour.
-
-It's much better to expire these tokens, and re-use the registered email if they are expired.
+### User Verification<a name="user-verification"></a>
+Whenever the user registers, An email will be sent with token concatenated with encrypted user id. This token will be expired after 24 hour. It's much better to expire these tokens, and re-use the registered email if they are expired.
 
 **Passwords** are hashed using the latest algorithms in PHP v5.5
 ```php
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT, array('cost' => Config::get('HASH_COST_FACTOR')));
 ```
 
-#### Forgotten Password<a name="forgotten-password"></a>
+### Forgotten Password<a name="forgotten-password"></a>
 If user forgot his password, he can restore it. The same idea of expired tokens goes here. 
 
 In addition, block user for certain duration(>= 10min) if he exceeded number of forgotten passwords attempts(5) during a certain duration(>= 10min).
@@ -473,13 +455,13 @@ Solution:
 	- At least one number
 	- Min Length is 8 characters
 
-#### Captcha<a name="captcha"></a>
+### Captcha<a name="captcha"></a>
 CAPTCHAs are particularly effective in preventing automated logins. Using [Captcha](https://github.com/Gregwar/Captcha) an awesome PHP Captcha library.
 
-#### Block IP Address<a name="block-ip"></a>
+### Block IP Address<a name="block-ip"></a>
 Blocking IP Addresses is the last solution to think about. IP Address will be blocked if the same IP failed to login multiple times using different credentials(>=10).
 
-### Database<a name="database"></a>
+## Database<a name="database"></a>
 PHP Data Objects (PDO) is used for preparing and executing database queries. Inside ```Database``` Class, there are various methods that hides complexity and let's you instantiate database object, prepare, bind, and execute in few lines.
 
 + SQL Injection
@@ -493,16 +475,13 @@ PHP Data Objects (PDO) is used for preparing and executing database queries. Ins
 	- For complete UTF-8 support, you need to use ```utf8mb4 ```on database level.
 	- MySQL’s ```utf8``` charset only store UTF-8 encoded symbols that consist of one to three bytes. But, It can't for symbols with four bytes. 
 	- Here, charset is ```utf8```. But, if you want to upgrade to ```utf8mb4 ``` follow these links:
-		- [Link 1](https://mathiasbynens.be/notes/mysql-utf8mb4)
-		- [Link 2](https://dev.mysql.com/doc/refman/5.5/en/charset-unicode-upgrading.html)
+		- [Link 1](https://mathiasbynens.be/notes/mysql-utf8mb4) & [Link 2](https://dev.mysql.com/doc/refman/5.5/en/charset-unicode-upgrading.html)
 		- Don't forget to change **charset** in _app/config/config.php_ to ```utf8mb4 ```
 
-### Encryption<a name="encryption"></a>
-``` Encryption ``` Class is responsible for encrypting and decryption of data. Encryption is applied to things like cookies, User ID, Post ID, ..etc.
+## Encryption<a name="encryption"></a>
+``` Encryption ``` Class is responsible for encrypting and decryption of data. Encryption is applied to things like cookies, User ID, Post ID, ..etc. Encrypted strings are authenticated and they are different every time you encrypt. 
 
-Encrypted strings are authenticated and they are different every time you encrypt. 
-
-### Validation<a name="validation"></a>
+## Validation<a name="validation"></a>
 Validation is a small library for validating user inputs. All validation rules are inside ``` Validation ``` Class.
 
 #### Usage
@@ -524,36 +503,125 @@ if(!$validation->validate([
 }
 ```
 
-### Error<a name="error"></a>
-``` Error``` Class is responsible for handling all exceptions and errors. It will use [Logger](#logger) to log errors. 
-Error reporting is turned off by default, because every error will be logged and saved in  _app/logs/log.txt_.
+## Errors and Exceptions<a name="error"></a>
+``` Handler``` Class is responsible for handling all exceptions and errors. It will use [Logger](#logger) to log errors. Error reporting is turned off by default, because every error will be logged and saved in  _app/logs/log.txt_.
 
 If error encountered or exception was thrown, the application will show System Error(500).
 
-#### Configurations(php.ini)
+### Configurations(php.ini)
 + Turn Off display errors
 + Turn Off log errors if not needed
 
-### Logger<a name="logger"></a>
+## Logger<a name="logger"></a>
 A place where you can log anything and save it to _app/log/log.txt_. You can write any failures, errors, exceptions, or any other malicious actions or attacks.
 
 ```php
 Logger::log("COOKIE", self::$userId . " is trying to login using invalid cookie", __FILE__, __LINE__);
 ```
 
-### Email<a name="email"></a>
+## Email<a name="email"></a>
 Emails are sent using [PHPMailer](https://github.com/PHPMailer/PHPMailer) via SMTP, another library for sending emails. You shouldn't use ```mail()``` function of PHP.
 
-**NOTE** You need to configure your SMTP account data in _app/config/config.php_. **But**, If you don't have SMTP account, then you save emails in _app/logs/log.txt_, to do that check this line of [code](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Email.php#L78).
+**NOTE** You need to configure your SMTP account data in _app/config/config.php_. **But**, If you don't have SMTP account, then you save emails in _app/logs/log.txt_, to do that, check this line of [code](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Email.php#L78).
 
-## How to Use? <a name="how-to-use"></a>
-### Intro<a name="intro"></a>
-miniPHP framework mostly depends on ajax calls, but, you will do almost the same thing in case normal request. In this section, I'll go through how to build a quick application on top of miniPHP framework with & without ajax calls.
+## Configurations<a name="configurations"></a>
+In _app/config_, there are two files, one called _config.php_ for main application configurations, and another one for javascript called _javascript.php_. The javascript configurations will be then assigned to a javascript variable in your _footer.php_.
 
-### ToDo Application<a name="todo"></a>
-Let's say you want to build a simple ToDo List, and users can udate their profile information, and change their profile picture.
+## JavaScript <a name="js"></a>
+In order to send request and recieve a respond, you may depend on Ajax calls to do so. This framework is heavily depends on ajax requests to perform actions, but, you still can do the same thing for normal requests with just small tweaks.
 
-(1) If you followed the setup steps(see above), you shouldn't have any problem with creating initial user accounts, and do login/logout.
+#### In _public/main.js_
+
+**config** object is assigned to key-value pairs in [footer.php](https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php). These key-value pairs can be added in server-side code using ```Config::addJsConfig('key', "value");```, which will be assigned then to _config_ object.
+
+**ajax** A namespace that has two main functions for sending ajax request. One for normal ajax calls, and another for for uploading files.
+
+**helpers** A namespace that has variety of functions display errors, serialize, redirect, encodeHTML, and so on
+
+**app** A namespace that's used to initalize the whole javascript events for the current page
+
+**events** A namespace that's used to declare all of events that may occure, like when user clicks on a link to create, delete or update.
+
+## Application(Demo) <a name="demo"></a>
+### Intro<a name="intro-demo"></a>
+In order to show how to use the framework in a real-life situation, the framework comes with implementation for features like Manage User Profile Management, Dashbaord, News Feed, Upload & Download Files, Posts & Comments, Pagination, Admin panel, Manage System Backups, Notificatons, Report Bugs, ...etc.
+
+### Installation<a name="installation-demo"></a>
+Steps:
+
+1. Edit configuration file in _app/config/config.php_ with your credentials
+
+2. Execute SQL queries in __installation_ directory in order
+
+3. Login
+	+ Admin:
+		+ Email: admin@demo.com
+		+ Password: 12345
+	+ Normal User:
+		+ Email: user@demo.com
+		+ Password: 12345
+
+### User Profile<a name="profile"></a>
+Every user can change his name, email, password. Also upload profile picture (i.e. initially assigned to default.png).
+
+#### Update & Revoke User Email<a name="update-revoke-user-email"></a>
+Whenever user asks to change his email, a notification will be sent to user's old email, and the new one.
+
+The notification sent to old email is giving the user the chance to revoke email change, while the notification sent to new email is asking for confirmation. User can still login with his old email until he confirms the change.
+
+This is done in ```UserController```, In methods ```updateProfileInfo()```, ```revokeEmail()```, & ```updateEmail()```. In most situations, you won't need to modify the behavior of these methods.
+
+### Files<a name="files"></a>
+You can upload and download files.
+
+#### Upload
++ All uploaded files are out of root public, so, they aren't accessible by anyone
++ Validate against HTTP POST uploads, MIME, Size, Image dimension
++ Setting file permission to avoid executable files
++ Sanitizing file names
++ Progress bar(no-plugins)
+
+#### Download
++ Every file will have hashed version of it's name, this hashed name will be exposed to users. 
++ The hashed name = hash(original filename . extension). So, download link will look something like this: _http://localhost/miniPHP/downloads/download/b989f733f948e8a4b8b700e1_
+
+#### Configurations(php.ini)
++ Set ```file_uploads``` to true
++ Set ```upload_max_filesize, max_file_uploads, post_max_size```
+	- Check [documentation](http://php.net/manual/en/ini.core.php#ini.post-max-size) to know how to assign proper values for each.
+
+### News Feeds, Posts & Comments <a name="newsfeed-posts-comments"></a>
+
+Think of News Feed as tweets in twitter, and in Posts like when you open an Issue in Github.
+
+They are implemented on the top of this framework. 
++ They are useful to show & apply some concepts like **Pagination**, 
++ How can you edit & delete in place(secured way), 
++ How can you manage permissions for who can create, edit, update and delete, and so forth.
+
+### Admin<a name="admin"></a>
+Admins can perform actions where normal users can't. They can delete, edit, create any newsfeed, post, or comment. Also they have control over all user profiles, create & restore backups.
+
+#### Users<a name="users"></a>
+Only admins have access to see all registered users. They can delete, edit their info.
+
+#### Backups<a name="backups"></a>
+In most of the situations, you will need to create backups for the system, and restore them whenever you want.
+
+This is done by using [mysqldump](https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html) to create and restore backups. All backups will be stored in _app/backups_.
+
+### Notifications<a name="notifications"></a>
+Did you see the red notifications on facebook, or the blue one on twitter?. The same idea is here. But, It's implemented using triggers instead. Triggers are defined in __installation/triggers.sql_.
+
+So, whenever user creates a new newsfeed, post, or upload a file, this will increment the count for all other users, and will display a red notification in navigation bar.
+
+### Report Bugs<a name="bugs"></a>
+Users can report Bugs, Features & Enhancements. Once they submitted the form, an email will be sent to ```ADMIN_EMAIL``` defined in _app/config/config.php_
+
+## ToDo Application<a name="todo"></a>
+Let's say you want to build a simple ToDo List, and users can udate their profile information, and change their profile picture. Here, I will go step by step on how to create a ToDo List using the framework with/without Ajax calls.
+
+(1) If you followed the installtion setup steps above, you shouldn't have any problem with creating initial user accounts.
 
 (2) Create a table with id as INT, content VARCHAR, user_id as Foreign Key to ```users``` table
 
@@ -577,99 +645,99 @@ class TodoController extends Controller{
 
     // override this method to perform any logic before calling action method as explained above
     public function beforeAction(){
-    
+
         parent::beforeAction();
-        
+
         // define the actions in this Controller
         $action = $this->request->param('action');
 
         // restrict the request to action methods
         // $this->Security->requireAjax(['create', 'delete']);
         $this->Security->requirePost(['create', 'delete']);
-        
+
         // define the expected form fields for every action if exist
         switch($action){
             case "create":
-				// you can exclude form fields if you don't care if they were sent with form fields or not
-                $this->Security->config("form", [ 'fields' => ['content'], 'exclude' => ['submit']]);
+                // you can exclude form fields if you don't care if they were sent with form fields or not
+                $this->Security->config("form", [ 'fields' => ['content']]);
                 break;
             case "delete":
 				// If you want to disable validation for form tampering
 				// $this->Security->config("validateForm", false);
-                $this->Security->config("form", [ 'fields' => ['todo_id'], 'exclude' => ['submit']]);
+                $this->Security->config("form", [ 'fields' => ['todo_id']]);
                 break;
         }
     }
-    
+
     public function index(){
-	
+
         $html  = $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/todo/", Config::get('VIEWS_PATH') . 'todo/index.php');
-        
+
         // display todo list
         echo $html;
     }
-    
+
     public function create(){
-	
+
         $content  = $this->request->data("content");
         $todo     = $this->todo->create(Session::getUserId(), $content);
-        
+
         if(!$todo){
-        
+
             // in case of normal post request
-            Session::set('error', $this->todo->errors());
-            Redirector::to(PUBLIC_ROOT . "Todo");
-            
+            Session::set('errors', $this->todo->errors());
+            Redirector::root("Todo");
+
             // in case of ajax
             // echo $this->view->renderErrors($this->todo->errors());
-            
+
         }else{
-        
+
             // in case of normal post request
             Session::set('success', "Todo has been created");
-            Redirector::to(PUBLIC_ROOT . "Todo");
-            
+            Redirector::root("Todo");
+
             // in case of ajax
             // echo $this->view->JSONEncode(array("success" => "Todo has been created"));
         }
     }
-    
+
     public function delete(){
-    
+
         $todoId = Encryption::decryptIdWithDash($this->request->data("todo_id"));
         $this->todo->delete($todoId);
-        
+
         // in case of normal post request
-       	Session::set('success', "Todo has been deleted");
-        Redirector::to(PUBLIC_ROOT . "Todo");
-            
+        Session::set('success', "Todo has been deleted");
+        Redirector::root("Todo");
+
         // in case of ajax
         // echo $this->view->JSONEncode(array("success" => "Todo has been deleted"));
     }
-    
+
     public function isAuthorized(){
-    
+
         $action = $this->request->param('action');
         $role = Session::getUserRole();
         $resource = "todo";
-        
+
         // only for admins
         Permission::allow('admin', $resource, ['*']);
-        
+
         // only for normal users
         Permission::allow('user', $resource, ['delete'], 'owner');
-        
+
         $todoId = $this->request->data("todo_id");
-        
+
         if(!empty($todoId)){
             $todoId = Encryption::decryptIdWithDash($todoId);
         }
-        
+
         $config = [
             "user_id" => Session::getUserId(),
             "table" => "todo",
             "id" => $todoId];
-            
+
         return Permission::check($role, $resource, $action, $config);
     }
 }
@@ -793,9 +861,9 @@ class Todo extends Model{
 	<script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
 
         <!-- Assign CSRF Token to JS variable -->
-	<?php $this->controller->addVar('csrfToken', Session::generateCsrfToken()); ?>
-        <!-- Assign all global variables -->
-	<script>globalVars = <?= json_encode($this->controller->vars); ?>;</script>
+		<?php Config::addJsConfig('csrfToken', Session::generateCsrfToken()); ?>
+        <!-- Assign all configration variables -->
+		<script>config = <?= json_encode(Config::getJsConfig()); ?>;</script>
         <!-- Run the application -->
         <script>$(document).ready(app.init());</script>
         
@@ -807,66 +875,65 @@ class Todo extends Model{
 (b) Inside _views/_ Create todo folder that will have ```index.php```, which will contain our todo list. 
 
 ```php
-
-<?php
-
-// display success or error messages in session
-if(!empty(Session::get('success'))){
-	var_dump(Session::get('success'));
-	Session::set('success', null);
-}else if(!empty(Session::get('error'))){
-	var_dump(Session::get('error'));
-	Session::set('error', null);
-}
-?>
-
 <div class="todo_container">
 
 <h2>TODO Application</h2>
 
 <!-- in case of normal post request  -->
 <form action= "<?= PUBLIC_ROOT . "Todo/create" ?>"  method="post">
-	<label>Content <span class="text-danger">*</span></label>
-	<textarea name="content" class="form-control" required placeholder="What are you thinking?"></textarea>
-	<input type='hidden' name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>">
-	<button type="submit" name="submit" value="submit" class="btn btn-success">Create</button>
+    <label>Content <span class="text-danger">*</span></label>
+    <textarea name="content" class="form-control" required placeholder="What are you thinking?"></textarea>
+    <input type='hidden' name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>">
+    <button type="submit" name="submit" value="submit" class="btn btn-success">Create</button>
 </form>
 
- 
+
 <!-- in case of ajax request  
 <form action= "#" id="form-create-todo" method="post">
-	<label>Content <span class="text-danger">*</span></label>
-	<textarea name="content" class="form-control" required placeholder="What are you thinking?"></textarea>
-	<button type="submit" name="submit" value="submit" class="btn btn-success">Create</button>
+    <label>Content <span class="text-danger">*</span></label>
+    <textarea name="content" class="form-control" required placeholder="What are you thinking?"></textarea>
+    <button type="submit" name="submit" value="submit" class="btn btn-success">Create</button>
 </form>
 -->
 
-<br><br>
+<br>
+<?php 
+
+// display success or error messages in session
+if(!empty(Session::get('success'))){
+    echo $this->renderSuccess(Session::getAndDestroy('success'));
+}else if(!empty(Session::get('errors'))){
+    echo $this->renderErrors(Session::getAndDestroy('errors'));
+}
+
+?>
+
+<br><hr><br>
 
 <ul id="todo-list">
 <?php 
-	$todoData = $this->controller->todo->getAll();
-	foreach($todoData as $todo){ 
+    $todoData = $this->controller->todo->getAll();
+    foreach($todoData as $todo){ 
 ?>
-		<li>
-			<p> <?= $this->autoLinks($this->encodeHTMLWithBR($todo["content"])); ?></p>
-			
-			<!-- in case of normal post request -->
-			<form action= "<?= PUBLIC_ROOT . "Todo/delete" ?>" method="post">
-				<input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
-				<input type='hidden' name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>">
-				<button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
-			</form>
-			
-			
-			<!-- in case of ajax request 
-			<form class="form-delete-todo" action= "#"  method="post">
-				<input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
-				<button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
-			</form>
-			 -->
-		</li>
-	<?php } ?>
+        <li>
+            <p> <?= $this->autoLinks($this->encodeHTMLWithBR($todo["content"])); ?></p>
+
+            <!-- in case of normal post request -->
+            <form action= "<?= PUBLIC_ROOT . "Todo/delete" ?>" method="post">
+                <input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
+                <input type='hidden' name = "csrf_token" value = "<?= Session::generateCsrfToken(); ?>">
+                <button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
+            </form>
+
+
+            <!-- in case of ajax request 
+            <form class="form-delete-todo" action= "#"  method="post">
+                <input type='hidden' name= "todo_id" value="<?= "todo-" . Encryption::encryptId($todo["id"]);?>">
+                <button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger">Delete</button>
+            </form>
+             -->
+        </li>
+    <?php } ?>
 </ul>
 
 </div>
@@ -883,10 +950,6 @@ var app = {
     init: function (){
     
     	events.todo.init();
-    	
-        if(!helpers.empty(globalVars.curPage)){
-            //  .....
-        }
     }
 };
 
@@ -915,9 +978,9 @@ var events = {
 	                e.preventDefault();
 	                if (!confirm("Are you sure?")) { return; }
 					
-				var cur_todo = $(this).parent();
-				ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
-	
+			var cur_todo = $(this).parent();
+			ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
+
 	                function deleteTodoCallBack(PHPData){
 	                    if(helpers.validateData(PHPData, cur_todo, "after", "default", "success")){
 	                        $(cur_todo).remove();
@@ -929,66 +992,6 @@ var events = {
 	}
 }
 ```
-
-## Additional Features<a name="features"></a>
-### User Profile<a name="profile"></a>
-Every user can change his name, email, password. Also upload profile picture (i.e. initially assigned to default.png).
-
-##### Update & Revoke User Email<a name="update-revoke-user-email"></a>
-Whenever user asks to change his email, a notification will be sent to user's old email, and the new one.
-
-The notification sent to old email is giving the user the chance to revoke email change, while the notification sent to new email is asking for confirmation.
-
-User can still login with his old email until he confirms the change.
-
-This is done in ```UserController```, In methods ```updateProfileInfo()```, ```revokeEmail()```, & ```updateEmail()```. In most situations, you won't need to modify the behavior of these methods.
-
-### Files<a name="files"></a>
-You can upload and download files.
-
-#### Upload
-+ All uploaded files are out of root public, so, they aren't accessible by anyone
-+ Validate against HTTP POST uploads, MIME, Size, Image dimension
-+ Setting file permission to avoid executable files
-+ Sanitizing file names
-+ Progress bar(no-plugins)
-
-#### Download
-+ Every file will have hashed version of it's name, this hashed name will be exposed to users. 
-+ The hashed name = hash(original filename . extension). So, download link will look something like this: _http://localhost/miniPHP/downloads/download/b989f733f948e8a4b8b700e1_
-
-#### Configurations(php.ini)
-+ Set ```file_uploads``` to true
-+ Set ```upload_max_filesize, max_file_uploads, post_max_size```
-	- Check [documentation](http://php.net/manual/en/ini.core.php#ini.post-max-size) to know how to assign proper values for each.
-
-### News Feed & Posts & Comments<a name="newsfeed-posts-comments"></a>
-
-News Feed & Posts & Comments are features, same like ToDo Application(see above). Think of News Feed as tweets in twitter, and in Posts like when you open an Issue in Github.
-
-They are implemented on the top of this framework. 
-+ They are useful to show & apply some concepts like **Pagination**, 
-+ How can you edit & delete in place(secured way), 
-+ How can you manage permissions for who can create, edit, update and delete, and so forth.
-
-### Admin<a name="admin"></a>
-Admins can perform actions where normal users can't. They can delete, edit, create any newsfeed, post, or comment. Also they have control over all user profiles, create & restore backups.
-
-#### Users<a name="users"></a>
-Only admins have access to see all registered users. They can delete, edit their info.
-
-#### Backups<a name="backups"></a>
-In most of the situations, you will need to create backups for the system, and restore them whenever you want.
-
-This is done by using [mysqldump](https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html) to create and restore backups. All backups will be stored in _app/backups_.
-
-### Notifications<a name="notifications"></a>
-Did you see the red notifications on facebook, or the blue one on twitter. The same idea is here. But, It's implemented using triggers instead. Triggers are defined in __installation/triggers.sql_.
-
-So, whenever user creates a new newsfeed, post, or upload a file, this will increment the count for all other users, and will display a red notification in navigation bar.
-
-### Report Bugs<a name="bugs"></a>
-Users can report Bugs, Features & Enhancements. Once they submitted the form, an email will be sent to ```ADMIN_EMAIL``` defined in _app/config/config.php_
 
 ### Support <a name="support"></a>
 I've written this script in my free time during my studies. This is for free, unpaid. I am saying this because I've seen many developers acts very rude towards any software, and their behavior is really frustrating. I don't know why?! Everyone tends to complain, and saying harsh words. I do accept the feedback, but, in a good and respectful manner.

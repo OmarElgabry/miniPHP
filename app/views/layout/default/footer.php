@@ -18,9 +18,9 @@
 		<script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
 
         <!-- Assign CSRF Token to JS variable -->
-		<?php $this->controller->addVar('csrfToken', Session::generateCsrfToken()); ?>
-        <!-- Assign all global variables -->
-		<script>globalVars = <?= json_encode($this->controller->vars); ?>;</script>
+		<?php Config::addJsConfig('csrfToken', Session::generateCsrfToken()); ?>
+        <!-- Assign all configration variables -->
+		<script>config = <?= json_encode(Config::getJsConfig()); ?>;</script>
         <!-- Run the application -->
         <script>$(document).ready(app.init());</script>
 

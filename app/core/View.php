@@ -86,7 +86,7 @@ class View {
      * @return string  Rendered output
      *
      */
-    public function renderJson($data = null){
+    public function renderJson($data){
 
         $jsonData = $this->jsonEncode($data);
 

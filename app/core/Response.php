@@ -185,7 +185,7 @@ class Response {
     /**
      * Sets content for the current web response.
      * 
-     * @param string|null $content The response content
+     * @param string|null $contentType The response content
      * @return Response
      */
     public function type($contentType = null){
@@ -193,14 +193,14 @@ class Response {
         if($contentType == null){
             unset($this->headers['Content-Type']);
         }else{
-            $this->header['Content-Type'] = $contentType;
+            $this->headers['Content-Type'] = $contentType;
         }
 
         return $this;
     }
 
     /**
-    * Stop execution of the current script. .
+    * Stop execution of the current script.
     *
     * @param int|string $status
     * @return void

@@ -42,7 +42,7 @@ class NewsFeedController extends Controller{
 
         $pageNum  = $this->request->query("page");
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'newsfeed/index.php', ['pageNum' => $pageNum]);
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'newsfeed/index.php', ['pageNum' => $pageNum]);
     }
 
     public function create(){
@@ -67,13 +67,13 @@ class NewsFeedController extends Controller{
         $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
 
         if(!$this->newsfeed->exists($newsfeedId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $newsfeed = $this->newsfeed->getById($newsfeedId);
 
         $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/updateForm.php', array("newsfeed" => $newsfeed[0]));
-        echo $this->view->JSONEncode(array("data" => $html));
+        $this->view->renderJson(array("data" => $html));
     }
 
     public function update(){
@@ -83,16 +83,16 @@ class NewsFeedController extends Controller{
         $content    = $this->request->data("content");
 
         if(!$this->newsfeed->exists($newsfeedId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $newsfeed = $this->newsfeed->update($newsfeedId, $content);
         if(!$newsfeed){
-            echo $this->view->renderErrors($this->newsfeed->errors());
+            $this->view->renderErrors($this->newsfeed->errors());
         }else{
 
             $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
-            echo $this->view->JSONEncode(array("data" => $html));
+            $this->view->renderJson(array("data" => $html));
         }
     }
 
@@ -101,13 +101,13 @@ class NewsFeedController extends Controller{
         $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
 
         if(!$this->newsfeed->exists($newsfeedId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $newsfeed = $this->newsfeed->getById($newsfeedId);
 
         $html = $this->view->render(Config::get('VIEWS_PATH') . 'newsfeed/newsfeed.php', array("newsfeed" => $newsfeed));
-        echo $this->view->JSONEncode(array("data" => $html));
+        $this->view->renderJson(array("data" => $html));
     }
 
     public function delete(){
@@ -115,7 +115,7 @@ class NewsFeedController extends Controller{
         $newsfeedId = Encryption::decryptIdWithDash($this->request->data("newsfeed_id"));
 
         $this->newsfeed->deleteById($newsfeedId);
-        echo $this->view->JSONEncode(array("success" => true));
+        $this->view->renderJson(array("success" => true));
     }
 
     public function isAuthorized(){

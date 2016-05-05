@@ -45,7 +45,7 @@ class PostsController extends Controller{
 
         $pageNum  = $this->request->query("page");
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/index.php', ['pageNum' => $pageNum]);
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/index.php', ['pageNum' => $pageNum]);
     }
 
     /**
@@ -58,21 +58,21 @@ class PostsController extends Controller{
         $postId = Encryption::decryptId($postId);
 
         if(!$this->post->exists($postId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         Config::addJsConfig('curPage', ["posts", "comments"]);
         Config::addJsConfig('postId', Encryption::encryptId($postId));
 
         $action  = $this->request->query('action');
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', ["action"=> $action, "postId" => $postId]);
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', ["action"=> $action, "postId" => $postId]);
     }
 
     /**
      * show new post form
      */
     public function newPost(){
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/newPost.php');
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/newPost.php');
     }
 
     /**
@@ -108,7 +108,7 @@ class PostsController extends Controller{
         $postId = Encryption::decryptId($postId);
 
         if(!$this->post->exists($postId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $post = $this->post->update($postId, $title, $content);
@@ -128,7 +128,7 @@ class PostsController extends Controller{
         $postId = Encryption::decryptId($postId);
 
         if(!$this->post->exists($postId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $this->post->deleteById($postId);

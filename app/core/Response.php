@@ -107,22 +107,29 @@ class Response {
         $this->sendHeaders();
 
         if ($this->file) {
-
             $this->readFile();
-
         } else if ($this->csv) {
-
             $this->writeCSV();
-
         } else {
-            // $this->sendContent();
+            $this->sendContent();
         }
 
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
+        } elseif ('cli' !== PHP_SAPI) {
+            $this->flushBuffer();
         }
 
-        exit();
+        return $this;
+    }
+
+    /**
+     * Flushes output buffers.
+     *
+     */
+    private function flushBuffer(){
+        // ob_flush();
+        flush();
     }
 
     /**
@@ -162,6 +169,45 @@ class Response {
     private function sendContent(){
         echo $this->content;
         return $this;
+    }
+
+    /**
+     * Sets content for the current web response.
+     * 
+     * @param string $content The response content
+     * @return Response
+     */
+    public function setContent($content = ""){
+        $this->content = $content;
+        return $this;
+    }
+
+    /**
+     * Sets content for the current web response.
+     * 
+     * @param string|null $content The response content
+     * @return Response
+     */
+    public function type($contentType = null){
+
+        if($contentType == null){
+            unset($this->headers['Content-Type']);
+        }else{
+            $this->header['Content-Type'] = $contentType;
+        }
+
+        return $this;
+    }
+
+    /**
+    * Stop execution of the current script. .
+    *
+    * @param int|string $status
+    * @return void
+    * @see http://php.net/exit
+    */
+    public function stop($status = 0){
+        exit($status);
     }
 
     /**

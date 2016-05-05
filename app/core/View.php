@@ -16,15 +16,16 @@ class View {
      *
      * @var object
      */
-    public $controller = null;
+    public $controller;
 
     /**
      * Constructor
      *
      * @param Controller $controller
      */
-    public function __construct($controller){
-         $this->controller = $controller;
+    public function __construct(Controller $controller){
+
+        $this->controller = $controller;
      }
 
     /**
@@ -47,6 +48,7 @@ class View {
         include $filePath . "" ;
         $renderedFile = ob_get_clean();
 
+        $this->controller->response->setContent($renderedFile);
         return $renderedFile;
     }
 
@@ -73,7 +75,23 @@ class View {
         require_once $layoutDir . "footer.php";
         $renderedFile = ob_get_clean();
 
+        $this->controller->response->setContent($renderedFile);
         return $renderedFile;
+    }
+
+    /**
+     * Render a JSON view.
+     *
+     * @param  array   $data
+     * @return string  Rendered output
+     *
+     */
+    public function renderJson($data = null){
+
+        $jsonData = $this->jsonEncode($data);
+
+        $this->controller->response->type('application/json')->setContent($jsonData);
+        return $jsonData;
     }
 
     /**
@@ -86,9 +104,11 @@ class View {
     public function renderErrors($errors){
 
          $html = $this->render(Config::get('VIEWS_PATH') . 'alerts/errors.php', ["errors" => $errors]);
+
          if($this->controller->request->isAjax()){
-             return self::JSONEncode(array("error" => $html));
+             return $this->renderJson(array("error" => $html));
          }else{
+             $this->controller->response->setContent($html);
              return $html;
          }
      }
@@ -103,9 +123,11 @@ class View {
     public function renderSuccess($message){
 
          $html = $this->render(Config::get('VIEWS_PATH') . 'alerts/success.php', array("success" => $message));
+
          if($this->controller->request->isAjax()){
-             return self::JSONEncode(array("success" => $html));
+             return $this->renderJson(array("success" => $html));
          }else{
+             $this->controller->response->setContent($html);
              return $html;
          }
      }
@@ -116,11 +138,12 @@ class View {
 
      /**
       * Serialize array to JSON and used for the response
+      *
       * @param  array   $data
       * @return string  Rendered output
       *
       */
-    public function JSONEncode($data){
+    public function jsonEncode($data){
         return json_encode($data);
     }
 

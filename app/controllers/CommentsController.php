@@ -54,7 +54,7 @@ class CommentsController extends Controller{
         $commentsHTML   = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $commentsData["comments"]));
         $paginationHTML = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/comments.php', array("pagination" => $commentsData["pagination"]));
 
-        echo $this->view->JSONEncode(array("data" => ["comments" => $commentsHTML, "pagination" => $paginationHTML]));
+        $this->view->renderJson(array("data" => ["comments" => $commentsHTML, "pagination" => $paginationHTML]));
     }
 
     public function create(){
@@ -66,11 +66,11 @@ class CommentsController extends Controller{
         $comment = $this->comment->create(Session::getUserId(), $postId, $content);
 
         if(!$comment){
-            echo $this->view->renderErrors($this->comment->errors());
+            $this->view->renderErrors($this->comment->errors());
         }else{
 
             $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $comment));
-            echo $this->view->JSONEncode(array("data" => $html));
+            $this->view->renderJson(array("data" => $html));
         }
     }
 
@@ -85,13 +85,13 @@ class CommentsController extends Controller{
         $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
 
         if(!$this->comment->exists($commentId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $comment = $this->comment->getById($commentId);
 
         $commentsHTML = $this->view->render(Config::get('VIEWS_PATH') . 'posts/commentUpdateForm.php', array("comment" => $comment[0]));
-        echo $this->view->JSONEncode(array("data" => $commentsHTML));
+        $this->view->renderJson(array("data" => $commentsHTML));
     }
 
     /**
@@ -104,17 +104,17 @@ class CommentsController extends Controller{
         $content  = $this->request->data("content");
 
         if(!$this->comment->exists($commentId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $comment = $this->comment->update($commentId, $content);
 
         if(!$comment){
-            echo $this->view->renderErrors($this->comment->errors());
+            $this->view->renderErrors($this->comment->errors());
         }else{
 
             $html = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $comment));
-            echo $this->view->JSONEncode(array("data" => $html));
+            $this->view->renderJson(array("data" => $html));
         }
     }
 
@@ -127,13 +127,13 @@ class CommentsController extends Controller{
         $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
 
         if(!$this->comment->exists($commentId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $comment = $this->comment->getById($commentId);
 
         $commentsHTML = $this->view->render(Config::get('VIEWS_PATH') . 'posts/comments.php', array("comments" => $comment));
-        echo $this->view->JSONEncode(array("data" => $commentsHTML));
+        $this->view->renderJson(array("data" => $commentsHTML));
     }
 
     public function delete(){
@@ -141,12 +141,12 @@ class CommentsController extends Controller{
         $commentId = Encryption::decryptIdWithDash($this->request->data("comment_id"));
 
         if(!$this->comment->exists($commentId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $this->comment->deleteById($commentId);
 
-        echo $this->view->JSONEncode(array("success" => true));
+        $this->view->renderJson(array("success" => true));
     }
 
     public function isAuthorized(){

@@ -116,9 +116,10 @@ class SecurityComponent extends Component{
     /**
      * Handles invalid request with a 400 Bad Request Error
      *
+     * @throws Exception
      */
     private function invalidRequest(){
-        $this->controller->error("badrequest");
+        throw new Exception('The request has been deined', 400);
     }
 
     /**

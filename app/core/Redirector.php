@@ -29,7 +29,7 @@ class Redirector{
         }
 
         $response = new Response('', 302, ["Location" => $location . $query]);
-        $response->send();
+        return $response->send();
     }
 
     /**
@@ -44,7 +44,7 @@ class Redirector{
         }
 
         $response = new Response('', 302, ["Location" => PUBLIC_ROOT . $location . $query]);
-        $response->send();
+        return $response->send();
     }
 
     /**

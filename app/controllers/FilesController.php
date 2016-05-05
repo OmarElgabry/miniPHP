@@ -37,7 +37,7 @@ class FilesController extends Controller {
 
         $pageNum  = $this->request->query("page");
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'files/index.php', ['pageNum' => $pageNum]);
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'files/index.php', ['pageNum' => $pageNum]);
     }
 
     public function create(){
@@ -47,11 +47,11 @@ class FilesController extends Controller {
         $file = $this->file->create(Session::getUserId(), $fileData);
 
         if(!$file){
-            echo $this->view->renderErrors($this->file->errors());
+            $this->view->renderErrors($this->file->errors());
         }else{
 
             $fileHTML = $this->view->render(Config::get('VIEWS_PATH') . 'files/files.php', array("files" => $file));
-            echo $this->view->JSONEncode(array("data" => $fileHTML));
+            $this->view->renderJson(array("data" => $fileHTML));
         }
     }
 
@@ -60,12 +60,12 @@ class FilesController extends Controller {
         $fileId = Encryption::decryptIdWithDash($this->request->data("file_id"));
 
         if(!$this->file->exists($fileId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $this->file->deleteById($fileId);
 
-        echo $this->view->JSONEncode(array("success" => true));
+        $this->view->renderJson(array("success" => true));
     }
 
     public function isAuthorized(){

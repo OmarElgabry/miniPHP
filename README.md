@@ -48,7 +48,7 @@ Either way, It's important to understand the PHP MVC skeleton, and know how to a
 + [Database](#database)
 + [Encryption](#encryption)
 + [Validation](#validation)
-+ [Error](#error)
++ [Errors & Exceptions](#errors-exceptions)
 + [Logger](#logger)
 + [Email](#email)
 + [Configurations](#configurations)
@@ -89,19 +89,19 @@ In fact, htaccess splits everything comes after ```http://localhost/miniPHP ``` 
 
 Then ```App``` Class, Inside ```splitUrl()```, will split the query string ```$_GET['url']``` into controller, action method, and any passed arguments to action method.
 
-In ```App``` Class, Inside ```__construct()```, it will instantiate an object from controller class, and make a call to action method, passing any arguments if exist.
+In ```App``` Class, Inside ```run()```, it will instantiate an object from controller class, and make a call to action method, passing any arguments if exist.
 
 ## Controller <a name="controller"></a>
 
-After the ```App``` Class intantiates controller object, The constructor of ```Controller```Class will trigger 3 consective events/methods:
+After the ```App``` Class intantiates controller object, It will call ```$this->controller->startupProcess()``` method, which in turn will trigger 3 consecutive events/methods:
 
 1. ```initialize()```: Use it to load components
 2. ```beforeAction()```: Perform any logic actions before calling controller's action method
 3. ```triggerComponents()```: Trigger startup() method of loaded components
 
-The constructor of ```Controller``` Class **shouldn't** be overridden, instead you can override the 3 methods above in the extending classes, and constructor of ```Controller``` Class will call them one after another. 
+The constructor of ```Controller``` Class **shouldn't** be overridden, instead you can override the ```initialize()``` & ```beforeAction()``` methods in the extending classes.
 
-After the constructor finishes it's job, Then, the requested action method will be called, and arguments will be passed(if any).
+After the startup process of the constrcutor finishes it's job, Then, the requested action method will be called, and arguments will be passed(if any).
 
 ## Components(Middlewares) <a name="components"></a>
 Components are the middlewares. They provide reusable logic to be used as part of the controller. Authentication, Authorization, Form Tampering, and Validate CSRF Tokens are implemented inside Components. 
@@ -327,7 +327,7 @@ public function initialize(){
 	$this->loadComponents([]);
 }
 ```
-**Example 2**: Load Security, & Auth component, but don't authenticate and authorize, just in case you want to use the Auth component inside the action methods. [LoginController](https://github.com/OmarElGabry/miniPHP/blob/master/app/controllers/LoginController.php#L60) is an example on how to access a page without require a logged-in user.
+**Example 2**: Load Security, & Auth component, but don't authenticate and authorize, just in case you want to use the Auth component inside the action methods. [LoginController](https://github.com/OmarElGabry/miniPHP/blob/master/app/controllers/LoginController.php#L60) is an example on **how to access a page without require a logged-in user**.
 ```php
 public function initialize(){
 	$this->loadComponents([ 
@@ -359,14 +359,16 @@ Inside the action method you can make a call to model to get some data, and/or r
   public function index(){
  
 	// render full page with layout(header and footer)
-	echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'notes/index.php');
+	$this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'notes/index.php');
 	
 	// render page without layout
-	echo $this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
+	$this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
 	
-	// render using json_encode() for ajax calls
+	// get the rendered page
 	$html = $this->view->render(Config::get('VIEWS_PATH') . 'notes/note.php');
-	echo $this->view->JSONEncode(array("data" => $html));
+	
+	// render a json view
+	$this->view->renderJson(array("data" => $html));
   }
 ```
 
@@ -387,7 +389,7 @@ All operations like create, delete, update, and validation are implemented in mo
 		$note     = $this->note->create(Session::getUserId(), $content);
         
         if(!$note){
-            echo $this->view->renderErrors($this->note->errors());
+            $this->view->renderErrors($this->note->errors());
         }else{
             Redirector::root("Notes");
         }
@@ -503,10 +505,10 @@ if(!$validation->validate([
 }
 ```
 
-## Errors and Exceptions<a name="error"></a>
+## Errors and Exceptions<a name="errors-exceptions"></a>
 ``` Handler``` Class is responsible for handling all exceptions and errors. It will use [Logger](#logger) to log errors. Error reporting is turned off by default, because every error will be logged and saved in  _app/logs/log.txt_.
 
-If error encountered or exception was thrown, the application will show System Error(500).
+If error encountered or exception was thrown, the application will show System Internal Error(500).
 
 ### Configurations(php.ini)
 + Turn Off display errors
@@ -521,8 +523,6 @@ Logger::log("COOKIE", self::$userId . " is trying to login using invalid cookie"
 
 ## Email<a name="email"></a>
 Emails are sent using [PHPMailer](https://github.com/PHPMailer/PHPMailer) via SMTP, another library for sending emails. You shouldn't use ```mail()``` function of PHP.
-
-**NOTE** You need to configure your SMTP account data in _app/config/config.php_. **But**, If you don't have SMTP account, then you save emails in _app/logs/log.txt_, to do that, check this line of [code](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Email.php#L78).
 
 ## Configurations<a name="configurations"></a>
 In _app/config_, there are two files, one called _config.php_ for main application configurations, and another one for javascript called _javascript.php_. The javascript configurations will be then assigned to a javascript variable in your _footer.php_.
@@ -561,6 +561,12 @@ Steps:
 		+ Email: user@demo.com
 		+ Password: 12345
 
+**EMAIL SETUP** 
+
+You need to configure your SMTP account data in _app/config/config.php_. **But**, If you don't have SMTP account, then you save emails in _app/logs/log.txt_ using Logger. 
+
+To do that, In [core/Email](https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Email.php#L78), comment ```$mail->Send()``` & uncomment ```Logger::log("EMAIL", $mail->Body);``` 
+
 ### User Profile<a name="profile"></a>
 Every user can change his name, email, password. Also upload profile picture (i.e. initially assigned to default.png).
 
@@ -583,7 +589,7 @@ You can upload and download files.
 
 #### Download
 + Every file will have hashed version of it's name, this hashed name will be exposed to users. 
-+ The hashed name = hash(original filename . extension). So, download link will look something like this: _http://localhost/miniPHP/downloads/download/b989f733f948e8a4b8b700e1_
++ The hashed name = hash(original filename . extension). So, download link will look something like this: _http://miniPHP/downloads/download/b989f733f948e8a4b8b700e1_
 
 #### Configurations(php.ini)
 + Set ```file_uploads``` to true
@@ -619,7 +625,7 @@ So, whenever user creates a new newsfeed, post, or upload a file, this will incr
 Users can report Bugs, Features & Enhancements. Once they submitted the form, an email will be sent to ```ADMIN_EMAIL``` defined in _app/config/config.php_
 
 ## ToDo Application<a name="todo"></a>
-Let's say you want to build a simple ToDo List, and users can udate their profile information, and change their profile picture. Here, I will go step by step on how to create a ToDo List using the framework with/without Ajax calls.
+Let's say you want to build a simple ToDo Application. Here, I will go step by step on how to create a ToDo App using the framework with & without Ajax calls.
 
 (1) If you followed the installtion setup steps above, you shouldn't have any problem with creating initial user accounts.
 
@@ -671,10 +677,7 @@ class TodoController extends Controller{
 
     public function index(){
 
-        $html  = $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/todo/", Config::get('VIEWS_PATH') . 'todo/index.php');
-
-        // display todo list
-        echo $html;
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/todo/", Config::get('VIEWS_PATH') . 'todo/index.php');
     }
 
     public function create(){
@@ -689,7 +692,7 @@ class TodoController extends Controller{
             Redirector::root("Todo");
 
             // in case of ajax
-            // echo $this->view->renderErrors($this->todo->errors());
+            // $this->view->renderErrors($this->todo->errors());
 
         }else{
 
@@ -698,7 +701,7 @@ class TodoController extends Controller{
             Redirector::root("Todo");
 
             // in case of ajax
-            // echo $this->view->JSONEncode(array("success" => "Todo has been created"));
+            // $this->view->renderJson(array("success" => "Todo has been created"));
         }
     }
 
@@ -712,7 +715,7 @@ class TodoController extends Controller{
         Redirector::root("Todo");
 
         // in case of ajax
-        // echo $this->view->JSONEncode(array("success" => "Todo has been deleted"));
+        // $this->view->renderJson(array("success" => "Todo has been deleted"));
     }
 
     public function isAuthorized(){
@@ -977,10 +980,10 @@ var events = {
 	            $("#todo-list form.form-delete-todo").submit(function(e){
 	                e.preventDefault();
 	                if (!confirm("Are you sure?")) { return; }
-					
-			var cur_todo = $(this).parent();
-			ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
-
+	                
+	                var cur_todo = $(this).parent();
+	                ajax.send("Todo/delete", helpers.serialize(this), deleteTodoCallBack, cur_todo);
+	                
 	                function deleteTodoCallBack(PHPData){
 	                    if(helpers.validateData(PHPData, cur_todo, "after", "default", "success")){
 	                        $(cur_todo).remove();

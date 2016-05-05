@@ -74,7 +74,7 @@ class LoginController extends Controller {
             // validation for the url will be delayed until login()
             $redirect = $this->request->query('redirect');
 
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . "index.php", ['redirect' => $redirect]);
+            $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . "index.php", ['redirect' => $redirect]);
         }
     }
 
@@ -136,9 +136,9 @@ class LoginController extends Controller {
         $result = $this->login->isEmailVerificationTokenValid($userId, $token);
 
         if(!$result){
-            $this->error(404);
+            return $this->error(404);
         }else{
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'userVerified.php');
+            $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'userVerified.php');
         }
     }
 
@@ -206,7 +206,7 @@ class LoginController extends Controller {
 
         if(!$result){
 
-            $this->error(404);
+            return $this->error(404);
 
         } else {
 
@@ -223,7 +223,7 @@ class LoginController extends Controller {
             // so you will ending up using updatePassword() on an invalid user id.
             Session::set("user_id_reset_password", $userId);
 
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'updatePassword.php');
+            $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'updatePassword.php');
         }
     }
 
@@ -249,7 +249,7 @@ class LoginController extends Controller {
             // logout, and clear any existing session and cookies
             $this->login->logOut(Session::getUserId());
 
-            echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'passwordUpdated.php');
+            $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . 'passwordUpdated.php');
         }
     }
 

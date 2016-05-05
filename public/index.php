@@ -60,5 +60,5 @@ Session::init();
 | the incoming request to the corresponding controller and action method if valid
 |
 */
-$app = new App();
+(new App())->run();
 

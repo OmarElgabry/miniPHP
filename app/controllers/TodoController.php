@@ -37,10 +37,8 @@ class TodoController extends Controller{
 
     public function index(){
 
-        $html  = $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/todo/", Config::get('VIEWS_PATH') . 'todo/index.php');
-
         // display todo list
-        echo $html;
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/todo/", Config::get('VIEWS_PATH') . 'todo/index.php');
     }
 
     public function create(){
@@ -55,7 +53,7 @@ class TodoController extends Controller{
             Redirector::root("Todo");
 
             // in case of ajax
-            // echo $this->view->renderErrors($this->todo->errors());
+            // $this->view->renderErrors($this->todo->errors());
 
         }else{
 
@@ -64,7 +62,7 @@ class TodoController extends Controller{
             Redirector::root("Todo");
 
             // in case of ajax
-            // echo $this->view->JSONEncode(array("success" => "Todo has been created"));
+            // $this->view->renderJson(array("success" => "Todo has been created"));
         }
     }
 
@@ -78,7 +76,7 @@ class TodoController extends Controller{
         Redirector::root("Todo");
 
         // in case of ajax
-        // echo $this->view->JSONEncode(array("success" => "Todo has been deleted"));
+        // $this->view->renderJson(array("success" => "Todo has been deleted"));
     }
 
     public function isAuthorized(){

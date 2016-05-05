@@ -30,17 +30,17 @@ class Handler{
         // because we will take care of it
         error_reporting(0);
 
-        set_error_handler(__CLASS__ . "::errorHandler");
-        set_exception_handler(__CLASS__ .'::exceptionHandler');
-        register_shutdown_function(__CLASS__ ."::fatalErrorHandler" );
+        set_error_handler(__CLASS__ . "::handleError");
+        set_exception_handler(__CLASS__ .'::handleException');
+        register_shutdown_function(__CLASS__ ."::handleFatalError" );
     }
 
      /**
-      * Handle & log fatal errors
+      * Handle fatal errors
       *
       * @return void
       */
-    public static function fatalErrorHandler(){
+    public static function handleFatalError(){
 
         if (PHP_SAPI === 'cli') { return; }
         $error = error_get_last();
@@ -53,34 +53,18 @@ class Handler{
             return;
         }
 
-        // self::exceptionHandler(new Exception($error['message'], 500));
-        self::errorHandler($error['type'], $error['message'], $error['file'], $error['line'], null);
-
+        // self::handleError($error['type'], $error['message'], $error['file'], $error['line'], null);
+        self::handleException(new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
     }
 
     /**
-     * Handle & log errors
+     * Handle errors
      *
      * @return void
-     * @see http://php.net/manual/en/errorfunc.examples.php
+     * @throws ErrorException
      */
-    public static function errorHandler($errno, $errmsg, $filename, $linenum, $vars){
-
-        // set of errors for which a var trace will be saved
-        $user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
-
-        $err  = "<errorentry>\n";
-        $err .= "\t<errortype>" . self::errorType($errno) . "</errortype>\n";
-        $err .= "\t<errormsg>" . $errmsg . "</errormsg>\n";
-
-        if (in_array($errno, $user_errors)) {
-            $err .= "\t<vartrace>" . wddx_serialize_value($vars, "Variables") . "</vartrace>\n";
-        }
-        $err .= "</errorentry>\n\n";
-
-        Logger::Log("ERROR", $err, $filename, $linenum);
-        self::viewError();
-
+    public static function handleError($errno, $errmsg, $filename, $linenum, $vars){
+        throw new ErrorException($errmsg, 0, $errno, $filename, $linenum);
     }
 
     /**
@@ -89,10 +73,24 @@ class Handler{
      * @return void
      * @see http://php.net/manual/en/function.set-exception-handler.php
      */
-    public static function exceptionHandler($e) {
-
+    public static function handleException($e) {
         Logger::Log(get_class($e), $e->getMessage(), $e->getFile(), $e->getLine());
-        self::viewError();
+        self::render($e);
+    }
+
+    /**
+     * display system error page as result of an error or exception
+     *
+     * @param  Exception  $e
+     * @return Response
+     */
+    private static  function render(Exception $e){
+
+        if($e->getCode() === 400){
+            return (new ErrorsController())->error(400)->send();
+        }
+        
+        return (new ErrorsController())->error(500)->send();
     }
 
     /**
@@ -121,14 +119,6 @@ class Handler{
         );
 
         return $errortype[$errno];
-    }
-
-    /**
-     * display system error page as result or error or exception
-     *
-     */
-    private static  function viewError(){
-        (new ErrorsController())->error(500);
     }
 
 }

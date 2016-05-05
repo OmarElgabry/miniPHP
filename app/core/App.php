@@ -52,11 +52,15 @@ class App {
         $this->request  = new Request();
         $this->response = new Response();
 
+    }
+
+    public function run(){
+
         // split the requested URL
         $this->splitUrl();
 
         if(!self::isControllerValid($this->controller)){
-            $this->notFound();
+            return $this->notFound();
         }
 
         if(!empty($this->controller)){
@@ -64,26 +68,26 @@ class App {
             $controllerName = $this->controller;
 
             if(!self::isMethodValid($controllerName, $this->method)){
-                $this->notFound();
+                return $this->notFound();
             }
 
             if(!empty($this->method)){
 
                 if(!self::areArgsValid($controllerName, $this->method, $this->args)){
-                    $this->notFound();
+                    return $this->notFound();
                 }
 
-                $this->triggerController($controllerName, $this->method, $this->args);
+                // finally instantiate the controller object, and call it's action method.
+                return $this->invoke($controllerName, $this->method, $this->args);
 
             } else{
 
                 $this->method = "index";
                 if(!method_exists($controllerName, $this->method)){
-                    $this->notFound();
+                    return $this->notFound();
                 }
 
-                // finally instantiate the controller object, and call it's action method.
-                $this->triggerController($controllerName, $this->method, $this->args);
+                return $this->invoke($controllerName, $this->method, $this->args);
             }
 
         } else{
@@ -92,7 +96,7 @@ class App {
             // then send to login controller, and it should take care of the request
             // either redirect to login page, or dashboard.
             $this->method = "index";
-            $this->triggerController("LoginController", $this->method, $this->args);
+            return $this->invoke("LoginController", $this->method, $this->args);
         }
     }
 
@@ -102,18 +106,29 @@ class App {
      * @param  string $controller
      * @param  string $method
      * @param  array  $args
+     * @return Response 
      */
-     private function triggerController($controller, $method = "index", $args = []){
+     private function invoke($controller, $method = "index", $args = []){
 
          $this->request->addParams(['controller' => $controller, 'action' => $method, 'args' => $args]);
          $this->controller = new $controller($this->request, $this->response);
 
-         if(!empty($args)){
-             call_user_func_array([$this->controller, $method], $args);
-         }else{
-             $this->controller->{$method}();
+         $result = $this->controller->startupProcess();
+         if ($result instanceof Response) {
+            return $result->send();
          }
 
+         if(!empty($args)){
+             $response = call_user_func_array([$this->controller, $method], $args);
+         }else{
+             $response = $this->controller->{$method}();
+         }
+
+         if ($response instanceof Response) {
+            return $response->send();
+         }
+
+        return $this->response->send();
      }
 
     /**
@@ -211,9 +226,7 @@ class App {
      *
      */
     private function notFound(){
-
-        $this->controller = new ErrorsController();
-        $this->controller->error(404);
+        return (new ErrorsController())->error(404)->send();
     }
 
 }

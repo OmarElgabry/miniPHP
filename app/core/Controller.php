@@ -31,7 +31,7 @@ class Controller {
      *
      * @var Response
      */
-    protected $response;
+    public $response;
 
     /**
      * loaded components
@@ -51,68 +51,26 @@ class Controller {
         $this->request  =  $request  !== null ? $request  : new Request();
         $this->response =  $response !== null ? $response : new Response();
         $this->view     =  new View($this);
-
-        // events that that will be triggered for each controller:
-
-        // 1. load components
-        $this->initialize();
-
-        // 2. any logic before calling controller's action(method)
-        $this->beforeAction();
-
-        // 3. trigger startup method of loaded components
-        $this->triggerComponents();
     }
 
     /**
-     * triggers component startup methods.
-     * But, for auth, we are calling authentication and authorization separately
-     *
-     * You need to Fire the Components and Controller callbacks in the correct order,
-     * For example, Authorization depends on form element, so you need to trigger Security first.
-     *
+     * Perform the startup process for this controller.
+     * Events that that will be triggered for each controller:
+     * 1. load components
+     * 2. perform any logic before calling controller's action(method)
+     * 3. trigger startup method of loaded components
+     * 
+     * @return void|Response
      */
-    public function triggerComponents(){
+    public function startupProcess(){
 
-        // You need to Fire the Components and Controller callbacks in the correct orde
-        // For example, Authorization depends on form element, so you need to trigger Security first.
+        $this->initialize();
 
-        // We supposed to execute startup() method of each component,
-        // but since we need to call Auth -> authenticate, then Security, Auth -> authorize separately
+        $this->beforeAction();
 
-        // re-construct components in right order
-        $components = ['Auth', 'Security'];
-        foreach($components as $key => $component){
-            if(!in_array($component, $this->components)){
-                unset($components[$key]);
-            }
-        }
-
-        foreach($components as $component){
-
-            if($component === "Auth"){
-
-                $authenticate = $this->Auth->config("authenticate");
-                if(!empty($authenticate)){
-                    if(!$this->Auth->authenticate()){
-                        $this->Auth->unauthenticated();
-                    }
-                }
-
-                // delay checking authorize till after the loop
-                $authorize = $this->Auth->config("authorize");
-                continue;
-
-            }
-
-            $this->{$component}->startup();
-        }
-
-        // authorize
-        if(!empty($authorize)){
-            if(!$this->Auth->authorize()){
-                $this->Auth->unauthorized();
-            }
+        $result = $this->triggerComponents();
+        if($result instanceof Response){
+            return $result;
         }
     }
 
@@ -154,6 +112,62 @@ class Controller {
             }
         }
     }
+    
+    /**
+     * triggers component startup methods.
+     * But, for auth, we are calling authentication and authorization separately
+     *
+     * You need to Fire the Components and Controller callbacks in the correct order,
+     * For example, Authorization depends on form element, so you need to trigger Security first.
+     *
+     */
+    private function triggerComponents(){
+
+        // You need to Fire the Components and Controller callbacks in the correct orde
+        // For example, Authorization depends on form element, so you need to trigger Security first.
+
+        // We supposed to execute startup() method of each component,
+        // but since we need to call Auth -> authenticate, then Security, Auth -> authorize separately
+
+        // re-construct components in right order
+        $components = ['Auth', 'Security'];
+        foreach($components as $key => $component){
+            if(!in_array($component, $this->components)){
+                unset($components[$key]);
+            }
+        }
+
+        $result = null;
+        foreach($components as $component){
+
+            if($component === "Auth"){
+
+                $authenticate = $this->Auth->config("authenticate");
+                if(!empty($authenticate)){
+                    if(!$this->Auth->authenticate()){
+                        $result = $this->Auth->unauthenticated();
+                    }
+                }
+
+                // delay checking authorize till after the loop
+                $authorize = $this->Auth->config("authorize");
+
+            }else{
+                $result = $this->{$component}->startup();
+            }
+
+            if($result instanceof Response){ return $result; }
+        }
+
+        // authorize
+        if(!empty($authorize)){
+            if(!$this->Auth->authorize()){
+                $result = $this->Auth->unauthorized();
+            }
+        }
+
+        if($result instanceof Response){ return $result; }
+    }
 
     /**
      * show error page
@@ -168,10 +182,10 @@ class Controller {
 
         $errors = [
             404 => "notfound",
-            500 => "system",
+            401 => "unauthenticated",
+            403 => "unauthorized",
             400 => "badrequest",
-            401 => "unauthorized",
-            403 => "forbidden"
+            500 => "system"
         ];
 
         if(!isset($errors[$code]) || !method_exists("ErrorsController", $errors[$code])){
@@ -183,8 +197,9 @@ class Controller {
 
         // clear, get page, then send headers
         $this->response->clearBuffer();
-        (new ErrorsController())->{$action}();
-        $this->response->send();
+        (new ErrorsController($this->request, $this->response))->{$action}();
+        
+        return $this->response;
     }
 
     /**

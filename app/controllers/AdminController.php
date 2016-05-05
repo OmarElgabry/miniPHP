@@ -52,7 +52,7 @@ class AdminController extends Controller {
     public function users(){
 
         Config::addJsConfig('curPage', "users");
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
     }
 
     /**
@@ -69,12 +69,12 @@ class AdminController extends Controller {
         $usersData = $this->admin->getUsers($name, $email, $role, $pageNum);
 
         if(!$usersData){
-            echo $this->view->renderErrors($this->admin->errors());
+            $this->view->renderErrors($this->admin->errors());
         } else{
 
             $usersHTML       = $this->view->render(Config::get('ADMIN_VIEWS_PATH') . 'users/users.php', array("users" => $usersData["users"]));
             $paginationHTML  = $this->view->render(Config::get('VIEWS_PATH') . 'pagination/default.php', array("pagination" => $usersData["pagination"]));
-            echo $this->view->JSONEncode(array("data" => ["users" => $usersHTML, "pagination" => $paginationHTML]));
+            $this->view->renderJson(array("data" => ["users" => $usersHTML, "pagination" => $paginationHTML]));
         }
     }
 
@@ -88,13 +88,13 @@ class AdminController extends Controller {
         $userId = Encryption::decryptId($userId);
 
         if(!$this->user->exists($userId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         Config::addJsConfig('curPage', "users");
         Config::addJsConfig('userId', Encryption::encryptId($userId));
 
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
     }
 
     /**
@@ -109,15 +109,15 @@ class AdminController extends Controller {
         $role       = $this->request->data("role");
 
         if(!$this->user->exists($userId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $result = $this->admin->updateUserInfo($userId, Session::getUserId(), $name, $password, $role);
 
         if(!$result){
-            echo $this->view->renderErrors($this->admin->errors());
+            $this->view->renderErrors($this->admin->errors());
         }else{
-            echo $this->view->renderSuccess("Profile has been updated.");
+            $this->view->renderSuccess("Profile has been updated.");
         }
     }
 
@@ -130,11 +130,11 @@ class AdminController extends Controller {
         $userId = Encryption::decryptIdWithDash($this->request->data("user_id"));
 
         if(!$this->user->exists($userId)){
-            $this->error(404);
+            return $this->error(404);
         }
 
         $this->admin->deleteUser(Session::getUserId(), $userId);
-        echo $this->view->JSONEncode(array("success" => true));
+        $this->view->renderJson(array("success" => true));
     }
 
     /**
@@ -144,7 +144,7 @@ class AdminController extends Controller {
     public function backups(){
 
         Config::addJsConfig('curPage', "backups");
-        echo $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
+        $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
     }
 
     /**

@@ -28,17 +28,17 @@ class AuthComponent extends Component{
      */
     public function startup(){
 
-         //authenticate
+         // authenticate
          if(!empty($this->config["authenticate"])){
              if(!$this->Auth->authenticate()){
-                 $this->Auth->unauthenticated();
+                 return $this->Auth->unauthenticated();
              }
          }
 
-         //authorize
-         if(!empty($this->config["authenticate"])){
+         // authorize
+         if(!empty($this->config["authorize"])){
              if(!$this->Auth->authorize()){
-                 $this->Auth->unauthorized();
+                 return $this->Auth->unauthorized();
              }
          }
      }
@@ -51,8 +51,11 @@ class AuthComponent extends Component{
 
         $this->controller->login->logOut(Session::getUserId());
 
-        if($this->request->isAjax()) { $this->controller->response->setStatusCode(403)->send(); }
-        else                         { Redirector::Login($this->controller->request->url); }
+        if($this->request->isAjax()) { 
+            return $this->controller->error(401); 
+        }else{
+            return Redirector::Login($this->controller->request->url); 
+        }
     }
 
     /**
@@ -60,7 +63,7 @@ class AuthComponent extends Component{
      *
      */
     public function unauthorized(){
-        $this->controller->error("unauthorized");
+        return $this->controller->error(403);
     }
 
      /**

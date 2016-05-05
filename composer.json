@@ -1,18 +1,18 @@
 {
-	"name": "omarelgabry/miniphp",
+    "name": "omarelgabry/miniphp",
     "type": "project",
     "description": "A small, simple PHP MVC framework skeleton that encapsulates a lot of features surrounded with powerful security layers.",
-    "keywords": ["authentication", "authorization", "mvc", "security", "login", "encryption", "validation", "files", "ajax"],
+    "keywords": ["framework", "authentication", "authorization", "mvc", "security", "login", "encryption", "validation", "files", "ajax"],
     "homepage": "https://github.com/OmarElGabry/miniPHP",
     "license": "MIT",
-	"authors": [
+    "authors": [
         {
             "name": "Omar El Gabry",
             "email": "omar.elgabry.93@gmail.com",
             "role": "Developer"
         }
     ],
-	"support": {
+    "support": {
         "issues": "https://github.com/OmarElGabry/miniPHP/issues",
         "source": "https://github.com/OmarElGabry/miniPHP"
     },
@@ -21,9 +21,7 @@
         "phpmailer/phpmailer": "~5.2",
         "gregwar/captcha": "~1.0.12"
     },
-	"autoload": {
-        "psr-4": { "": 
-			["app/core/", "app/models/", "app/utility/", "app/controllers/", "app/core/Components"]
-		}
+    "autoload": {
+    	"psr-4": { "": ["app/core/", "app/models/", "app/utility/", "app/controllers/", "app/core/Components"] }
     }
 }

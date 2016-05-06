@@ -75,7 +75,7 @@ class Handler{
      */
     public static function handleException($e) {
         Logger::Log(get_class($e), $e->getMessage(), $e->getFile(), $e->getLine());
-        self::render($e);
+        self::render($e)->send();
     }
 
     /**
@@ -87,10 +87,10 @@ class Handler{
     private static  function render(Exception $e){
 
         if($e->getCode() === 400){
-            return (new ErrorsController())->error(400)->send();
+            return (new ErrorsController())->error(400);
         }
         
-        return (new ErrorsController())->error(500)->send();
+        return (new ErrorsController())->error(500);
     }
 
     /**

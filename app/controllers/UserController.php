@@ -67,7 +67,7 @@ class UserController extends Controller{
             Session::set('profile-info-success', $message);
         }
 
-        Redirector::root("User/Profile");
+        return $this->redirector->root("User/Profile");
     }
 
     public function updateProfilePicture(){
@@ -79,7 +79,7 @@ class UserController extends Controller{
             Session::set('profile-picture-errors', $this->user->errors());
         }
 
-        Redirector::root("User/Profile");
+        return $this->redirector->root("User/Profile");
     }
 
     /**
@@ -156,7 +156,7 @@ class UserController extends Controller{
             Session::set('report-bug-success', "Email has been sent successfully, We will consider your report.");
         }
         
-        Redirector::root("User/Bugs");
+        return $this->redirector->root("User/Bugs");
     }
 
     public function isAuthorized(){

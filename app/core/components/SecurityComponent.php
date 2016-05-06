@@ -33,20 +33,27 @@ class SecurityComponent extends Component{
      */
     public function startup(){
 
-        $this->requestRequired();
-        $this->secureRequired();
+        if(!$this->requestRequired()){
+            return $this->invalidRequest();
+        }
 
-        $this->validateDomain();
+        if(!$this->secureRequired()){
+            return $this->invalidRequest('forceSSL');
+        }
+
+        if(!$this->validateDomain()){
+            return $this->invalidRequest();
+        }
 
         if($this->request->isPost() && $this->config["validateForm"]){
             if(!$this->form($this->config["form"])){
-                $this->invalidRequest();
+                return $this->invalidRequest();
             }
         }
 
         if($this->config["validateCsrfToken"]){
             if(!$this->CsrfToken()){
-                $this->invalidRequest();
+                return $this->invalidRequest();
             }
         }
     }
@@ -54,8 +61,7 @@ class SecurityComponent extends Component{
     /**
      * Check & validate from the required HTTP methods, like: Post, Ajax, Get
      *
-     * If invalid, this will fire invalid request error.
-     *
+     * @return bool
     */
     private function requestRequired(){
         foreach (['Post', 'Ajax', 'Get'] as $method) {
@@ -63,34 +69,36 @@ class SecurityComponent extends Component{
             if (!empty($this->config[$key])) {
                 if (in_array($this->request->param('action'), $this->config[$key], true) || $this->config[$key] === ['*']) {
                     if (!$this->request->{"is" . $method}()) {
-                        $this->invalidRequest();
+                        return false;
                     }
                 }
             }
         }
+        return true;
     }
 
     /**
      * Check & validate if secured connection is required.
      *
-     * It calls forceSSL() method in the controller
-     *
+     * @return bool
      */
     private function secureRequired(){
         $key = "requireSecure";
         if(!empty($this->config[$key])){
             if (in_array($this->request->param('action'), $this->config[$key], true) || $this->config[$key] === ['*']) {
                 if (!$this->request->isSSL()) {
-                    $this->controller->forceSSL();
+                    return false;
                 }
             }
         }
+        return true;
     }
 
     /**
      * Check & validate if request is coming from the same domain; if equals to $this->request->host()
      * HTTP referer tells the domain where the request came from.
      *
+     * @return bool
      */
     private function validateDomain(){
 
@@ -109,16 +117,22 @@ class SecurityComponent extends Component{
 
         if(!$isValid){
             Logger::log("Request Domain", "User: ". Session::getUserId() ." Request is not coming from the same domain with invalid HTTP referer", __FILE__, __LINE__);
-            $this->invalidRequest();
+            return false;
         }
+        return true;
     }
 
     /**
-     * Handles invalid request with a 400 Bad Request Error
+     * Handles invalid request with a 400 Bad Request Error If no callback is specified.
      *
+     * @param string|null $callback
+     * @return mixed
      * @throws Exception
      */
-    private function invalidRequest(){
+    private function invalidRequest($callback = null){
+        if(is_callable([$this->controller, $callback])){
+            return $this->controller->{$callback}();
+        }
         throw new Exception('The request has been deined', 400);
     }
 

@@ -50,7 +50,7 @@ class TodoController extends Controller{
 
             // in case of normal post request
             Session::set('errors', $this->todo->errors());
-            Redirector::root("Todo");
+            return $this->redirector->root("Todo");
 
             // in case of ajax
             // $this->view->renderErrors($this->todo->errors());
@@ -59,7 +59,7 @@ class TodoController extends Controller{
 
             // in case of normal post request
             Session::set('success', "Todo has been created");
-            Redirector::root("Todo");
+            return $this->redirector->root("Todo");
 
             // in case of ajax
             // $this->view->renderJson(array("success" => "Todo has been created"));
@@ -73,7 +73,7 @@ class TodoController extends Controller{
 
         // in case of normal post request
         Session::set('success', "Todo has been deleted");
-        Redirector::root("Todo");
+        return $this->redirector->root("Todo");
 
         // in case of ajax
         // $this->view->renderJson(array("success" => "Todo has been deleted"));

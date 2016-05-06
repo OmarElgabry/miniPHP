@@ -34,6 +34,13 @@ class Controller {
     public $response;
 
     /**
+     * redirector
+     *
+     * @var Redirector
+     */
+    public $redirector;
+
+    /**
      * loaded components
      *
      * @var array
@@ -48,9 +55,10 @@ class Controller {
     */
     public function __construct(Request $request = null, Response $response = null){
 
-        $this->request  =  $request  !== null ? $request  : new Request();
-        $this->response =  $response !== null ? $response : new Response();
-        $this->view     =  new View($this);
+        $this->request      =  $request  !== null ? $request  : new Request();
+        $this->response     =  $response !== null ? $response : new Response();
+        $this->view         =  new View($this);
+        $this->redirector   =  new Redirector();
     }
 
     /**
@@ -166,7 +174,7 @@ class Controller {
             }
         }
 
-        if($result instanceof Response){ return $result; }
+        return $result;
     }
 
     /**
@@ -236,6 +244,6 @@ class Controller {
      */
     public function forceSSL(){
         $secured  = "https://" . $this->request->currentUrl();
-        Redirector::to($secured);
+        return $this->redirector->to($secured);
     }
 }

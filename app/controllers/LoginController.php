@@ -58,7 +58,7 @@ class LoginController extends Controller {
         // check first if user is already logged in via session or cookie
         if($this->Auth->isLoggedIn()){
 
-            Redirector::dashboard();
+            return $this->redirector->dashboard();
 
         } else {
 
@@ -118,7 +118,7 @@ class LoginController extends Controller {
             Session::set('register-success', "Congratulations!, Your account has been created. Please check your email to validate your account within 24 hour");
         }
 
-        Redirector::login();
+        return $this->redirector->login();
     }
 
     /**
@@ -158,7 +158,7 @@ class LoginController extends Controller {
         if(!$result){
             
             Session::set('login-errors', $this->login->errors());
-            Redirector::login($redirect);
+            return $this->redirector->login($redirect);
 
         }else{
 
@@ -167,7 +167,7 @@ class LoginController extends Controller {
                 $redirect = null;
             }
 
-            Redirector::to(empty($redirect)? PUBLIC_ROOT: $redirect);
+            return $this->redirector->to(empty($redirect)? PUBLIC_ROOT: $redirect);
         }
     }
 
@@ -189,7 +189,7 @@ class LoginController extends Controller {
             Session::set('forgot-password-success', "Email has been sent to you. Please check your email to validate your email address within 24 hour");
         }
 
-        Redirector::login();
+        return $this->redirector->login();
     }
 
     /**
@@ -242,7 +242,7 @@ class LoginController extends Controller {
         if(!$result){
 
             Session::set('update-password-errors', $this->login->errors());
-            Redirector::to(PUBLIC_ROOT . "Login/resetPassword", ['id' => $this->request->data("id"), 'token' => $this->request->data("token")]);
+            return $this->redirector->to(PUBLIC_ROOT . "Login/resetPassword", ['id' => $this->request->data("id"), 'token' => $this->request->data("token")]);
 
         } else {
 
@@ -260,7 +260,7 @@ class LoginController extends Controller {
     public function logOut(){
 
         $this->login->logOut(Session::getUserId());
-        Redirector::login();
+        return $this->redirector->login();
     }
 
 }

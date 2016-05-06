@@ -54,11 +54,11 @@ class NewsFeedController extends Controller{
         if(!$newsfeed){
 
             Session::set('newsfeed-errors', $this->newsfeed->errors());
-            Redirector::root("NewsFeed");
+            return $this->redirector->root("NewsFeed");
 
         }else{
 
-            Redirector::root("NewsFeed");
+            return $this->redirector->root("NewsFeed");
         }
     }
 

@@ -92,7 +92,7 @@ class PostsController extends Controller{
             Session::set('posts-success', "Post has been created");
         }
 
-        Redirector::root("Posts/newPost");
+        return $this->redirector->root("Posts/newPost");
     }
 
     /**
@@ -116,10 +116,10 @@ class PostsController extends Controller{
         if(!$post){
 
             Session::set('posts-errors', $this->post->errors());
-            Redirector::root("Posts/View/" . urlencode(Encryption::encryptId($postId)) . "?action=update");
+            return $this->redirector->root("Posts/View/" . urlencode(Encryption::encryptId($postId)) . "?action=update");
 
         }else{
-            Redirector::root("Posts/View/" . urlencode(Encryption::encryptId($postId)));
+            return $this->redirector->root("Posts/View/" . urlencode(Encryption::encryptId($postId)));
         }
     }
 
@@ -133,7 +133,7 @@ class PostsController extends Controller{
 
         $this->post->deleteById($postId);
 
-        Redirector::root("Posts");
+        return $this->redirector->root("Posts");
     }
 
     public function isAuthorized(){

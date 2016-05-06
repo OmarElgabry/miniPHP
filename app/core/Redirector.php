@@ -15,21 +15,22 @@ class Redirector{
      * Constructor
      *
      */
-    private function __construct(){}
+    public function __construct(){
+    }
 
     /**
      * Redirect to the given location
      *
      * @param string $location
      */
-    public static function to($location, $query = ""){
+    public function to($location, $query = ""){
 
         if(!empty($query)){
             $query = '?' . http_build_query((array)$query, null, '&');
         }
 
         $response = new Response('', 302, ["Location" => $location . $query]);
-        return $response->send();
+        return $response;
     }
 
     /**
@@ -37,21 +38,15 @@ class Redirector{
      *
      * @param string $location
      */
-    public static function root($location = "", $query = ""){
-
-        if(!empty($query)){
-            $query = '?' . http_build_query((array)$query, null, '&');
-        }
-
-        $response = new Response('', 302, ["Location" => PUBLIC_ROOT . $location . $query]);
-        return $response->send();
+    public function root($location = "", $query = ""){
+        return $this->to(PUBLIC_ROOT . $location, $query);
     }
 
     /**
      * Redirect to the dashboard
      */
-    public static function dashboard(){
-        self::to(PUBLIC_ROOT . "User");
+    public function dashboard(){
+        return $this->to(PUBLIC_ROOT . "User");
     }
 
     /**
@@ -60,11 +55,11 @@ class Redirector{
      *
      * @param string|null $redirect_url
      */
-    public static function login($redirect_url = null){
+    public function login($redirect_url = null){
         if(!empty($redirect_url)){
-            self::to(PUBLIC_ROOT . "?redirect=" . urlencode($redirect_url));
+            return $this->to(PUBLIC_ROOT . "?redirect=" . urlencode($redirect_url));
         }else{
-            self::to(PUBLIC_ROOT);
+            return $this->to(PUBLIC_ROOT);
         }
     }
 

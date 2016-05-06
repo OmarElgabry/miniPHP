@@ -156,7 +156,7 @@ class AdminController extends Controller {
         $this->admin->updateBackup();
 
         Session::set('backup-success', "Backup has been updated");
-        Redirector::root("Admin/Backups");
+        return $this->redirector->root("Admin/Backups");
     }
 
     /**
@@ -169,10 +169,10 @@ class AdminController extends Controller {
 
         if(!$result){
             Session::set('backup-errors', $this->admin->errors());
-            Redirector::root("Admin/Backups");
+            return $this->redirector->root("Admin/Backups");
         }else{
             Session::set('backup-success', "Backup has been restored successfully");
-            Redirector::root("Admin/Backups");
+            return $this->redirector->root("Admin/Backups");
         }
     }
 

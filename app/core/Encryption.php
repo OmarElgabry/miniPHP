@@ -126,6 +126,7 @@ class Encryption{
 
         $chars  = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+        $i = [];
         for ($n = 0; $n < strlen($chars); $n++) {
             $i[] = substr($chars, $n, 1);
         }

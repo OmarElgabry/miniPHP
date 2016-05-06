@@ -37,7 +37,7 @@ class Request{
     /**
      * The URL used to make the request.
      *
-     * @var array
+     * @var string
      */
     public $url = null;
 

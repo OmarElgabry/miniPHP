@@ -190,7 +190,7 @@ class Response {
      */
     public function type($contentType = null){
 
-        if($contentType == null){
+        if($contentType === null){
             unset($this->headers['Content-Type']);
         }else{
             $this->headers['Content-Type'] = $contentType;

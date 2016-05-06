@@ -30,15 +30,15 @@ class AuthComponent extends Component{
 
          // authenticate
          if(!empty($this->config["authenticate"])){
-             if(!$this->Auth->authenticate()){
-                 return $this->Auth->unauthenticated();
+             if(!$this->authenticate()){
+                 return $this->unauthenticated();
              }
          }
 
          // authorize
          if(!empty($this->config["authorize"])){
-             if(!$this->Auth->authorize()){
-                 return $this->Auth->unauthorized();
+             if(!$this->authorize()){
+                 return $this->unauthorized();
              }
          }
      }

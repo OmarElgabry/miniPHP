@@ -234,6 +234,7 @@ class Controller {
      * @param string  $model class name
      */
     public function loadModel($model){
+        $model = ucwords($model);
         return $this->{$model} = new $model();
     }
 

@@ -22,6 +22,7 @@ If you need to build bigger application, and take the advantage of most of the f
 Either way, It's important to understand the PHP MVC skeleton, and know how to authenticate and authorize, learn about security issues and how can you defeat against, and how to build you own application using the framework.
 
 ## Index
++ [Demo](#live-demo)
 + [Installation](#installation)
 + [Routing](#routing)
 + [Controller](#controller)
@@ -53,7 +54,7 @@ Either way, It's important to understand the PHP MVC skeleton, and know how to a
 + [Email](#email)
 + [Configurations](#configurations)
 + [JavaScript & Ajax](#js)
-+ [Application(Demo)](#demo)
++ [Application(Demo)](#app-demo)
 	+ [Intro](#intro-demo)
 	+ [Installation](#installation-demo)
 	+ [User Profile](#profile)
@@ -68,6 +69,11 @@ Either way, It's important to understand the PHP MVC skeleton, and know how to a
 + [Contribute](#contribute)
 + [Dependencies](#dependencies)
 + [License](#license)
+
+## Demo <a name="live-demo"></a>
+A live demo is available [here](https://miniphp.ga/). The live demo is for the demo application built on top of this framework in this [section](#app-demo). Thanks to [@Everterstraat](https://github.com/Everterstraat).
+
+> Some features mighn't work in the demo.
 
 ## Installation <a name="installation"></a>
 Install via [Composer](https://getcomposer.org/doc/00-intro.md)
@@ -542,7 +548,7 @@ In order to send request and recieve a respond, you may depend on Ajax calls to 
 
 **events** A namespace that's used to declare all of events that may occure, like when user clicks on a link to create, delete or update.
 
-## Application(Demo) <a name="demo"></a>
+## Application(Demo) <a name="app-demo"></a>
 ### Intro<a name="intro-demo"></a>
 In order to show how to use the framework in a real-life situation, the framework comes with implementation for features like Manage User Profile Management, Dashbaord, News Feed, Upload & Download Files, Posts & Comments, Pagination, Admin panel, Manage System Backups, Notificatons, Report Bugs, ...etc.
 

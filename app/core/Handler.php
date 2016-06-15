@@ -70,6 +70,7 @@ class Handler{
     /**
      * Handle & log exceptions
      *
+     * @param  Throwable  $e
      * @return void
      * @see http://php.net/manual/en/function.set-exception-handler.php
      */
@@ -81,10 +82,10 @@ class Handler{
     /**
      * display system error page as result of an error or exception
      *
-     * @param  Exception  $e
+     * @param  Throwable  $e
      * @return Response
      */
-    private static  function render(Exception $e){
+    private static  function render($e){
 
         if($e->getCode() === 400){
             return (new ErrorsController())->error(400);

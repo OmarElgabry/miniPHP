@@ -39,6 +39,7 @@ class View {
 		{
 			return (array_key_exists($property, get_object_vars($this->controller)) ? $this->controller->{$property} : $this->controller::$$property);
 		}
+		return $this->controller->loadModel($property);
 	}
     /**
      * Renders and returns output for the given file with its array of data.

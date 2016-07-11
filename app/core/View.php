@@ -29,6 +29,18 @@ class View {
      }
 
     /**
+     * Magic __get method
+     *
+     * @param $proporty
+     */
+	public function __get($property)
+	{
+		if(property_exists(get_class($this->controller), $property))
+		{
+			return (array_key_exists($property, get_object_vars($this->controller)) ? $this->controller->{$property} : $this->controller::$$property);
+		}
+	}
+    /**
      * Renders and returns output for the given file with its array of data.
      *
      * @param  string  $filePath

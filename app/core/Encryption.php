@@ -71,14 +71,14 @@ class Encryption{
             throw new Exception("the id to decrypt can't be empty");
         }
 
-        $decryptId  = "";
+        $decryptId  = 0;
         $chars = self::getCharacters();
         $base  = strlen($chars);
         $len   = strlen($id) - 1;
 
         for ($t = $len; $t >= 0; $t--) {
             $bcp = bcpow($base, $len - $t);
-            $decryptId = $decryptId + strpos($chars, substr($id, $t, 1)) * $bcp;
+            $decryptId += strpos($chars, substr($id, $t, 1)) * (int)$bcp;
         }
 
         return ((int)$decryptId - 1142) / 9518436;
@@ -99,7 +99,7 @@ class Encryption{
             throw new Exception("the id to decrypt can't be empty");
         }
 
-        $decryptId  = "";
+        $decryptId  = 0;
         $chars = self::getCharacters();
         $base  = strlen($chars);
         $id    = explode("-", $id)[1];
@@ -108,7 +108,7 @@ class Encryption{
 
         for ($t = $len; $t >= 0; $t--) {
             $bcp = bcpow($base, $len - $t);
-            $decryptId = $decryptId + strpos($chars, substr($id, $t, 1)) * $bcp;
+            $decryptId = $decryptId + strpos($chars, substr($id, $t, 1)) * (int)$bcp;
         }
 
         return ((int)$decryptId - 1142) / 9518436;

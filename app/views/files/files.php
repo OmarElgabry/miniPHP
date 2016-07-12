@@ -16,7 +16,7 @@
 					
 					<td class="text-muted"><?= strtoupper($file["format"]); ?></td>
 					
-					<?php if(Session::getUserId() == $file["user_id"] || Session::getUserRole() === "admin"){ ?>
+					<?php if(Session::getUserId() === (int) $file["user_id"] || Session::getUserRole() === "admin"){ ?>
 							<td class="text-center"><a class="btn btn-danger btn-xs delete"><i class="fa fa-times"></i></a></td>
 					<?php }?>
 				</tr>	

@@ -12,7 +12,7 @@
 						<div class="header">
 							<strong class="primary-font"><?= $feed["user_name"]; ?></strong>
 								<small class="text-muted"><i class="fa fa-clock-o fa-fw"></i> <?= $this->timestamp($feed["date"]);?> </small>
-								<?php if(Session::getUserId() === $feed["user_id"] || Session::getUserRole() === "admin"){?>
+								<?php if(Session::getUserId() === (int) $feed["user_id"] || Session::getUserRole() === "admin"){?>
 									<span class="pull-right btn-group btn-group-xs">
 										<a class="btn btn-default edit"><i class="fa fa-pencil"></i></a>
 										<a class="btn btn-danger delete"><i class="fa fa-times"></i></a>

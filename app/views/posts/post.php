@@ -1,6 +1,6 @@
 		
 			<div dir='auto' class="panel-heading">
-				<?php if(Session::getUserId() === $post["user_id"] || Session::getUserRole() === "admin"){?>
+				<?php if(Session::getUserId() === (int) $post["user_id"] || Session::getUserRole() === "admin"){?>
 					<div class="pull-right">
 						<a href="<?= PUBLIC_ROOT . "Posts/View/" . urlencode(Encryption::encryptId($post["id"])) . "?action=update"; ?>">
 							<button type="button" class="btn btn-default btn-circle edit"><i class="fa fa-pencil"></i></button>

@@ -58,6 +58,8 @@ var ajax = {
             .fail(function(jqXHR) {
                 // stopSpinner(spinnerBlock);
                 switch (jqXHR.status){
+                    case 0:
+                        break;
                     case 302:
                         helpers.redirectTo(config.root);
                         break;
@@ -107,6 +109,8 @@ var ajax = {
             })
             .fail(function(jqXHR) {
                 switch (jqXHR.status){
+                    case 0:
+                        break;
                     case 302:
                         helpers.redirectTo(config.root);
                         break;

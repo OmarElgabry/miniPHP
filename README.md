@@ -538,7 +538,7 @@ In order to send request and recieve a respond, you may depend on Ajax calls to 
 
 #### In _public/main.js_
 
-**config** object is assigned to key-value pairs in [footer.php](https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php). These key-value pairs can be added in server-side code using ```Config::addJsConfig('key', "value");```, which will be assigned then to _config_ object.
+**config** object is assigned to key-value pairs in [footer.php](https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php). These key-value pairs can be added in server-side code using ```Config::setJsConfig('key', "value");```, which will be assigned then to _config_ object.
 
 **ajax** A namespace that has two main functions for sending ajax request. One for normal ajax calls, and another for for uploading files.
 
@@ -870,7 +870,7 @@ class Todo extends Model{
 	<script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
 
         <!-- Assign CSRF Token to JS variable -->
-		<?php Config::addJsConfig('csrfToken', Session::generateCsrfToken()); ?>
+		<?php Config::setJsConfig('csrfToken', Session::generateCsrfToken()); ?>
         <!-- Assign all configration variables -->
 		<script>config = <?= json_encode(Config::getJsConfig()); ?>;</script>
         <!-- Run the application -->

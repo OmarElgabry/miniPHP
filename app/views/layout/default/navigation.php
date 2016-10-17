@@ -4,7 +4,8 @@
 	$newsfeed = $posts = $files = "";
 	foreach($notifications as $notification){
 		if($notification["count"] > 0){
-			$$notification["target"] = $notification["count"];
+            // $$notification["target"] = $notification["count"];        // DEPRECATED IN PHP 7
+			${$notification["target"]} = $notification["count"];
 		}
 	}
 	

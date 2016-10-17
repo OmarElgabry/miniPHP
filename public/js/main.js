@@ -416,7 +416,9 @@ var app = {
             }else{
 
                 $(".sidebar-nav #"+ config.curPage +" a").addClass("active");
-                events[config.curPage].init();
+                if(!helpers.empty(events[config.curPage])){ 
+                    events[config.curPage].init();   
+                }
             }
         }
     }

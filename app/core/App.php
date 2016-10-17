@@ -33,13 +33,13 @@ class App {
      * request
      * @var Request
      */
-    private $request = null;
+    public $request = null;
 
     /**
      * response
      * @var Response
      */
-    private $response = null;
+    public $response = null;
 
     /**
      * application constructor

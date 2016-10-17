@@ -13,6 +13,26 @@ require  '../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
+| Define Application Configuration Constants
+|--------------------------------------------------------------------------
+| 
+| PUBLIC_ROOT: 	the root URL for the application (see below).
+| BASE_DIR: 	path to the directory that has all of your "app", "public", "vendor", ... directories.
+| IMAGES:		path to upload images, don't use it for displaying images, use Config::get('root') . "/img/" instead.
+| APP:			path to app directory.
+|
+*/
+
+// Config::set('base', str_replace("\\", "/", dirname(__DIR__)));
+// Config::set('images', str_replace("\\", "/", __DIR__) . "/img/");
+// Config::set('app', Config::get('base') . "/app/");
+
+define('BASE_DIR', str_replace("\\", "/", dirname(__DIR__)));
+define('IMAGES',   str_replace("\\", "/", __DIR__) . "/img/");
+define('APP',  BASE_DIR . "/app/");
+
+/*
+|--------------------------------------------------------------------------
 | Register Error & Exception handlers
 |--------------------------------------------------------------------------
 |
@@ -20,28 +40,8 @@ require  '../vendor/autoload.php';
 | or an exception has been thrown.
 |
 */
+
 Handler::register();
-
-/*
-|--------------------------------------------------------------------------
-| Define Constants
-|--------------------------------------------------------------------------
-| 
-| Define the main paths the application need to run 
-|
-*/
-
-// path to public root directory where your index.php, css, and js files
-define('PUBLIC_ROOT', 'http://' . Environment::get('HTTP_HOST') . str_replace(['public', '\\'], ['', '/'], dirname(Environment::get('SCRIPT_NAME'))));
-
-// path to the directory that has all of your "app", "public", "vendor", ... directories
-define('BASE_DIR', str_replace("\\", "/", dirname(__DIR__)));
-
-// path to upload images, don't use it for displaying images, use "PUBLIC_ROOT/img/" instead
-define('IMAGES',   str_replace("\\", "/", __DIR__) . "/img/");
-
-// path to app directory
-define('APP',  BASE_DIR . "/app/");
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +49,7 @@ define('APP',  BASE_DIR . "/app/");
 |--------------------------------------------------------------------------
 |
 */
+
 Session::init();
 
 /*
@@ -60,5 +61,20 @@ Session::init();
 | the incoming request to the corresponding controller and action method if valid
 |
 */
-(new App())->run();
 
+$app = new App();
+
+// Config::set('root', $app->request->root());
+define('PUBLIC_ROOT', $app->request->root());
+
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+| 
+| Once we have the application instance, we can handle the incoming request
+| and send a response back to the client's browser.
+|
+*/
+
+$app->run();

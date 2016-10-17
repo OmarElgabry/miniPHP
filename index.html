@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>miniPHP by OmarElGabry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">miniPHP</h1>
+      <h2 class="project-tagline">A small, simple PHP MVC framework skeleton that encapsulates a lot of features surrounded with powerful security layers.</h2>
+      <a href="https://github.com/OmarElGabry/miniPHP" class="btn">View on GitHub</a>
+      <a href="https://github.com/OmarElGabry/miniPHP/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/OmarElGabry/miniPHP/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><img src="https://raw.githubusercontent.com/OmarElGabry/miniPHP/master/public/img/backgrounds/background.png" alt="miniPHP"></p>
+
+<h1>
+<a id="miniphp" class="anchor" href="#miniphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>miniPHP</h1>
+
+<p><a href="https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/build-status/master"><img src="https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/badges/build.png?b=master" alt="Build Status"></a>
+<a href="https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/?branch=master"><img src="https://scrutinizer-ci.com/g/OmarElGabry/miniPHP/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+<a href="https://codeclimate.com/github/OmarElGabry/miniPHP"><img src="https://codeclimate.com/github/OmarElGabry/miniPHP/badges/gpa.svg" alt="Code Climate"></a>
+<a href="https://www.versioneye.com/user/projects/55ae85dd3865620018000001"><img src="https://www.versioneye.com/user/projects/55ae85dd3865620018000001/badge.svg?style=flat" alt="Dependency Status"></a></p>
+
+<p><a href="https://packagist.org/packages/omarelgabry/miniphp"><img src="https://poser.pugx.org/omarelgabry/miniphp/v/stable" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/omarelgabry/miniphp"><img src="https://poser.pugx.org/omarelgabry/miniphp/license" alt="License"></a></p>
+
+<p>A small, simple PHP MVC framework skeleton that encapsulates a lot of features surrounded with powerful security layers.</p>
+
+<p>miniPHP is a very simple application, useful for small projects, helps to understand the PHP MVC skeleton, know how to authenticate and authorize, encrypt data and apply security concepts, sanitization and validation, make ajax calls and more.</p>
+
+<p>It's not a full framework, nor a very basic one but it's not complicated. You can easily install, understand, and use it in any of your projects.</p>
+
+<p>It's indented to remove the complexity of the frameworks. Things like routing, authentication, authorization, manage user session and cookies, and so on are not something I've invented from the scratch, however, they are aggregation of concepts already implemented in other frameworks, but, built in a much simpler way, So, you can understand it, and take it further.</p>
+
+<p>If you need to build bigger application, and take the advantage of most of the features available in frameworks, you can see <a href="http://cakephp.org/">CakePHP</a>, <a href="http://laravel.com/">Laravel</a>, <a href="http://symfony.com/">Symphony</a>.</p>
+
+<p>Either way, It's important to understand the PHP MVC skeleton, and know how to authenticate and authorize, learn about security issues and how can you defeat against, and how to build you own application using the framework.</p>
+
+<h2>
+<a id="index" class="anchor" href="#index" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Index</h2>
+
+<ul>
+<li><a href="#live-demo">Demo</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#routing">Routing</a></li>
+<li><a href="#controller">Controller</a></li>
+<li>
+<a href="#components">Components(Middlewares)</a>
+
+<ul>
+<li>
+<a href="#authentication">Authentication</a>
+
+<ul>
+<li><a href="#session">Session</a></li>
+<li><a href="#cookies">Cookies</a></li>
+</ul>
+</li>
+<li><a href="#authorization">Authorization</a></li>
+<li>
+<a href="#security">Security</a>
+
+<ul>
+<li><a href="#http-method">HTTP Methods</a></li>
+<li><a href="#referer">Domain Validation</a></li>
+<li><a href="#form-tampering">Form Tampering</a></li>
+<li><a href="#csrf">CSRF</a></li>
+<li><a href="#htaccess">htaccess</a></li>
+</ul>
+</li>
+<li><a href="#turn-on-off-components">Turn on/off Components</a></li>
+</ul>
+</li>
+<li><a href="#views">Views</a></li>
+<li><a href="#models">Models</a></li>
+<li>
+<a href="#login">Login</a>
+
+<ul>
+<li><a href="#user-verification">User Verification</a></li>
+<li><a href="#forgotten-password">Forgotten Password</a></li>
+<li><a href="#brute-force">Brute-Force attack</a></li>
+<li><a href="#captcha">Captcha</a></li>
+<li><a href="#block-ip">Block IP Addresses</a></li>
+</ul>
+</li>
+<li><a href="#database">Database</a></li>
+<li><a href="#encryption">Encryption</a></li>
+<li><a href="#validation">Validation</a></li>
+<li><a href="#errors-exceptions">Errors &amp; Exceptions</a></li>
+<li><a href="#logger">Logger</a></li>
+<li><a href="#email">Email</a></li>
+<li><a href="#configurations">Configurations</a></li>
+<li><a href="#js">JavaScript &amp; Ajax</a></li>
+<li>
+<a href="#app-demo">Application(Demo)</a>
+
+<ul>
+<li><a href="#intro-demo">Intro</a></li>
+<li><a href="#installation-demo">Installation</a></li>
+<li><a href="#profile">User Profile</a></li>
+<li><a href="#files">Files</a></li>
+<li><a href="#newsfeed-posts-comments">News Feed &amp; Posts &amp; Comments</a></li>
+<li><a href="#admin">Admin</a></li>
+<li><a href="#notifications">Notifications</a></li>
+<li><a href="#bugs">Report Bugs</a></li>
+<li><a href="#backups">Backups</a></li>
+</ul>
+</li>
+<li><a href="#todo">ToDo Application(Step By Step Implementation)</a></li>
+<li><a href="#support">Support</a></li>
+<li><a href="#contribute">Contribute</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+
+<h2>
+<a id="demo-" class="anchor" href="#demo-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo <a name="live-demo"></a>
+</h2>
+
+<p>A live demo is available <a href="https://miniphp.ga/">here</a>. The live demo is for the demo application built on top of this framework in this <a href="#app-demo">section</a>. Thanks to <a href="https://github.com/Everterstraat">@Everterstraat</a>.</p>
+
+<blockquote>
+<p>Some features mighn't work in the demo.</p>
+</blockquote>
+
+<h2>
+<a id="installation-" class="anchor" href="#installation-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation <a name="installation"></a>
+</h2>
+
+<p>Install via <a href="https://getcomposer.org/doc/00-intro.md">Composer</a></p>
+
+<pre><code>    composer install
+</code></pre>
+
+<h2>
+<a id="routing-" class="anchor" href="#routing-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Routing <a name="routing"></a>
+</h2>
+
+<p>Whenever you make a request to the application, it wil be directed to <em>index.php</em> inside public folder. 
+So, if you make a request: <code>http://localhost/miniPHP/User/update/412</code>. This will be splitted and translated into </p>
+
+<ul>
+<li>Controller: User</li>
+<li>Action Method: update</li>
+<li>Arguemtns to action method: 412</li>
+</ul>
+
+<p>In fact, htaccess splits everything comes after <code>http://localhost/miniPHP</code> and adds it to the URL as querystring argument. So, this request will be converted to: <code>http://localhost/miniPHP?url='User/update/412'</code>.</p>
+
+<p>Then <code>App</code> Class, Inside <code>splitUrl()</code>, will split the query string <code>$_GET['url']</code> into controller, action method, and any passed arguments to action method.</p>
+
+<p>In <code>App</code> Class, Inside <code>run()</code>, it will instantiate an object from controller class, and make a call to action method, passing any arguments if exist.</p>
+
+<h2>
+<a id="controller-" class="anchor" href="#controller-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Controller <a name="controller"></a>
+</h2>
+
+<p>After the <code>App</code> Class intantiates controller object, It will call <code>$this-&gt;controller-&gt;startupProcess()</code> method, which in turn will trigger 3 consecutive events/methods:</p>
+
+<ol>
+<li>
+<code>initialize()</code>: Use it to load components</li>
+<li>
+<code>beforeAction()</code>: Perform any logic actions before calling controller's action method</li>
+<li>
+<code>triggerComponents()</code>: Trigger startup() method of loaded components</li>
+</ol>
+
+<p>The constructor of <code>Controller</code> Class <strong>shouldn't</strong> be overridden, instead you can override the <code>initialize()</code> &amp; <code>beforeAction()</code> methods in the extending classes.</p>
+
+<p>After the startup process of the constrcutor finishes it's job, Then, the requested action method will be called, and arguments will be passed(if any).</p>
+
+<h2>
+<a id="componentsmiddlewares-" class="anchor" href="#componentsmiddlewares-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Components(Middlewares) <a name="components"></a>
+</h2>
+
+<p>Components are the middlewares. They provide reusable logic to be used as part of the controller. Authentication, Authorization, Form Tampering, and Validate CSRF Tokens are implemented inside Components. </p>
+
+<p>It's better to pull these pieces of logic out of controller class, and keep all various tasks and validations inside these Components.</p>
+
+<p>Every component inherits from the base/super class called <code>Component</code>. Each has a defined task. There are two components, one for called <em>Auth</em> for Authentication and Authorization, and the other one called <em>Security</em> for other Security Issues.</p>
+
+<p>They are very simple to deal with, and they will be called inside controller constructor.</p>
+
+<h3>
+<a id="authentication-" class="anchor" href="#authentication-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authentication <a name="authentication"></a>
+</h3>
+
+<p>Is user has right credentials?</p>
+
+<h4>
+<a id="session" class="anchor" href="#session" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Session<a name="session"></a>
+</h4>
+
+<p>The AuthComponent takes care of user session.</p>
+
+<ul>
+<li>Prevent Session Concurrency
+
+<ul>
+<li>There can't be 2 users logged in with same user credentials.</li>
+</ul>
+</li>
+<li>Defeat against Session Hijacking &amp; Fixation
+
+<ul>
+<li>HTTP Only with session cookies</li>
+<li>Whenever it's possible, It's Highly Recommended to use Secured connection(SSL).</li>
+<li>Regenerate session periodically and after actions like login, forgot password, ...etc.</li>
+<li>Validate user's IP Address and User agent(initially will be stored in session). Although they can be faked, It's better to keep them as part of validation methods.</li>
+</ul>
+</li>
+<li>Session Expiration
+
+<ul>
+<li>Session will expire after certain duration(&gt;= 1 day)</li>
+<li>Session cookie in browser is also configured to be expired after (&gt;= 1 week)</li>
+</ul>
+</li>
+<li>Session accessible only through the HTTP protocol
+
+<ul>
+<li>This is important so sessions won't be accessible by JS.</li>
+</ul>
+</li>
+</ul>
+
+<h4>
+<a id="cookies" class="anchor" href="#cookies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Cookies<a name="cookies"></a>
+</h4>
+
+<ul>
+<li>Remember Me Tokens
+
+<ul>
+<li>User can keep himself logged in using cookies</li>
+<li>HTTP Only with cookies</li>
+<li>Whenever it's possible, It's Highly Recommended to use Secured connection(SSL).</li>
+<li>Cookies stored in browser are attached with tokens and Encrypted data</li>
+<li>Cookies in browser are also configured to be expired after (&gt;= 2 weeks)</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="authorization-" class="anchor" href="#authorization-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authorization <a name="authorization"></a>
+</h3>
+
+<p>Do you have the right to access or to perform X action?. The <em>Auth</em> Component takes care of authorization for each controller. Thus, each controller should implement <code>isAuthorized()</code> method. What you need to do is to return <code>boolean</code> value.</p>
+
+<p>So, for example, in order to check if current user is admin or not, you would do something like this:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">    <span class="pl-c">// AdminController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">isAuthorized</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$role</span> <span class="pl-k">=</span> <span class="pl-c1">Session</span><span class="pl-k">::</span>getUserRole();</span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-c1">isset</span>(<span class="pl-smi">$role</span>) <span class="pl-k">&amp;&amp;</span> <span class="pl-smi">$role</span> <span class="pl-k">===</span> <span class="pl-s"><span class="pl-pds">"</span>admin<span class="pl-pds">"</span></span>){</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-c1">true</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">false</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span></pre></div>
+
+<p>If you want to take it further and apply some permission rules, There is a powerful class called <code>Permission</code> responsible for defining permission rules. This class allows you to define "Who is allowed to perform specific action method on current controller".</p>
+
+<p>So, for example, in order to allow admins to perform any action on notes, while normal users can only edit their notes:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">   <span class="pl-c">// NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">   <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">isAuthorized</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$action</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>param(<span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$role</span>   <span class="pl-k">=</span> <span class="pl-c1">Session</span><span class="pl-k">::</span>getUserRole();</span>
+<span class="pl-s1">        <span class="pl-smi">$resource</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>notes<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// only for admins</span></span>
+<span class="pl-s1">        <span class="pl-c">// they are allowed to perform all actions on $resource</span></span>
+<span class="pl-s1">        <span class="pl-c1">Permission</span><span class="pl-k">::</span>allow(<span class="pl-s"><span class="pl-pds">'</span>admin<span class="pl-pds">'</span></span>, <span class="pl-smi">$resource</span>, [<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// for normal users, they can edit only if the current user is the owner</span></span>
+<span class="pl-s1">        <span class="pl-c1">Permission</span><span class="pl-k">::</span>allow(<span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>, <span class="pl-smi">$resource</span>, [<span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span>], <span class="pl-s"><span class="pl-pds">'</span>owner<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$noteId</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>data(<span class="pl-s"><span class="pl-pds">"</span>note_id<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$config</span> <span class="pl-k">=</span> [</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">"</span>user_id<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Session</span><span class="pl-k">::</span>getUserId(),</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">"</span>table<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>notes<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$noteId</span></span>
+<span class="pl-s1">        ];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// providing the current user's role, $resource, action method, and some configuration data</span></span>
+<span class="pl-s1">        <span class="pl-c">// Permission class will check based on rules defined above and return boolean value</span></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">Permission</span><span class="pl-k">::</span>check(<span class="pl-smi">$role</span>, <span class="pl-smi">$resource</span>, <span class="pl-smi">$action</span>, <span class="pl-smi">$config</span>);</span>
+<span class="pl-s1">    }</span></pre></div>
+
+<p>Now, you can check authorization based on user's role, resource, and for each action method.</p>
+
+<h3>
+<a id="security-" class="anchor" href="#security-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Security <a name="security"></a>
+</h3>
+
+<p>The SecurityComponent takes care of various security tasks and validation. </p>
+
+<h4>
+<a id="http-method" class="anchor" href="#http-method" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP Method<a name="http-method"></a>
+</h4>
+
+<p>It's important to restrict the request methods. As an example, if you have an action method that accepts form values, So, ONLY POST request will be accepted. The same idea for Ajax, GET, ..etc. You can do this inside <code>beforeAction()</code> method. </p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">    <span class="pl-c">// NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">beforeAction</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">parent</span><span class="pl-k">::</span>beforeAction();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$actions</span> <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>create<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>delete<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requireAjax(<span class="pl-smi">$actions</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requirePost(<span class="pl-smi">$actions</span>);</span>
+<span class="pl-s1">    }</span></pre></div>
+
+<p>Also if you require all requests to be through secured connection, you can configure the whole controller, or specific actions to redirect all requests to HTTPS instead of HTTP.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">    <span class="pl-c">// NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">beforeAction</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">parent</span><span class="pl-k">::</span>beforeAction();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$actions</span> <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>create<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>delete<span class="pl-pds">'</span></span>];    <span class="pl-c">// specific action methods  </span></span>
+<span class="pl-s1">        <span class="pl-smi">$actions</span> <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>];                   <span class="pl-c">// all action methods</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requireSecure(<span class="pl-smi">$actions</span>);</span>
+<span class="pl-s1">    }</span></pre></div>
+
+<h4>
+<a id="domain-validation" class="anchor" href="#domain-validation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Domain Validation<a name="referer"></a>
+</h4>
+
+<p>It checks &amp; validates if request is coming from the same domain. Although they can be faked, It's good to keep them as part of our security layers.</p>
+
+<h4>
+<a id="form-tampering" class="anchor" href="#form-tampering" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Form Tampering<a name="form-tampering"></a>
+</h4>
+
+<p>Validate submitted form coming from POST request. The pitfall of this method is you need to define the expected form fields, or data that will be sent with POST request. </p>
+
+<p>By default, the framework will validate for form tampering when POST request is made, and it will make sure the CSRF token is passed with the form fields. In this situation, if you didn't pass the CSRF token, it will be considered as a Security thread.</p>
+
+<ul>
+<li>Unknown fields cannot be added to the form.</li>
+<li>Fields cannot be removed from the form.</li>
+</ul>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">    <span class="pl-c">// NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">beforeAction</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">parent</span><span class="pl-k">::</span>beforeAction();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$action</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>param(<span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$actions</span> <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>create<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>delete<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requireAjax(<span class="pl-smi">$actions</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requirePost(<span class="pl-smi">$actions</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">switch</span>(<span class="pl-smi">$action</span>){</span>
+<span class="pl-s1">            <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">"</span>create<span class="pl-pds">"</span></span>:</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>config(<span class="pl-s"><span class="pl-pds">"</span>form<span class="pl-pds">"</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>fields<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-s"><span class="pl-pds">'</span>note_text<span class="pl-pds">'</span></span>]]);</span>
+<span class="pl-s1">                <span class="pl-k">break</span>;</span>
+<span class="pl-s1">            <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">"</span>delete<span class="pl-pds">"</span></span>:</span>
+<span class="pl-s1">                <span class="pl-c">// If you want to disable validation for form tampering</span></span>
+<span class="pl-s1">                <span class="pl-c">// $this-&gt;Security-&gt;config("validateForm", false);</span></span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>config(<span class="pl-s"><span class="pl-pds">"</span>form<span class="pl-pds">"</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>fields<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-s"><span class="pl-pds">'</span>note_id<span class="pl-pds">'</span></span>]]);</span>
+<span class="pl-s1">                <span class="pl-k">break</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    }</span></pre></div>
+
+<h4>
+<a id="csrf-tokens" class="anchor" href="#csrf-tokens" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CSRF Tokens<a name="csrf"></a>
+</h4>
+
+<p>CSRF Tokens are important to validate the submitted forms, and to make sure they aren't faked. A hacker can trick the user to make a request to a website, or click on a link, and so on.</p>
+
+<p>They are valid for a certain duration(&gt;= 1 day), then it will be regenerated and stored in user's session.</p>
+
+<p>CSRF validation is disabled by default. If you want to validate the CSRF token, then assign <code>validateCsrfToken</code> to <code>true</code> as shown in the example below. CSRF validation will be forced when request is POST and form tampering is enabled. </p>
+
+<p>Now, You do not need to manually verify the CSRF token on every requests. The <em>Security</em> Component will verify token in the request versus the token stored in the session.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">    <span class="pl-c">// NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">beforeAction</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">parent</span><span class="pl-k">::</span>beforeAction();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$action</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>param(<span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$actions</span> <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>index<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requireGet(<span class="pl-smi">$actions</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">switch</span>(<span class="pl-smi">$action</span>){</span>
+<span class="pl-s1">            <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">"</span>index<span class="pl-pds">"</span></span>:</span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>config(<span class="pl-s"><span class="pl-pds">"</span>validateCsrfToken<span class="pl-pds">"</span></span>, <span class="pl-c1">true</span>);</span>
+<span class="pl-s1">                <span class="pl-k">break</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    }</span></pre></div>
+
+<p>CSRF tokens are generated per session. You can either add a hidden form field, or in the URL as query parameter.</p>
+
+<p><strong>Form</strong></p>
+
+<p><code>&lt;input type="hidden" name="csrf_token" value="&lt;?= Session::generateCsrfToken(); ?&gt;" /&gt;</code> </p>
+
+<p><strong>URL</strong></p>
+
+<p><code>&lt;a href="&lt;?= PUBLIC_ROOT . "?csrf_token=" . urlencode(Session::generateCsrfToken()); ?&gt;"&gt;Link&lt;/a&gt;</code></p>
+
+<p><strong>JavaScript</strong></p>
+
+<p>You can also assign the CSRF token to a javascript variable. </p>
+
+<p><code>&lt;script&gt;config = &lt;?= json_encode(Session::generateCsrfToken()); ?&gt;;&lt;/script&gt;</code> </p>
+
+<h4>
+<a id="htacess" class="anchor" href="#htacess" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>htacess<a name="htaccess"></a>
+</h4>
+
+<ul>
+<li>All requests will be redirected to <code>index.php</code> in public root folder. </li>
+<li>Block directory traversal/browsing</li>
+<li>Deny access to app directory(Althought it's not needed if you setup the application correctly)</li>
+</ul>
+
+<h3>
+<a id="turn-onoff-componentsmiddlewares-" class="anchor" href="#turn-onoff-componentsmiddlewares-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Turn on/off Components(Middlewares) <a name="turn-on-off-components"></a>
+</h3>
+
+<p>Sometimes you need to have a control on these components, such as when want to have a Controller without Authentication or Authorization, or a Security component is enabled. This can be done by override <code>initialize()</code> method inside your Controller class, and load only needed Components.</p>
+
+<p><strong>Example 1</strong>: Don't load any component, no authentication or authorization, or security validations.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">initialize</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>loadComponents([]);</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p><strong>Example 2</strong>: Load Security, &amp; Auth component, but don't authenticate and authorize, just in case you want to use the Auth component inside the action methods. <a href="https://github.com/OmarElGabry/miniPHP/blob/master/app/controllers/LoginController.php#L60">LoginController</a> is an example on <strong>how to access a page without require a logged-in user</strong>.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">initialize</span>(){</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>loadComponents([ </span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>Auth<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>Security<span class="pl-pds">'</span></span></span>
+<span class="pl-s1">        ]);</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p><strong>Example 3</strong>: Load Security, &amp; Auth component, and authenticate user &amp; authorize for the current controller. This is the default behavior in the <a href="https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Controller.php#L137">core/Controller</a> Class</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">initialize</span>(){</span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>loadComponents([</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>Auth<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>authenticate<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-s"><span class="pl-pds">'</span>User<span class="pl-pds">'</span></span>],</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">'</span>authorize<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-s"><span class="pl-pds">'</span>Controller<span class="pl-pds">'</span></span>]</span>
+<span class="pl-s1">        ],</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>Security<span class="pl-pds">'</span></span></span>
+<span class="pl-s1">        ]);</span>
+<span class="pl-s1">}</span></pre></div>
+
+<h2>
+<a id="views-" class="anchor" href="#views-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Views <a name="views"></a>
+</h2>
+
+<p>Inside the action method you can make a call to model to get some data, and/or render pages inside <em>views</em> folder</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">  <span class="pl-c">//  NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">index</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// render full page with layout(header and footer)</span></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">view</span><span class="pl-k">-&gt;</span>renderWithLayouts(<span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>VIEWS_PATH<span class="pl-pds">'</span></span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span>layout/default/<span class="pl-pds">"</span></span>, <span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>VIEWS_PATH<span class="pl-pds">'</span></span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>notes/index.php<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// render page without layout</span></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">view</span><span class="pl-k">-&gt;</span>render(<span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>VIEWS_PATH<span class="pl-pds">'</span></span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>notes/note.php<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// get the rendered page</span></span>
+<span class="pl-s1">    <span class="pl-smi">$html</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">view</span><span class="pl-k">-&gt;</span>render(<span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>VIEWS_PATH<span class="pl-pds">'</span></span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>notes/note.php<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// render a json view</span></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">view</span><span class="pl-k">-&gt;</span>renderJson(<span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$html</span>));</span>
+<span class="pl-s1">  }</span></pre></div>
+
+<h2>
+<a id="models-" class="anchor" href="#models-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Models <a name="models"></a>
+</h2>
+
+<blockquote>
+<p>In MVC, the model represents the information (the data) and the business rules; the view contains elements of the user interface such as text, form inputs; and the controller manages the communication between the model and the view.
+<a href="http://www.yiiframework.com/doc/guide/1.1/en/basics.mvc">Source</a></p>
+</blockquote>
+
+<p>All operations like create, delete, update, and validation are implemented in model classes.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">   <span class="pl-c">// NotesController</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">create</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// get content of note submitted to a form</span></span>
+<span class="pl-s1">        <span class="pl-c">// then pass the content along with the current user to Note class</span></span>
+<span class="pl-s1">        <span class="pl-smi">$content</span>  <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>data(<span class="pl-s"><span class="pl-pds">"</span>note_text<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$note</span>     <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">note</span><span class="pl-k">-&gt;</span>create(<span class="pl-c1">Session</span><span class="pl-k">::</span>getUserId(), <span class="pl-smi">$content</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-smi">$note</span>){</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">view</span><span class="pl-k">-&gt;</span>renderErrors(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">note</span><span class="pl-k">-&gt;</span>errors());</span>
+<span class="pl-s1">        }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">redirector</span><span class="pl-k">-&gt;</span>root(<span class="pl-s"><span class="pl-pds">"</span>Notes<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    }</span></pre></div>
+
+<p><strong>In Notes Model</strong></p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">   <span class="pl-c">// Notes Model</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">create</span>(<span class="pl-smi">$userId</span>, <span class="pl-smi">$content</span>){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// using validation class(see below)</span></span>
+<span class="pl-s1">        <span class="pl-smi">$validation</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Validation</span>();</span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>validate([<span class="pl-s"><span class="pl-pds">'</span>Content<span class="pl-pds">'</span></span>   <span class="pl-k">=&gt;</span> [<span class="pl-smi">$content</span>, <span class="pl-s"><span class="pl-pds">"</span>required|minLen(4)|maxLen(300)<span class="pl-pds">"</span></span>]])) {</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">errors</span> <span class="pl-k">=</span> <span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>errors();</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-c1">false</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// using database class to insert new note</span></span>
+<span class="pl-s1">        <span class="pl-smi">$database</span> <span class="pl-k">=</span> <span class="pl-c1">Database</span><span class="pl-k">::</span>openConnection();</span>
+<span class="pl-s1">        <span class="pl-smi">$query</span>    <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s1"><span class="pl-k">INSERT INTO</span> notes (user_id, content) <span class="pl-k">VALUES</span> (:user_id, :content)</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>prepare(<span class="pl-smi">$query</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>bindValue(<span class="pl-s"><span class="pl-pds">'</span>:user_id<span class="pl-pds">'</span></span>, <span class="pl-smi">$userId</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>bindValue(<span class="pl-s"><span class="pl-pds">'</span>:content<span class="pl-pds">'</span></span>, <span class="pl-smi">$content</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>execute();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>countRows() <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">1</span>){</span>
+<span class="pl-s1">            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-c1">Exception</span>(<span class="pl-s"><span class="pl-pds">"</span>Couldn't create note<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">true</span>;</span>
+<span class="pl-s1">     }</span></pre></div>
+
+<h2>
+<a id="login" class="anchor" href="#login" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Login<a name="login"></a>
+</h2>
+
+<p>Using the framework, you would probably do login, register, and logout. These actions are implemented in <em>app/models/Login</em> &amp; <em>app/controllers/LoginController</em>. In most situations, you won't need to modify anything related to login actions, just understand the behaviour of the framework. </p>
+
+<p><strong>NOTE</strong> If you don't have SSL, you would better want to encrypt data manually at Client Side, If So, read <a href="http://stackoverflow.com/questions/3715920/about-password-hashing-system-on-client-side">this</a> and also <a href="http://stackoverflow.com/questions/4121629/password-encryption-at-client-side?lq=1">this</a>.</p>
+
+<h3>
+<a id="user-verification" class="anchor" href="#user-verification" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>User Verification<a name="user-verification"></a>
+</h3>
+
+<p>Whenever the user registers, An email will be sent with token concatenated with encrypted user id. This token will be expired after 24 hour. It's much better to expire these tokens, and re-use the registered email if they are expired.</p>
+
+<p><strong>Passwords</strong> are hashed using the latest algorithms in PHP v5.5</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$hashedPassword</span> <span class="pl-k">=</span> <span class="pl-c1">password_hash</span>(<span class="pl-smi">$password</span>, <span class="pl-c1">PASSWORD_DEFAULT</span>, <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">'</span>cost<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>HASH_COST_FACTOR<span class="pl-pds">'</span></span>)));</span></pre></div>
+
+<h3>
+<a id="forgotten-password" class="anchor" href="#forgotten-password" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Forgotten Password<a name="forgotten-password"></a>
+</h3>
+
+<p>If user forgot his password, he can restore it. The same idea of expired tokens goes here. </p>
+
+<p>In addition, block user for certain duration(&gt;= 10min) if he exceeded number of forgotten passwords attempts(5) during a certain duration(&gt;= 10min).</p>
+
+<h4>
+<a id="brute-force-attack" class="anchor" href="#brute-force-attack" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Brute Force Attack<a name="brute-force"></a>
+</h4>
+
+<p>Throttling brute-force attacks is when a hacker tries all possible input combination until he finds the correct password.</p>
+
+<p>Solution:</p>
+
+<ul>
+<li>Block failed logins, So, if a user exceeded number of failed logins(5) during certain duration(&gt;= 10min), the email will be blocked for duration(&gt;= 10min).</li>
+<li>Blocking will be for emails even these emails aren't stored in our database, meaning for non-registered users.</li>
+<li>Require <strong>Strong</strong> passwords
+
+<ul>
+<li>At least one lowercase character</li>
+<li>At least one uppercase character</li>
+<li>At least one special character</li>
+<li>At least one number</li>
+<li>Min Length is 8 characters</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="captcha" class="anchor" href="#captcha" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Captcha<a name="captcha"></a>
+</h3>
+
+<p>CAPTCHAs are particularly effective in preventing automated logins. Using <a href="https://github.com/Gregwar/Captcha">Captcha</a> an awesome PHP Captcha library.</p>
+
+<h3>
+<a id="block-ip-address" class="anchor" href="#block-ip-address" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Block IP Address<a name="block-ip"></a>
+</h3>
+
+<p>Blocking IP Addresses is the last solution to think about. IP Address will be blocked if the same IP failed to login multiple times using different credentials(&gt;=10).</p>
+
+<h2>
+<a id="database" class="anchor" href="#database" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Database<a name="database"></a>
+</h2>
+
+<p>PHP Data Objects (PDO) is used for preparing and executing database queries. Inside <code>Database</code> Class, there are various methods that hides complexity and let's you instantiate database object, prepare, bind, and execute in few lines.</p>
+
+<ul>
+<li>SQL Injection
+
+<ul>
+<li>Using prepared statements will prevent SQL Injection.</li>
+</ul>
+</li>
+<li>Limit Privileges
+
+<ul>
+<li>Don't use <em>root</em> user, Create a new one instead.</li>
+<li>Always assign limited privileges to current database user</li>
+<li>
+<code>SELECT, INSERT, UPDATE, DELETE</code> are enough for users</li>
+<li>For backups, It's recommended to use another database user with more privileges. These privileges needed for <a href="https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html">mysqldump</a> are mentioned in <code>Admin</code> Class.</li>
+</ul>
+</li>
+<li>UTF-8
+
+<ul>
+<li>For complete UTF-8 support, you need to use <code>utf8mb4</code>on database level.</li>
+<li>MySQL’s <code>utf8</code> charset only store UTF-8 encoded symbols that consist of one to three bytes. But, It can't for symbols with four bytes. </li>
+<li>Here, charset is <code>utf8</code>. But, if you want to upgrade to <code>utf8mb4</code> follow these links:
+
+<ul>
+<li>
+<a href="https://mathiasbynens.be/notes/mysql-utf8mb4">Link 1</a> &amp; <a href="https://dev.mysql.com/doc/refman/5.5/en/charset-unicode-upgrading.html">Link 2</a>
+</li>
+<li>Don't forget to change <strong>charset</strong> in <em>app/config/config.php</em> to <code>utf8mb4</code>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="encryption" class="anchor" href="#encryption" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Encryption<a name="encryption"></a>
+</h2>
+
+<p><code>Encryption</code> Class is responsible for encrypting and decryption of data. Encryption is applied to things like cookies, User ID, Post ID, ..etc. Encrypted strings are authenticated and they are different every time you encrypt. </p>
+
+<h2>
+<a id="validation" class="anchor" href="#validation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validation<a name="validation"></a>
+</h2>
+
+<p>Validation is a small library for validating user inputs. All validation rules are inside <code>Validation</code> Class.</p>
+
+<h4>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h4>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validation</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Validation</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// there are default error messages for each rule</span></span>
+<span class="pl-s1"><span class="pl-c">// but, you still can define your custom error message</span></span>
+<span class="pl-s1"><span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>addRuleMessage(<span class="pl-s"><span class="pl-pds">"</span>emailUnique<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>The email you entered is already exists<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>validate([</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">"</span>User Name<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-smi">$name</span>, <span class="pl-s"><span class="pl-pds">"</span>required|alphaNumWithSpaces|minLen(4)|maxLen(30)<span class="pl-pds">"</span></span>],</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">"</span>Email<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-smi">$email</span>, <span class="pl-s"><span class="pl-pds">"</span>required|email|emailUnique|maxLen(50)<span class="pl-pds">"</span></span>],</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>Password<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-smi">$password</span>,<span class="pl-s"><span class="pl-pds">"</span>required|equals(<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$confirmPassword</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>)|minLen(6)|password<span class="pl-pds">"</span></span>],</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>Password Confirmation<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-smi">$confirmPassword</span>, <span class="pl-s"><span class="pl-pds">'</span>required<span class="pl-pds">'</span></span>]])) {</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c1">var_dump</span>(<span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>errors());</span>
+<span class="pl-s1">}</span></pre></div>
+
+<h2>
+<a id="errors-and-exceptions" class="anchor" href="#errors-and-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Errors and Exceptions<a name="errors-exceptions"></a>
+</h2>
+
+<p><code>Handler</code> Class is responsible for handling all exceptions and errors. It will use <a href="#logger">Logger</a> to log errors. Error reporting is turned off by default, because every error will be logged and saved in  <em>app/logs/log.txt</em>.</p>
+
+<p>If error encountered or exception was thrown, the application will show System Internal Error(500).</p>
+
+<h3>
+<a id="configurationsphpini" class="anchor" href="#configurationsphpini" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configurations(php.ini)</h3>
+
+<ul>
+<li>Turn Off display errors</li>
+<li>Turn Off log errors if not needed</li>
+</ul>
+
+<h2>
+<a id="logger" class="anchor" href="#logger" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logger<a name="logger"></a>
+</h2>
+
+<p>A place where you can log anything and save it to <em>app/log/log.txt</em>. You can write any failures, errors, exceptions, or any other malicious actions or attacks.</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">Logger</span><span class="pl-k">::</span>log(<span class="pl-s"><span class="pl-pds">"</span>COOKIE<span class="pl-pds">"</span></span>, <span class="pl-k">self</span><span class="pl-k">::</span><span class="pl-smi">$userId</span> <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span> is trying to login using invalid cookie<span class="pl-pds">"</span></span>, <span class="pl-c1">__FILE__</span>, <span class="pl-c1">__LINE__</span>);</span></pre></div>
+
+<h2>
+<a id="email" class="anchor" href="#email" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Email<a name="email"></a>
+</h2>
+
+<p>Emails are sent using <a href="https://github.com/PHPMailer/PHPMailer">PHPMailer</a> via SMTP, another library for sending emails. You shouldn't use <code>mail()</code> function of PHP.</p>
+
+<h2>
+<a id="configurations" class="anchor" href="#configurations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configurations<a name="configurations"></a>
+</h2>
+
+<p>In <em>app/config</em>, there are two files, one called <em>config.php</em> for main application configurations, and another one for javascript called <em>javascript.php</em>. The javascript configurations will be then assigned to a javascript variable in your <em>footer.php</em>.</p>
+
+<h2>
+<a id="javascript-" class="anchor" href="#javascript-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JavaScript <a name="js"></a>
+</h2>
+
+<p>In order to send request and recieve a respond, you may depend on Ajax calls to do so. This framework is heavily depends on ajax requests to perform actions, but, you still can do the same thing for normal requests with just small tweaks.</p>
+
+<h4>
+<a id="in-publicmainjs" class="anchor" href="#in-publicmainjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>In <em>public/main.js</em>
+</h4>
+
+<p><strong>config</strong> object is assigned to key-value pairs in <a href="https://github.com/OmarElGabry/miniPHP/blob/master/app/views/layout/default/footer.php">footer.php</a>. These key-value pairs can be added in server-side code using <code>Config::setJsConfig('key', "value");</code>, which will be assigned then to <em>config</em> object.</p>
+
+<p><strong>ajax</strong> A namespace that has two main functions for sending ajax request. One for normal ajax calls, and another for for uploading files.</p>
+
+<p><strong>helpers</strong> A namespace that has variety of functions display errors, serialize, redirect, encodeHTML, and so on</p>
+
+<p><strong>app</strong> A namespace that's used to initalize the whole javascript events for the current page</p>
+
+<p><strong>events</strong> A namespace that's used to declare all of events that may occure, like when user clicks on a link to create, delete or update.</p>
+
+<h2>
+<a id="applicationdemo-" class="anchor" href="#applicationdemo-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Application(Demo) <a name="app-demo"></a>
+</h2>
+
+<h3>
+<a id="intro" class="anchor" href="#intro" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Intro<a name="intro-demo"></a>
+</h3>
+
+<p>In order to show how to use the framework in a real-life situation, the framework comes with implementation for features like Manage User Profile Management, Dashbaord, News Feed, Upload &amp; Download Files, Posts &amp; Comments, Pagination, Admin panel, Manage System Backups, Notificatons, Report Bugs, ...etc.</p>
+
+<h3>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation<a name="installation-demo"></a>
+</h3>
+
+<p>Steps:</p>
+
+<ol>
+<li><p>Edit configuration file in <em>app/config/config.php</em> with your credentials</p></li>
+<li><p>Execute SQL queries in __installation_ directory in order</p></li>
+<li>
+<p>Login</p>
+
+<ul>
+<li>Admin:
+
+<ul>
+<li>Email: <a href="mailto:admin@demo.com">admin@demo.com</a>
+</li>
+<li>Password: 12345</li>
+</ul>
+</li>
+<li>Normal User:
+
+<ul>
+<li>Email: <a href="mailto:user@demo.com">user@demo.com</a>
+</li>
+<li>Password: 12345</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<p><strong>EMAIL SETUP</strong> </p>
+
+<p>You need to configure your SMTP account data in <em>app/config/config.php</em>. <strong>But</strong>, If you don't have SMTP account, then you save emails in <em>app/logs/log.txt</em> using Logger. </p>
+
+<p>To do that, In <a href="https://github.com/OmarElGabry/miniPHP/blob/master/app/core/Email.php#L78">core/Email</a>, comment <code>$mail-&gt;Send()</code> &amp; uncomment <code>Logger::log("EMAIL", $mail-&gt;Body);</code> </p>
+
+<h3>
+<a id="user-profile" class="anchor" href="#user-profile" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>User Profile<a name="profile"></a>
+</h3>
+
+<p>Every user can change his name, email, password. Also upload profile picture (i.e. initially assigned to default.png).</p>
+
+<h4>
+<a id="update--revoke-user-email" class="anchor" href="#update--revoke-user-email" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update &amp; Revoke User Email<a name="update-revoke-user-email"></a>
+</h4>
+
+<p>Whenever user asks to change his email, a notification will be sent to user's old email, and the new one.</p>
+
+<p>The notification sent to old email is giving the user the chance to revoke email change, while the notification sent to new email is asking for confirmation. User can still login with his old email until he confirms the change.</p>
+
+<p>This is done in <code>UserController</code>, In methods <code>updateProfileInfo()</code>, <code>revokeEmail()</code>, &amp; <code>updateEmail()</code>. In most situations, you won't need to modify the behavior of these methods.</p>
+
+<h3>
+<a id="files" class="anchor" href="#files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Files<a name="files"></a>
+</h3>
+
+<p>You can upload and download files.</p>
+
+<h4>
+<a id="upload" class="anchor" href="#upload" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Upload</h4>
+
+<ul>
+<li>All uploaded files are out of root public, so, they aren't accessible by anyone</li>
+<li>Validate against HTTP POST uploads, MIME, Size, Image dimension</li>
+<li>Setting file permission to avoid executable files</li>
+<li>Sanitizing file names</li>
+<li>Progress bar(no-plugins)</li>
+</ul>
+
+<h4>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download</h4>
+
+<ul>
+<li>Every file will have hashed version of it's name, this hashed name will be exposed to users. </li>
+<li>The hashed name = hash(original filename . extension). So, download link will look something like this: <em>http://miniPHP/downloads/download/b989f733f948e8a4b8b700e1</em>
+</li>
+</ul>
+
+<h4>
+<a id="configurationsphpini-1" class="anchor" href="#configurationsphpini-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configurations(php.ini)</h4>
+
+<ul>
+<li>Set <code>file_uploads</code> to true</li>
+<li>Set <code>upload_max_filesize, max_file_uploads, post_max_size</code>
+
+<ul>
+<li>Check <a href="http://php.net/manual/en/ini.core.php#ini.post-max-size">documentation</a> to know how to assign proper values for each.</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="news-feeds-posts--comments-" class="anchor" href="#news-feeds-posts--comments-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News Feeds, Posts &amp; Comments <a name="newsfeed-posts-comments"></a>
+</h3>
+
+<p>Think of News Feed as tweets in twitter, and in Posts like when you open an Issue in Github.</p>
+
+<p>They are implemented on the top of this framework. </p>
+
+<ul>
+<li>They are useful to show &amp; apply some concepts like <strong>Pagination</strong>, </li>
+<li>How can you edit &amp; delete in place(secured way), </li>
+<li>How can you manage permissions for who can create, edit, update and delete, and so forth.</li>
+</ul>
+
+<h3>
+<a id="admin" class="anchor" href="#admin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Admin<a name="admin"></a>
+</h3>
+
+<p>Admins can perform actions where normal users can't. They can delete, edit, create any newsfeed, post, or comment. Also they have control over all user profiles, create &amp; restore backups.</p>
+
+<h4>
+<a id="users" class="anchor" href="#users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Users<a name="users"></a>
+</h4>
+
+<p>Only admins have access to see all registered users. They can delete, edit their info.</p>
+
+<h4>
+<a id="backups" class="anchor" href="#backups" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Backups<a name="backups"></a>
+</h4>
+
+<p>In most of the situations, you will need to create backups for the system, and restore them whenever you want.</p>
+
+<p>This is done by using <a href="https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html">mysqldump</a> to create and restore backups. All backups will be stored in <em>app/backups</em>.</p>
+
+<h3>
+<a id="notifications" class="anchor" href="#notifications" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notifications<a name="notifications"></a>
+</h3>
+
+<p>Did you see the red notifications on facebook, or the blue one on twitter?. The same idea is here. But, It's implemented using triggers instead. Triggers are defined in __installation/triggers.sql_.</p>
+
+<p>So, whenever user creates a new newsfeed, post, or upload a file, this will increment the count for all other users, and will display a red notification in navigation bar.</p>
+
+<h3>
+<a id="report-bugs" class="anchor" href="#report-bugs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Report Bugs<a name="bugs"></a>
+</h3>
+
+<p>Users can report Bugs, Features &amp; Enhancements. Once they submitted the form, an email will be sent to <code>ADMIN_EMAIL</code> defined in <em>app/config/config.php</em></p>
+
+<h2>
+<a id="todo-application" class="anchor" href="#todo-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ToDo Application<a name="todo"></a>
+</h2>
+
+<p>Let's say you want to build a simple ToDo Application. Here, I will go step by step on how to create a ToDo App using the framework with &amp; without Ajax calls.</p>
+
+<p>(1) If you followed the installtion setup steps above, you shouldn't have any problem with creating initial user accounts.</p>
+
+<p>(2) Create a table with id as INT, content VARCHAR, user_id as Foreign Key to <code>users</code> table</p>
+
+<div class="highlight highlight-source-sql"><pre><span class="pl-k">CREATE</span> <span class="pl-k">TABLE</span> `<span class="pl-en">todo</span>` (
+     <span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span> <span class="pl-k">int</span>(<span class="pl-c1">11</span>) <span class="pl-k">NOT NULL</span> AUTO_INCREMENT,
+     <span class="pl-s"><span class="pl-pds">`</span>user_id<span class="pl-pds">`</span></span> <span class="pl-k">int</span>(<span class="pl-c1">11</span>) <span class="pl-k">NOT NULL</span>,
+     <span class="pl-s"><span class="pl-pds">`</span>content<span class="pl-pds">`</span></span> <span class="pl-k">varchar</span>(<span class="pl-c1">512</span>) <span class="pl-k">NOT NULL</span>,
+     <span class="pl-k">PRIMARY KEY</span> (<span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>),
+     <span class="pl-k">FOREIGN KEY</span> (<span class="pl-s"><span class="pl-pds">`</span>user_id<span class="pl-pds">`</span></span>) <span class="pl-k">REFERENCES</span> <span class="pl-s"><span class="pl-pds">`</span>users<span class="pl-pds">`</span></span> (<span class="pl-s"><span class="pl-pds">`</span>id<span class="pl-pds">`</span></span>) <span class="pl-k">ON DELETE CASCADE</span> <span class="pl-k">ON</span> <span class="pl-k">UPDATE</span> CASCADE
+) ENGINE<span class="pl-k">=</span>InnoDB DEFAULT CHARSET<span class="pl-k">=</span>utf8 COLLATE<span class="pl-k">=</span>utf8_general_ci;</pre></div>
+
+<p>(3) Create TodoController</p>
+
+<p>Create a file called <code>TodoController.php</code> inside <em>app/controllers</em></p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">TodoController</span> <span class="pl-k">extends</span> <span class="pl-e">Controller</span>{</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// override this method to perform any logic before calling action method as explained above</span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">beforeAction</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">parent</span><span class="pl-k">::</span>beforeAction();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// define the actions in this Controller</span></span>
+<span class="pl-s1">        <span class="pl-smi">$action</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>param(<span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// restrict the request to action methods</span></span>
+<span class="pl-s1">        <span class="pl-c">// $this-&gt;Security-&gt;requireAjax(['create', 'delete']);</span></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>requirePost([<span class="pl-s"><span class="pl-pds">'</span>create<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>delete<span class="pl-pds">'</span></span>]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// define the expected form fields for every action if exist</span></span>
+<span class="pl-s1">        <span class="pl-k">switch</span>(<span class="pl-smi">$action</span>){</span>
+<span class="pl-s1">            <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">"</span>create<span class="pl-pds">"</span></span>:</span>
+<span class="pl-s1">                <span class="pl-c">// you can exclude form fields if you don't care if they were sent with form fields or not</span></span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>config(<span class="pl-s"><span class="pl-pds">"</span>form<span class="pl-pds">"</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>fields<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-s"><span class="pl-pds">'</span>content<span class="pl-pds">'</span></span>]]);</span>
+<span class="pl-s1">                <span class="pl-k">break</span>;</span>
+<span class="pl-s1">            <span class="pl-k">case</span> <span class="pl-s"><span class="pl-pds">"</span>delete<span class="pl-pds">"</span></span>:</span>
+<span class="pl-s1">                <span class="pl-c">// If you want to disable validation for form tampering</span></span>
+<span class="pl-s1">                <span class="pl-c">// $this-&gt;Security-&gt;config("validateForm", false);</span></span>
+<span class="pl-s1">                <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">Security</span><span class="pl-k">-&gt;</span>config(<span class="pl-s"><span class="pl-pds">"</span>form<span class="pl-pds">"</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>fields<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [<span class="pl-s"><span class="pl-pds">'</span>todo_id<span class="pl-pds">'</span></span>]]);</span>
+<span class="pl-s1">                <span class="pl-k">break</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">index</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">view</span><span class="pl-k">-&gt;</span>renderWithLayouts(<span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>VIEWS_PATH<span class="pl-pds">'</span></span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span>layout/todo/<span class="pl-pds">"</span></span>, <span class="pl-c1">Config</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>VIEWS_PATH<span class="pl-pds">'</span></span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>todo/index.php<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">create</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$content</span>  <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>data(<span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$todo</span>     <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">todo</span><span class="pl-k">-&gt;</span>create(<span class="pl-c1">Session</span><span class="pl-k">::</span>getUserId(), <span class="pl-smi">$content</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-smi">$todo</span>){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-c">// in case of normal post request</span></span>
+<span class="pl-s1">            <span class="pl-c1">Session</span><span class="pl-k">::</span>set(<span class="pl-s"><span class="pl-pds">'</span>errors<span class="pl-pds">'</span></span>, <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">todo</span><span class="pl-k">-&gt;</span>errors());</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">redirector</span><span class="pl-k">-&gt;</span>root(<span class="pl-s"><span class="pl-pds">"</span>Todo<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-c">// in case of ajax</span></span>
+<span class="pl-s1">            <span class="pl-c">// $this-&gt;view-&gt;renderErrors($this-&gt;todo-&gt;errors());</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        }<span class="pl-k">else</span>{</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-c">// in case of normal post request</span></span>
+<span class="pl-s1">            <span class="pl-c1">Session</span><span class="pl-k">::</span>set(<span class="pl-s"><span class="pl-pds">'</span>success<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Todo has been created<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">redirector</span><span class="pl-k">-&gt;</span>root(<span class="pl-s"><span class="pl-pds">"</span>Todo<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            <span class="pl-c">// in case of ajax</span></span>
+<span class="pl-s1">            <span class="pl-c">// $this-&gt;view-&gt;renderJson(array("success" =&gt; "Todo has been created"));</span></span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">delete</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$todoId</span> <span class="pl-k">=</span> <span class="pl-c1">Encryption</span><span class="pl-k">::</span>decryptIdWithDash(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>data(<span class="pl-s"><span class="pl-pds">"</span>todo_id<span class="pl-pds">"</span></span>));</span>
+<span class="pl-s1">        <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">todo</span><span class="pl-k">-&gt;</span>delete(<span class="pl-smi">$todoId</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// in case of normal post request</span></span>
+<span class="pl-s1">        <span class="pl-c1">Session</span><span class="pl-k">::</span>set(<span class="pl-s"><span class="pl-pds">'</span>success<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Todo has been deleted<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">redirector</span><span class="pl-k">-&gt;</span>root(<span class="pl-s"><span class="pl-pds">"</span>Todo<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// in case of ajax</span></span>
+<span class="pl-s1">        <span class="pl-c">// $this-&gt;view-&gt;renderJson(array("success" =&gt; "Todo has been deleted"));</span></span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">isAuthorized</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$action</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>param(<span class="pl-s"><span class="pl-pds">'</span>action<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$role</span> <span class="pl-k">=</span> <span class="pl-c1">Session</span><span class="pl-k">::</span>getUserRole();</span>
+<span class="pl-s1">        <span class="pl-smi">$resource</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>todo<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// only for admins</span></span>
+<span class="pl-s1">        <span class="pl-c1">Permission</span><span class="pl-k">::</span>allow(<span class="pl-s"><span class="pl-pds">'</span>admin<span class="pl-pds">'</span></span>, <span class="pl-smi">$resource</span>, [<span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// only for normal users</span></span>
+<span class="pl-s1">        <span class="pl-c1">Permission</span><span class="pl-k">::</span>allow(<span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>, <span class="pl-smi">$resource</span>, [<span class="pl-s"><span class="pl-pds">'</span>delete<span class="pl-pds">'</span></span>], <span class="pl-s"><span class="pl-pds">'</span>owner<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$todoId</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">request</span><span class="pl-k">-&gt;</span>data(<span class="pl-s"><span class="pl-pds">"</span>todo_id<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-c1">empty</span>(<span class="pl-smi">$todoId</span>)){</span>
+<span class="pl-s1">            <span class="pl-smi">$todoId</span> <span class="pl-k">=</span> <span class="pl-c1">Encryption</span><span class="pl-k">::</span>decryptIdWithDash(<span class="pl-smi">$todoId</span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$config</span> <span class="pl-k">=</span> [</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">"</span>user_id<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Session</span><span class="pl-k">::</span>getUserId(),</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">"</span>table<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>todo<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$todoId</span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">Permission</span><span class="pl-k">::</span>check(<span class="pl-smi">$role</span>, <span class="pl-smi">$resource</span>, <span class="pl-smi">$action</span>, <span class="pl-smi">$config</span>);</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>(4) Create Note Model Class called <code>Todo.php</code> in <em>app/models</em></p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">Todo</span> <span class="pl-k">extends</span> <span class="pl-e">Model</span>{</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">getAll</span>(){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$database</span> <span class="pl-k">=</span> <span class="pl-c1">Database</span><span class="pl-k">::</span>openConnection();</span>
+<span class="pl-s1">        <span class="pl-smi">$query</span>  <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s1"><span class="pl-k">SELECT</span> <span class="pl-c1">todo</span>.<span class="pl-c1">id</span> <span class="pl-k">AS</span> id, <span class="pl-c1">users</span>.<span class="pl-c1">id</span> <span class="pl-k">AS</span> user_id, <span class="pl-c1">users</span>.<span class="pl-c1">name</span> <span class="pl-k">AS</span> user_name, <span class="pl-c1">todo</span>.<span class="pl-c1">content</span> </span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">        <span class="pl-smi">$query</span> <span class="pl-k">.=</span> <span class="pl-s"><span class="pl-pds">"</span>FROM users, todo <span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">        <span class="pl-smi">$query</span> <span class="pl-k">.=</span> <span class="pl-s"><span class="pl-pds">"</span>WHERE users.id = todo.user_id <span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>prepare(<span class="pl-smi">$query</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>execute();</span>
+<span class="pl-s1">        <span class="pl-smi">$todo</span> <span class="pl-k">=</span> <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>fetchAllAssociative();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$todo</span>;</span>
+<span class="pl-s1">     }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">create</span>(<span class="pl-smi">$userId</span>, <span class="pl-smi">$content</span>){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// using validation class</span></span>
+<span class="pl-s1">        <span class="pl-smi">$validation</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Validation</span>();</span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>validate([<span class="pl-s"><span class="pl-pds">'</span>Content<span class="pl-pds">'</span></span>   <span class="pl-k">=&gt;</span> [<span class="pl-smi">$content</span>, <span class="pl-s"><span class="pl-pds">"</span>required|minLen(4)|maxLen(300)<span class="pl-pds">"</span></span>]])) {</span>
+<span class="pl-s1">            <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">errors</span> <span class="pl-k">=</span> <span class="pl-smi">$validation</span><span class="pl-k">-&gt;</span>errors();</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-c1">false</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-c">// using database class to insert new todo</span></span>
+<span class="pl-s1">        <span class="pl-smi">$database</span> <span class="pl-k">=</span> <span class="pl-c1">Database</span><span class="pl-k">::</span>openConnection();</span>
+<span class="pl-s1">        <span class="pl-smi">$query</span>    <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s1"><span class="pl-k">INSERT INTO</span> todo (user_id, content) <span class="pl-k">VALUES</span> (:user_id, :content)</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>prepare(<span class="pl-smi">$query</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>bindValue(<span class="pl-s"><span class="pl-pds">'</span>:user_id<span class="pl-pds">'</span></span>, <span class="pl-smi">$userId</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>bindValue(<span class="pl-s"><span class="pl-pds">'</span>:content<span class="pl-pds">'</span></span>, <span class="pl-smi">$content</span>);</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>execute();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>countRows() <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">1</span>){</span>
+<span class="pl-s1">            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-c1">Exception</span>(<span class="pl-s"><span class="pl-pds">"</span>Couldn't create todo<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">true</span>;</span>
+<span class="pl-s1">     }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">delete</span>(<span class="pl-smi">$id</span>){</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-smi">$database</span> <span class="pl-k">=</span> <span class="pl-c1">Database</span><span class="pl-k">::</span>openConnection();</span>
+<span class="pl-s1">        <span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>deleteById(<span class="pl-s"><span class="pl-pds">"</span>todo<span class="pl-pds">"</span></span>, <span class="pl-smi">$id</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">if</span>(<span class="pl-smi">$database</span><span class="pl-k">-&gt;</span>countRows() <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">1</span>){</span>
+<span class="pl-s1">            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-c1">Exception</span> (<span class="pl-s"><span class="pl-pds">"</span>Couldn't delete todo<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"> }</span></pre></div>
+
+<p>(5) Inside <em>views/</em></p>
+
+<p>(a) Create <code>header.php</code> &amp; <code>footer.php</code>  inside <em>views/layout/todo</em></p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-c1">DOCTYPE</span> <span class="pl-c1">html</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">html</span> <span class="pl-c1">lang</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>en<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">head</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">meta</span> <span class="pl-c1">charset</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">meta</span> <span class="pl-c1">http</span><span class="pl-k">-</span><span class="pl-c1">equiv</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>X-UA-Compatible<span class="pl-pds">"</span></span> <span class="pl-c1">content</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>IE=edge<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">meta</span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>viewport<span class="pl-pds">"</span></span> <span class="pl-c1">content</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>width=device-width, initial-scale=1<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">meta</span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span> <span class="pl-c1">content</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>mini PHP<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">meta</span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>author<span class="pl-pds">"</span></span> <span class="pl-c1">content</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>mini PHP<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">title</span><span class="pl-k">&gt;</span><span class="pl-c1">mini</span> <span class="pl-c1">PHP</span><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">title</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span> <span class="pl-c1">Stylesheets</span> <span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">link</span> <span class="pl-c1">rel</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-c1">href</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT;?&gt;css/bootstrap.min.css<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">link</span> <span class="pl-c1">rel</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-c1">href</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT;?&gt;css/sb-admin-2.css<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">link</span> <span class="pl-c1">rel</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-c1">href</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT;?&gt;css/font-awesome.min.css<span class="pl-pds">"</span></span> <span class="pl-c1">rel</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-c1">type</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>text/css<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span> <span class="pl-c1">Styles</span> <span class="pl-k">for</span> <span class="pl-c1">ToDo</span> <span class="pl-c1">Application</span> <span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">style</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">        <span class="pl-k">.</span><span class="pl-c1">todo_container</span>{</span>
+<span class="pl-s1">            <span class="pl-en">width</span>:<span class="pl-c1">80</span><span class="pl-k">%</span>; </span>
+<span class="pl-s1">            <span class="pl-en">margin</span>: <span class="pl-c1">0</span> <span class="pl-c1">auto</span>; </span>
+<span class="pl-s1">            <span class="pl-c1">margin</span><span class="pl-k">-</span><span class="pl-c1">top</span>: <span class="pl-c1">5</span><span class="pl-k">%</span></span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-c">#todo-list li{ </span></span>
+<span class="pl-s1">            <span class="pl-c1">list</span><span class="pl-k">-</span><span class="pl-c1">style</span><span class="pl-k">-</span><span class="pl-c1">type</span>: <span class="pl-c1">none</span>; </span>
+<span class="pl-s1">            <span class="pl-en">border</span>: 1<span class="pl-c1">px</span> <span class="pl-c1">solid</span> <span class="pl-c">#e7e7e7;</span></span>
+<span class="pl-s1">            <span class="pl-en">padding</span>: 3<span class="pl-c1">px</span>;</span>
+<span class="pl-s1">            <span class="pl-en">margin</span>: 3<span class="pl-c1">px</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-c">#todo-list li:hover{</span></span>
+<span class="pl-s1">            <span class="pl-c1">background</span><span class="pl-k">-</span><span class="pl-c1">color</span>: <span class="pl-c">#eee;</span></span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-c1">form</span> <span class="pl-c1">button</span>{</span>
+<span class="pl-s1">            <span class="pl-en">float</span>:<span class="pl-c1">right</span>;</span>
+<span class="pl-s1">            <span class="pl-en">margin</span>: 3<span class="pl-c1">px</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-en">form</span>:<span class="pl-c1">after</span>{</span>
+<span class="pl-s1">            <span class="pl-en">content</span>: <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">            <span class="pl-en">display</span>: <span class="pl-c1">block</span>;</span>
+<span class="pl-s1">            <span class="pl-en">clear</span>: <span class="pl-c1">both</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">style</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">head</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">body</span><span class="pl-k">&gt;</span></span></pre></div>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span> <span class="pl-c1">footer</span> <span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">script</span> <span class="pl-c1">src</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">script</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span><span class="pl-k">&lt;</span><span class="pl-c1">script</span> <span class="pl-c1">src</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT; ?&gt;js/jquery.min.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">script</span><span class="pl-k">&gt;</span><span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">script</span> <span class="pl-c1">src</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT; ?&gt;js/bootstrap.min.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">script</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">script</span> <span class="pl-c1">src</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT; ?&gt;js/sb-admin-2.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">script</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">script</span> <span class="pl-c1">src</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT; ?&gt;js/main.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">script</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span> <span class="pl-c1">Assign</span> <span class="pl-c1">CSRF</span> <span class="pl-c1">Token</span> <span class="pl-c1">to</span> <span class="pl-c1">JS</span> <span class="pl-c1">variable</span> <span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">        <span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> <span class="pl-c1">Config</span><span class="pl-k">::</span>setJsConfig(<span class="pl-s"><span class="pl-pds">'</span>csrfToken<span class="pl-pds">'</span></span>, <span class="pl-c1">Session</span><span class="pl-k">::</span>generateCsrfToken()); </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>
+        <span class="pl-c">&lt;!-- Assign all configration variables --&gt;</span>
+<span class="pl-s1">        &lt;<span class="pl-ent">script</span>&gt;config <span class="pl-k">=</span> <span class="pl-pse">&lt;?=</span><span class="pl-s1"> <span class="pl-c1">json_encode</span>(<span class="pl-c1">Config</span><span class="pl-k">::</span>getJsConfig()); </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>;&lt;/<span class="pl-ent">script</span>&gt;</span>
+        <span class="pl-c">&lt;!-- Run the application --&gt;</span>
+<span class="pl-s1">        &lt;<span class="pl-ent">script</span>&gt;<span class="pl-en">$</span>(<span class="pl-c1">document</span>).<span class="pl-en">ready</span>(<span class="pl-smi">app</span>.<span class="pl-en">init</span>());&lt;/<span class="pl-ent">script</span>&gt;</span>
+
+        <span class="pl-pse">&lt;?php</span><span class="pl-s1"> <span class="pl-c1">Database</span><span class="pl-k">::</span>closeConnection(); </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>
+    &lt;/<span class="pl-ent">body</span>&gt;
+&lt;/<span class="pl-ent">html</span>&gt;</pre></div>
+
+<p>(b) Inside <em>views/</em> Create todo folder that will have <code>index.php</code>, which will contain our todo list. </p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">div</span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>todo_container<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">h2</span><span class="pl-k">&gt;</span><span class="pl-c1">TODO</span> <span class="pl-c1">Application</span><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">h2</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span> <span class="pl-c1">in</span> <span class="pl-k">case</span> <span class="pl-c1">of</span> <span class="pl-c1">normal</span> <span class="pl-c1">post</span> <span class="pl-c1">request</span>  <span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">form</span> <span class="pl-c1">action</span><span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;?= PUBLIC_ROOT . <span class="pl-pds">"</span></span><span class="pl-c1">Todo</span><span class="pl-k">/</span><span class="pl-c1">create</span><span class="pl-s"><span class="pl-pds">"</span> ?&gt;<span class="pl-pds">"</span></span>  <span class="pl-c1">method</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>post<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">label</span><span class="pl-k">&gt;</span><span class="pl-c1">Content</span> <span class="pl-k">&lt;</span><span class="pl-c1">span</span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>text-danger<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span><span class="pl-k">*</span><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">span</span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">label</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">textarea</span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>form-control<span class="pl-pds">"</span></span> <span class="pl-c1">required</span> <span class="pl-c1">placeholder</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>What are you thinking?<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">textarea</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">input</span> <span class="pl-c1">type</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>hidden<span class="pl-pds">'</span></span> <span class="pl-c1">name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>csrf_token<span class="pl-pds">"</span></span> <span class="pl-c1">value</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;?= Session::generateCsrfToken(); ?&gt;<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">button</span> <span class="pl-c1">type</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-c1">value</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>btn btn-success<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span><span class="pl-c1">Create</span><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">button</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">form</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-k">!</span><span class="pl-k">--</span> <span class="pl-c1">in</span> <span class="pl-k">case</span> <span class="pl-c1">of</span> <span class="pl-c1">ajax</span> <span class="pl-c1">request</span>  </span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">form</span> <span class="pl-c1">action</span><span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-c1">id</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>form-create-todo<span class="pl-pds">"</span></span> <span class="pl-c1">method</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>post<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">label</span><span class="pl-k">&gt;</span><span class="pl-c1">Content</span> <span class="pl-k">&lt;</span><span class="pl-c1">span</span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>text-danger<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span><span class="pl-k">*</span><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">span</span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">label</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">textarea</span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>form-control<span class="pl-pds">"</span></span> <span class="pl-c1">required</span> <span class="pl-c1">placeholder</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>What are you thinking?<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span><span class="pl-c1">textarea</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span><span class="pl-c1">button</span> <span class="pl-c1">type</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-c1">name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-c1">value</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-k">class</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>btn btn-success<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span><span class="pl-c1">Create</span><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">button</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-k">/</span><span class="pl-c1">form</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">--</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">br</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span>?<span class="pl-c1">php</span> </span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// display success or error messages in session</span></span>
+<span class="pl-s1"><span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-c1">empty</span>(<span class="pl-c1">Session</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>success<span class="pl-pds">'</span></span>))){</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>renderSuccess(<span class="pl-c1">Session</span><span class="pl-k">::</span>getAndDestroy(<span class="pl-s"><span class="pl-pds">'</span>success<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">}<span class="pl-k">else</span> <span class="pl-k">if</span>(<span class="pl-k">!</span><span class="pl-c1">empty</span>(<span class="pl-c1">Session</span><span class="pl-k">::</span>get(<span class="pl-s"><span class="pl-pds">'</span>errors<span class="pl-pds">'</span></span>))){</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>renderErrors(<span class="pl-c1">Session</span><span class="pl-k">::</span>getAndDestroy(<span class="pl-s"><span class="pl-pds">'</span>errors<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>
+
+&lt;<span class="pl-ent">br</span>&gt;&lt;<span class="pl-ent">hr</span>&gt;&lt;<span class="pl-ent">br</span>&gt;
+
+&lt;<span class="pl-ent">ul</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>todo-list<span class="pl-pds">"</span></span>&gt;
+<span class="pl-pse">&lt;?php</span><span class="pl-s1"> </span>
+<span class="pl-s1">    <span class="pl-smi">$todoData</span> <span class="pl-k">=</span> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span><span class="pl-smi">controller</span><span class="pl-k">-&gt;</span><span class="pl-smi">todo</span><span class="pl-k">-&gt;</span>getAll();</span>
+<span class="pl-s1">    <span class="pl-k">foreach</span>(<span class="pl-smi">$todoData</span> <span class="pl-k">as</span> <span class="pl-smi">$todo</span>){ </span>
+<span class="pl-s1"></span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>
+        &lt;<span class="pl-ent">li</span>&gt;
+            &lt;<span class="pl-ent">p</span>&gt; <span class="pl-pse">&lt;?=</span><span class="pl-s1"> <span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>autoLinks(<span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>encodeHTMLWithBR(<span class="pl-smi">$todo</span>[<span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span>])); </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>&lt;/<span class="pl-ent">p</span>&gt;
+
+            <span class="pl-c">&lt;!-- in case of normal post request --&gt;</span>
+            &lt;<span class="pl-ent">form</span> <span class="pl-e">action</span>= <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">&lt;?=</span><span class="pl-s1"> <span class="pl-c1">PUBLIC_ROOT</span> <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span>Todo/delete<span class="pl-pds">"</span></span> </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span><span class="pl-pds">"</span></span> <span class="pl-e">method</span>=<span class="pl-s"><span class="pl-pds">"</span>post<span class="pl-pds">"</span></span>&gt;
+                &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">'</span>hidden<span class="pl-pds">'</span></span> <span class="pl-e">name</span>= <span class="pl-s"><span class="pl-pds">"</span>todo_id<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">&lt;?=</span><span class="pl-s1"> <span class="pl-s"><span class="pl-pds">"</span>todo-<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">Encryption</span><span class="pl-k">::</span>encryptId(<span class="pl-smi">$todo</span>[<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>]);</span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span><span class="pl-pds">"</span></span>&gt;
+                &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">'</span>hidden<span class="pl-pds">'</span></span> <span class="pl-e">name</span> = <span class="pl-s"><span class="pl-pds">"</span>csrf_token<span class="pl-pds">"</span></span> <span class="pl-e">value</span> = <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">&lt;?=</span><span class="pl-s1"> <span class="pl-c1">Session</span><span class="pl-k">::</span>generateCsrfToken(); </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span><span class="pl-pds">"</span></span>&gt;
+                &lt;<span class="pl-ent">button</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>submit<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>btn btn-xs btn-danger<span class="pl-pds">"</span></span>&gt;Delete&lt;/<span class="pl-ent">button</span>&gt;
+            &lt;/<span class="pl-ent">form</span>&gt;
+
+
+            <span class="pl-c">&lt;!-- in case of ajax request </span>
+<span class="pl-c">            &lt;form class="form-delete-todo" action= "#"  method="post"&gt;</span>
+<span class="pl-c">                &lt;input type='hidden' name= "todo_id" value="<span class="pl-pse">&lt;?=</span><span class="pl-s1"> <span class="pl-s"><span class="pl-pds">"</span>todo-<span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">Encryption</span><span class="pl-k">::</span>encryptId(<span class="pl-smi">$todo</span>[<span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>]);</span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>"&gt;</span>
+<span class="pl-c">                &lt;button type="submit" name="submit" value="submit" class="btn btn-xs btn-danger"&gt;Delete&lt;/button&gt;</span>
+<span class="pl-c">            &lt;/form&gt;</span>
+<span class="pl-c">             --&gt;</span>
+        &lt;/<span class="pl-ent">li</span>&gt;
+    <span class="pl-pse">&lt;?php</span><span class="pl-s1"> } </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>
+&lt;/<span class="pl-ent">ul</span>&gt;
+
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<p>(6) JavaScript code to send ajax calls, and handle respond</p>
+
+<div class="highlight highlight-source-js"><pre>
+<span class="pl-c">// first, we need to initialize the todo events whenever the application initalized</span>
+<span class="pl-c">// the app.init() is called in footer.php, see views/layout/todo/footer.php</span>
+
+<span class="pl-k">var</span> app <span class="pl-k">=</span> {
+    <span class="pl-en">init</span><span class="pl-k">:</span> <span class="pl-k">function</span> (){
+
+        <span class="pl-smi">events</span>.<span class="pl-smi">todo</span>.<span class="pl-en">init</span>();
+    }
+};
+
+<span class="pl-c">// inside var events = {....} make a new key called "todo" </span>
+<span class="pl-k">var</span> events <span class="pl-k">=</span> {
+    <span class="pl-c">// ....</span>
+    todo<span class="pl-k">:</span>{
+            <span class="pl-en">init</span><span class="pl-k">:</span> <span class="pl-k">function</span>(){
+                <span class="pl-smi">events</span>.<span class="pl-smi">todo</span>.<span class="pl-en">create</span>();
+                <span class="pl-smi">events</span>.<span class="pl-smi">todo</span>.<span class="pl-c1">delete</span>();
+            },
+            <span class="pl-en">create</span><span class="pl-k">:</span> <span class="pl-k">function</span>(){
+                <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">"</span>#form-create-todo<span class="pl-pds">"</span></span>).<span class="pl-c1">submit</span>(<span class="pl-k">function</span>(<span class="pl-smi">e</span>){
+                    <span class="pl-smi">e</span>.<span class="pl-c1">preventDefault</span>();
+                    <span class="pl-smi">ajax</span>.<span class="pl-c1">send</span>(<span class="pl-s"><span class="pl-pds">"</span>Todo/create<span class="pl-pds">"</span></span>, <span class="pl-smi">helpers</span>.<span class="pl-en">serialize</span>(<span class="pl-v">this</span>), createTodoCallBack, <span class="pl-s"><span class="pl-pds">"</span>#form-create-todo<span class="pl-pds">"</span></span>);
+                });
+
+                <span class="pl-k">function</span> <span class="pl-en">createTodoCallBack</span>(<span class="pl-smi">PHPData</span>){
+                    <span class="pl-k">if</span>(<span class="pl-smi">helpers</span>.<span class="pl-en">validateData</span>(PHPData, <span class="pl-s"><span class="pl-pds">"</span>#form-create-todo<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>after<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>default<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>success<span class="pl-pds">"</span></span>)){
+                        <span class="pl-en">alert</span>(<span class="pl-smi">PHPData</span>.<span class="pl-smi">success</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> refresh the page to see the results<span class="pl-pds">"</span></span>);
+                    }
+                }
+            },
+            <span class="pl-en">delete</span><span class="pl-k">:</span> <span class="pl-k">function</span>(){
+                <span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">"</span>#todo-list form.form-delete-todo<span class="pl-pds">"</span></span>).<span class="pl-c1">submit</span>(<span class="pl-k">function</span>(<span class="pl-smi">e</span>){
+                    <span class="pl-smi">e</span>.<span class="pl-c1">preventDefault</span>();
+                    <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-en">confirm</span>(<span class="pl-s"><span class="pl-pds">"</span>Are you sure?<span class="pl-pds">"</span></span>)) { <span class="pl-k">return</span>; }
+
+                    <span class="pl-k">var</span> cur_todo <span class="pl-k">=</span> <span class="pl-en">$</span>(<span class="pl-v">this</span>).<span class="pl-c1">parent</span>();
+                    <span class="pl-smi">ajax</span>.<span class="pl-c1">send</span>(<span class="pl-s"><span class="pl-pds">"</span>Todo/delete<span class="pl-pds">"</span></span>, <span class="pl-smi">helpers</span>.<span class="pl-en">serialize</span>(<span class="pl-v">this</span>), deleteTodoCallBack, cur_todo);
+
+                    <span class="pl-k">function</span> <span class="pl-en">deleteTodoCallBack</span>(<span class="pl-smi">PHPData</span>){
+                        <span class="pl-k">if</span>(<span class="pl-smi">helpers</span>.<span class="pl-en">validateData</span>(PHPData, cur_todo, <span class="pl-s"><span class="pl-pds">"</span>after<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>default<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>success<span class="pl-pds">"</span></span>)){
+                            <span class="pl-en">$</span>(cur_todo).<span class="pl-c1">remove</span>();
+                            <span class="pl-en">alert</span>(<span class="pl-smi">PHPData</span>.<span class="pl-smi">success</span>);
+                        }
+                    }
+                });
+        }
+    }
+}</pre></div>
+
+<h3>
+<a id="support-" class="anchor" href="#support-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support <a name="support"></a>
+</h3>
+
+<p>I've written this script in my free time during my studies. This is for free, unpaid. I am saying this because I've seen many developers acts very rude towards any software, and their behavior is really frustrating. I don't know why?! Everyone tends to complain, and saying harsh words. I do accept the feedback, but, in a good and respectful manner.</p>
+
+<p>There are many other scripts online for purchase that does the same thing(if not less), and their authors are earning good money from it, but, I choose to keep it public, available for everyone.</p>
+
+<p>If you learnt something, or I saved your time, please support the project by spreading the word.</p>
+
+<h3>
+<a id="contribute-" class="anchor" href="#contribute-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contribute <a name="contribute"></a>
+</h3>
+
+<p>Contribute by creating new issues, sending pull requests on Github or you can send an email at: <a href="mailto:omar.elgabry.93@gmail.com">omar.elgabry.93@gmail.com</a></p>
+
+<h3>
+<a id="dependencies-" class="anchor" href="#dependencies-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies <a name="dependencies"></a>
+</h3>
+
+<ul>
+<li><a href="https://github.com/PHPMailer/PHPMailer">PHPMailer</a></li>
+<li><a href="https://github.com/Gregwar/Captcha">Captcha</a></li>
+<li><a href="https://github.com/IronSummitMedia/startbootstrap-sb-admin-2">Theme SB Admin 2</a></li>
+</ul>
+
+<h3>
+<a id="license-" class="anchor" href="#license-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License <a name="license"></a>
+</h3>
+
+<p>Built under <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a> license.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/OmarElGabry/miniPHP">miniPHP</a> is maintained by <a href="https://github.com/OmarElGabry">OmarElGabry</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>

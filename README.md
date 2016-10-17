@@ -21,6 +21,9 @@ If you need to build bigger application, and take the advantage of most of the f
 
 Either way, It's important to understand the PHP MVC skeleton, and know how to authenticate and authorize, learn about security issues and how can you defeat against, and how to build you own application using the framework.
 
+## Documentation
+Full Documentation can be also found [here](http://omarelgabry.github.io/miniPHP/) — created by GitHub automatic page generator.
+
 ## Index
 + [Demo](#live-demo)
 + [Installation](#installation)

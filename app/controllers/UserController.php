@@ -36,13 +36,13 @@ class UserController extends Controller{
      */
     public function index(){
 
-        Config::addJsConfig('curPage', "dashboard");
+        Config::setJsConfig('curPage', "dashboard");
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'dashboard/index.php');
     }
 
     public function profile(){
 
-        Config::addJsConfig('curPage', "profile");
+        Config::setJsConfig('curPage', "profile");
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'user/profile.php');
     }
 
@@ -134,7 +134,7 @@ class UserController extends Controller{
      *
      */
     public function bugs(){
-        Config::addJsConfig('curPage', "bugs");
+        Config::setJsConfig('curPage', "bugs");
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'bugs/index.php');
     }
 

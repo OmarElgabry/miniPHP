@@ -54,7 +54,7 @@ class AuthComponent extends Component{
         if($this->request->isAjax()) { 
             return $this->controller->error(401); 
         }else{
-            $redirect = $this->controller->request->isGet()? $this->controller->request->url: "";
+            $redirect = $this->controller->request->isGet()? $this->controller->request->uri(): "";
             return $this->controller->redirector->login($redirect); 
         }
     }

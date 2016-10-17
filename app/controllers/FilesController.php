@@ -13,7 +13,7 @@ class FilesController extends Controller {
 
         parent::beforeAction();
 
-        Config::addJsConfig('curPage', "files");
+        Config::setJsConfig('curPage', "files");
 
         $action = $this->request->param('action');
         $actions = ['create', 'delete'];

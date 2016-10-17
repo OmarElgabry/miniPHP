@@ -51,7 +51,7 @@ class AdminController extends Controller {
      */
     public function users(){
 
-        Config::addJsConfig('curPage', "users");
+        Config::setJsConfig('curPage', "users");
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/index.php');
     }
 
@@ -91,8 +91,8 @@ class AdminController extends Controller {
             return $this->error(404);
         }
 
-        Config::addJsConfig('curPage', "users");
-        Config::addJsConfig('userId', Encryption::encryptId($userId));
+        Config::setJsConfig('curPage', "users");
+        Config::setJsConfig('userId', Encryption::encryptId($userId));
 
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'users/viewUser.php', array("userId" => $userId));
     }
@@ -143,7 +143,7 @@ class AdminController extends Controller {
      */
     public function backups(){
 
-        Config::addJsConfig('curPage', "backups");
+        Config::setJsConfig('curPage', "backups");
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('ADMIN_VIEWS_PATH') . 'backups.php');
     }
 

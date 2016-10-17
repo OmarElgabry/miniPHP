@@ -244,7 +244,7 @@ class Controller {
      * @see core/components/SecurityComponent::secureRequired()
      */
     public function forceSSL(){
-        $secured  = "https://" . $this->request->currentUrl();
+        $secured  = "https://" . $this->request->fullUrlWithoutProtocol();
         return $this->redirector->to($secured);
     }
 }

@@ -14,7 +14,7 @@ class PostsController extends Controller{
 
         parent::beforeAction();
 
-        Config::addJsConfig('curPage', "posts");
+        Config::setJsConfig('curPage', "posts");
 
         $action  = $this->request->param('action');
         $actions = ['create', 'update'];
@@ -61,8 +61,8 @@ class PostsController extends Controller{
             return $this->error(404);
         }
 
-        Config::addJsConfig('curPage', ["posts", "comments"]);
-        Config::addJsConfig('postId', Encryption::encryptId($postId));
+        Config::setJsConfig('curPage', ["posts", "comments"]);
+        Config::setJsConfig('postId', Encryption::encryptId($postId));
 
         $action  = $this->request->query('action');
         $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/default/", Config::get('VIEWS_PATH') . 'posts/viewPost.php', ["action"=> $action, "postId" => $postId]);

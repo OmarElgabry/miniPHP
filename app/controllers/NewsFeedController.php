@@ -13,7 +13,7 @@ class NewsFeedController extends Controller{
 
         parent::beforeAction();
 
-        Config::addJsConfig('curPage', "newsfeed");
+        Config::setJsConfig('curPage', "newsfeed");
 
         $action = $this->request->param('action');
         $actions = ['create', 'getUpdateForm', 'update', 'getById', 'delete'];

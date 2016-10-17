@@ -26,7 +26,7 @@ class LoginController extends Controller {
 
         parent::beforeAction();
 
-        Config::addJsConfig('curPage', "login");
+        Config::setJsConfig('curPage', "login");
 
         $action = $this->request->param('action');
         $actions = ['login', 'register', 'forgotPassword', 'updatePassword'];
@@ -71,7 +71,6 @@ class LoginController extends Controller {
             // $this->login->logOut(Session::getUserId(), true);
 
             // get redirect url if any
-            // validation for the url will be delayed until login()
             $redirect = $this->request->query('redirect');
 
             $this->view->renderWithLayouts(Config::get('VIEWS_PATH') . "layout/login/", Config::get('LOGIN_PATH') . "index.php", ['redirect' => $redirect]);
@@ -162,12 +161,13 @@ class LoginController extends Controller {
 
         }else{
 
-            // check for redirect url, and validate it
-            if(!empty($redirect) && !$this->request->validateUrl($redirect)){
-                $redirect = null;
+            // check if redirect url exists, then construct full url
+            if(!empty($redirect)){
+                $redirect = $this->request->getProtocolAndHost() . $redirect;
+                return $this->redirector->to($redirect);
             }
 
-            return $this->redirector->to(empty($redirect)? PUBLIC_ROOT: $redirect);
+            return $this->redirector->root();
         }
     }
 

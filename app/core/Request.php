@@ -12,6 +12,13 @@
 class Request{
 
     /**
+     * Set a list of trusted hosts patterns.
+     * 
+     * @var array
+     */
+    private static $trustedHostPatterns = [];
+
+    /**
      * Array of parameters parsed from the URL.
      *
      * @var array
@@ -52,7 +59,7 @@ class Request{
         $this->data    = $this->mergeData($_POST, $_FILES);
         $this->query   = $_GET;
         $this->params += isset($config["params"])? $config["params"]: [];
-        $this->url     = ($this->isSSL()? "https://": "http://") . $this->currentUrl();
+        $this->url     = $this->fullUrl();
     }
 
     /**
@@ -199,10 +206,39 @@ class Request{
     /**
      * Get the current host of the request
      *
-     * @return string|null
+     * @return string
+     * @throws UnexpectedValueException if the hostname is invalid
      */
     public function host(){
-        return isset($_SERVER['HTTP_HOST'])? $_SERVER['HTTP_HOST']: null;
+
+        if (!$host = Environment::get('HTTP_HOST')) {
+            if (!$host = $this->name()) {
+                $host = Enviroment::get('SERVER_ADDR');
+            }
+        }
+
+        // trim and remove port number from host
+        $host = strtolower(preg_replace('/:\d+$/', '', trim($host)));
+
+        // check that it does not contain forbidden characters
+        if ($host && preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
+            throw new UnexpectedValueException(sprintf('Invalid Host "%s"', $host));
+        }
+
+        // TODO
+        // check the hostname against a trusted list of host patterns to avoid host header injection attacks
+        if (count(self::$trustedHostPatterns) > 0) {
+
+            foreach (self::$trustedHostPatterns as $pattern) {
+                if (preg_match($pattern, $host)) {
+                    return $host;
+                }
+            }
+
+            throw new UnexpectedValueException(sprintf('Untrusted Host "%s"', $host));
+        }
+
+        return $host;
     }
 
     /**
@@ -245,19 +281,37 @@ class Request{
     }
 
     /**
-     * Get the current requests URL(without protocol) including the querystring arguments
+     * Gets the request's protocol.
      *
      * @return string
      */
-    public function currentUrl(){
+    public function protocol(){
+        return $this->isSSL() ? 'https' : 'http';
+    }
 
-        // 1. get uri
+    /**
+     * Gets the protocol and HTTP host.
+     *
+     * @return string The protocol and the host
+     */
+    public function getProtocolAndHost(){
+        return $this->protocol() . '://' . $this->host();
+    }
+
+    /**
+     * Get the full URL for the request with the added query string parameters.
+     *
+     * @return string
+     */
+    public function fullUrl(){
+
+        // get uri
         $uri = $this->uri();
         if (strpos($uri, '?') !== false) {
             list($uri) = explode('?', $uri, 2);
         }
 
-        // 2. add querystring arguments(neglect 'url' & 'redirect')
+        // add querystring arguments(neglect 'url' & 'redirect')
         $query    = "";
         $queryArr = $this->query;
         unset($queryArr['url']);
@@ -267,35 +321,41 @@ class Request{
             $query .= '?' . http_build_query($queryArr, null, '&');
         }
 
-        return  $this->name() . $uri . $query;
+        return  $this->getProtocolAndHost() . $uri . $query;
     }
 
     /**
-     * Validates Url(protocol, host, ...)
+     * Get the full URL for the request without the protocol.
+     * 
+     * It could be useful to force a specific protocol.
      *
-     * @param  string   $url
-     * @return bool
+     * @return string
      */
-    public function validateUrl($url){
-
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            return false;
-        }else{
-
-            $url = explode('/', filter_var(trim($url, '/'), FILTER_SANITIZE_URL));
-            $url = array_values(array_filter($url));
-
-            if(count($url) <= 1){
-                return false;
-            }
-
-            $protocol = rtrim($url[0], ":");
-            $host     = $url[1];
-
-            return
-                ($protocol === "http" || $protocol === "https") &&
-                ($this->name() !== null && $this->name() === $host);
-        }
+    public function fullUrlWithoutProtocol(){
+        return preg_replace('#^https?://#', '', $this->fullUrl());
     }
 
-} 
+    /**
+     * Returns the base URL.
+     *
+     * Examples:
+     *  * http://localhost/                         returns an empty string
+     *  * http://localhost/miniphp/public/user      returns miniphp
+     *  * http://localhost/miniphp/posts/view/123   returns miniphp
+     *
+     * @return string
+     */
+    public function getBaseUrl(){
+        $baseUrl = str_replace(['public', '\\'], ['', '/'], dirname(Environment::get('SCRIPT_NAME')));
+        return $baseUrl;
+    }
+
+    /**
+     * Get the root URL for the application.
+     *
+     * @return string
+     */
+    public function root(){
+        return $this->getProtocolAndHost() . $this->getBaseUrl();
+    }
+}

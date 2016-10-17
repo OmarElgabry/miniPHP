@@ -15,90 +15,103 @@ class Config{
      *
      * @var array
      */
-    public static $config = null;
+    private static $config = [];
 
     /**
-     * Array of javascript configurations
+     * Prefixes used to load specific configurations.
      *
      * @var array
      */
-    public static $jsConfig = null;
+    private static $prefix = [
+        'default'   => 'config',
+        'js'        => 'javascript'
+    ];
 
     /**
-     * Gets a configuration value
-     *
-     * @param $key string
-     * @return string|null
-     * @throws Exception if configuration file doesn't exist
-     */
-    public static function get($key){
-
-        if (!self::$config) {
-
-	        $config_file = APP . 'config/config.php';
-
-			if (!file_exists($config_file)) {
-				throw new Exception("Configuration file doesn't exist");
-			}
-
-	        self::$config = require $config_file . "";
-        }
-
-        return isset(self::$config[$key])? self::$config[$key]: null;
-    }
-
-    /**
-     * Loads javascript configurations
-     *
-     * @param $key string
-     * @return string|null
-     * @throws Exception if configuration file doesn't exist
-     */
-    private static function loadJsConfig(){
-
-        if (!self::$jsConfig) {
-
-            $config_file = APP . 'config/javascript.php';
-
-            if (!file_exists($config_file)) {
-                throw new Exception("JavaScript Configuration file doesn't exist");
-            }
-
-            self::$jsConfig = require $config_file . "";
-        }
-    }
-
-    /**
-     * Gets javascript configuration value(s)
+     * Get default configuration value(s)
      *
      * @param $key string
      * @return string|array|null
-     * @throws Exception if configuration file doesn't exist
      */
-    public static function getJsConfig($key = ""){
-        
-        if (!self::$jsConfig) {
-            self::loadJsConfig();
-        }
-
-        if(empty($key)){
-            return self::$jsConfig;
-        }else if(isset(self::$jsConfig[$key])){
-            return self::$jsConfig[$key];
-        }
-        return null;
+    public static function get($key){
+        return self::_get($key, self::$prefix['default']);
     }
 
     /**
-     * Adds a new variable to javascript configurations
+     * Set or add a default configuration value
+     *
+     * @param $key string
+     */
+    public static function set($key, $value){
+        self::_set($key, $value, self::$prefix['default']);
+    }
+
+    /**
+     * Get javascript configuration value(s)
+     *
+     * @param $key string
+     * @return string|array|null
+     */
+    public static function getJsConfig($key = ""){
+        return self::_get($key, self::$prefix['js']);
+    }
+
+    /**
+     * Set or add a javascript configuration value
      *
      * @param string $key
      * @param mixed  $value
      */
-    public static function addJsConfig($key, $value){
-        if (!self::$jsConfig) {
-            self::loadJsConfig();
+    public static function setJsConfig($key, $value){
+        self::_set($key, $value, self::$prefix['js']);
+    }
+
+    /**
+     * Get a configuration value(s)
+     *
+     * @param $key string
+     * @param $source string
+     * @return string|null
+     * @throws Exception if configuration file doesn't exist
+     */
+    private static function _get($key, $source){
+
+        if (!isset(self::$config[$source])) {
+
+            $config_file = APP . 'config/' . $source . '.php';
+
+            if (!file_exists($config_file)) {
+                throw new Exception("Configuration file " . $source . " doesn't exist");
+            }
+
+            self::$config[$source] = require $config_file . "";
         }
-        self::$jsConfig[$key] = $value;
+
+        if(empty($key)){
+            return self::$config[$source];
+        } else if(isset(self::$config[$source][$key])){
+            return self::$config[$source][$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * Set or adds a configuration value
+     *
+     * @param $key string
+     * @param $value string
+     * @param $source string
+     */
+    private static function _set($key, $value, $source){
+
+        // load configurations if not already loaded
+        if (!isset(self::$config[$source])) {
+            self::_get($key, $source);
+        }
+
+        if($key && $source){
+            self::$config[$source][$key] = $value;
+        }
     }
 }

@@ -62,13 +62,9 @@ class LoginController extends Controller {
 
         } else {
 
-            // clear and regenerate session and cookies(instead of using the existing one in browser),
-            // then show login form.
-
-            // But, this won't allow user(un-trusted) to open more than one login form,
-            // because every time it loads, it generates a new CSRF Token
-            // So, keep it commented
-            // $this->login->logOut(Session::getUserId(), true);
+            // Clearing the sesion won't allow user(un-trusted) to open more than one login form,
+                // as every time the page loads, it generates a new CSRF Token.
+            // Destroying the sesion won't allow accessing sesssion data (i.e. $_SESSION["csrf_token"]).
 
             // get redirect url if any
             $redirect = $this->request->query('redirect');

@@ -24,8 +24,7 @@ class Session{
      */
     public static function init(){
 
-        $session_id = session_id();
-        if (empty($session_id)) {
+        if (session_status() == PHP_SESSION_NONE) {     // if (session_id() == '')
             session_start();
         }
     }
@@ -354,15 +353,12 @@ class Session{
 
     /**
      * Remove the session
-     * Either by regenerating the session id & file, and clear the session data
-     * Or, delete session completely from the browser cookies and destroy it's file on the server
+     * Delete session completely from the browser cookies and destroy it's file on the server
      *
      * @access public
      * @static static method
-     * @param  bool   $keep   True to keep session in browser, and just regenerate it's id, and clear data.
-     *                        False to destroy session cookie in browser completely and it's file on server
      */
-    public static function remove($keep = false){
+    public static function remove(){
 
         // update session in database
         $userId = self::getUserId();
@@ -370,28 +366,20 @@ class Session{
             self::updateSessionId(self::getUserId());
         }
 
-        if($keep){
+        // clear session data
+        $_SESSION = array();
 
-            // regenerate it's id in browser, and file
-            // also clear any data stored in session
-            session_regenerate_id(true);
-            $_SESSION = array();
+        // remove session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
 
-        } else {
-
-            // clear session data
-            $_SESSION = array();
-
-            // remove session cookie
-            if (ini_get("session.use_cookies")) {
-                $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000,
-                    $params["path"], $params["domain"],
-                    $params["secure"], $params["httponly"]
-                );
-            }
-
-            // destroy session file on server
+        // destroy session file on server(if not already)
+        if(session_status() === PHP_SESSION_ACTIVE){
             session_destroy();
         }
     }

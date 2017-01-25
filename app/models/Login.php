@@ -596,12 +596,11 @@ class Login extends Model{
      *
      * @access public
      * @param  integer $userId
-     * @param  bool    $keepSession
      *
      */
-    public function logOut($userId, $keepSession = false){
+    public function logOut($userId){
 
-        Session::remove($keepSession);
+        Session::remove();
         Cookie::remove($userId);
     }
 

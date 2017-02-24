@@ -334,6 +334,7 @@ class User extends Model{
         // @see (mikeY) http://stackoverflow.com/questions/6849063/selecting-data-from-two-tables-and-ordering-by-date
 
         // Sub Query: In SELECT, The outer SELECT must have alias, like "updates" here.
+        // NOTE: The outer SELECT is not needed; You don't need to wrap the union-ed select statements.
         // @see http://stackoverflow.com/questions/1888779/every-derived-table-must-have-its-own-alias
 
         $query  = "SELECT * FROM (";

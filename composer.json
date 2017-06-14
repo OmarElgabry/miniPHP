@@ -22,6 +22,6 @@
         "gregwar/captcha": "~1.1.1"
     },
     "autoload": {
-    	"psr-4": { "": ["app/core/", "app/models/", "app/utility/", "app/controllers/", "app/core/Components"] }
+    	"psr-4": { "": ["app/core/", "app/models/", "app/utility/", "app/controllers/", "app/core/components/"] }
     }
 }

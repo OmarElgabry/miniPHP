@@ -553,7 +553,7 @@ In order to send request and recieve a respond, you may depend on Ajax calls to 
 
 ## Application(Demo) <a name="app-demo"></a>
 ### Intro<a name="intro-demo"></a>
-In order to show how to use the framework in a real-life situation, the framework comes with implementation for features like Manage User Profile Management, Dashbaord, News Feed, Upload & Download Files, Posts & Comments, Pagination, Admin panel, Manage System Backups, Notificatons, Report Bugs, ...etc.
+In order to show how to use the framework in a real-life situation, the framework comes with implementation for features like Manage User Profile Management, Dashboard, News Feed, Upload & Download Files, Posts & Comments, Pagination, Admin panel, Manage System Backups, Notificatons, Report Bugs, ...etc.
 
 ### Installation<a name="installation-demo"></a>
 Steps:
